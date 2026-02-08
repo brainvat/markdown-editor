@@ -212,10 +212,34 @@ Close Xcode, edit project.pbxproj **very carefully** in a proper text editor (VS
 
 ## Next Steps
 
-1. **Try Xcode restart** - Sometimes fixes mysterious project issues
-2. **If that fails:** `git reset --hard HEAD` to restore working state
-3. **Then choose:** Separate targets OR .xcconfig files approach
-4. **Test thoroughly** before considering v0.2.0 complete
+### Current Attempt: Manual VSCode Edit (In Progress)
+
+**Status:** About to try manual editing of project.pbxproj in VSCode
+
+**Steps to follow:**
+1. Close Xcode completely
+2. Commit current working state first
+3. Open `Markdown Editor.xcodeproj/project.pbxproj` in VSCode
+4. Search for: `CODE_SIGN_ENTITLEMENTS = "Markdown Editor/Markdown_Editor.entitlements";`
+5. Find both occurrences (around lines 299 and 339 for Debug and Release)
+6. Replace EACH single line with THESE TWO LINES:
+   ```
+   				CODE_SIGN_ENTITLEMENTS[sdk=macosx*] = "Markdown Editor/Markdown_Editor.entitlements";
+   				CODE_SIGN_ENTITLEMENTS[sdk=iphone*] = "Markdown Editor/Markdown_Editor_iOS.entitlements";
+   ```
+7. **CRITICAL:** Preserve exact indentation using TABS (not spaces)
+8. Save with Unix line endings (LF, not CRLF)
+9. Run `git diff` to verify changes look reasonable
+10. Open Xcode and test build for both Mac and iPad
+
+**If this works:** We'll have platform-specific entitlements configured!
+**If this fails:** Consider .xcconfig files or separate targets approach
+
+### Alternative Approaches (If Manual Edit Fails)
+
+1. **Separate targets** - Cleanest but requires project restructuring (discuss first)
+2. **.xcconfig files** - Safer middle ground
+3. **Disable Mac sandbox** - Quick fix but not production-ready
 
 ## For Future Skills/Documentation
 
