@@ -296,11 +296,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Markdown Editor/Markdown_Editor.entitlements";
+/*				CODE_SIGN_ENTITLEMENTS = "Markdown Editor/Markdown_Editor.entitlements"; */
+				CODE_SIGN_ENTITLEMENTS[sdk=macosx*] = "Markdown Editor/Markdown_Editor.entitlements";
+   				CODE_SIGN_ENTITLEMENTS[sdk=iphone*] = "Markdown Editor/Markdown_Editor_iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VNUFNA2P3X;
-				ENABLE_APP_SANDBOX = NO;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
@@ -336,11 +338,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Markdown Editor/Markdown_Editor.entitlements";
+/*				CODE_SIGN_ENTITLEMENTS = "Markdown Editor/Markdown_Editor.entitlements"; */
+				CODE_SIGN_ENTITLEMENTS[sdk=macosx*] = "Markdown Editor/Markdown_Editor.entitlements";
+   				CODE_SIGN_ENTITLEMENTS[sdk=iphone*] = "Markdown Editor/Markdown_Editor_iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VNUFNA2P3X;
-				ENABLE_APP_SANDBOX = NO;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;

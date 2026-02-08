@@ -1,0 +1,2 @@
+// Mac-specific configuration
+CODE_SIGN_ENTITLEMENTS = Markdown Editor/Markdown_Editor.entitlements
