@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Markdown
 #if canImport(AppKit)
 import AppKit
 import PDFKit
@@ -47,61 +48,145 @@ final class MarkdownManager {
         enableGFM: Bool = true,
         enableLaTeX: Bool = true
     ) async -> String {
-        // TODO: Integrate actual Markdown parsing library (Ink, MarkdownUI, or swift-markdown)
-        // For now, return a basic HTML wrapper
+        // Parse Markdown using swift-markdown
+        let document = Markdown.Document(parsing: markdown)
         
-        // Basic CommonMark-like transformations (placeholder until we add a real parser)
-        var html = markdown
-        
-        // Headers
-        html = html.replacingOccurrences(
-            of: #"^### (.+)$"#,
-            with: "<h3>$1</h3>",
-            options: [.regularExpression, .anchored]
-        )
-        html = html.replacingOccurrences(
-            of: #"^## (.+)$"#,
-            with: "<h2>$1</h2>",
-            options: [.regularExpression, .anchored]
-        )
-        html = html.replacingOccurrences(
-            of: #"^# (.+)$"#,
-            with: "<h1>$1</h1>",
-            options: [.regularExpression, .anchored]
-        )
-        
-        // Bold
-        html = html.replacingOccurrences(
-            of: #"\*\*(.+?)\*\*"#,
-            with: "<strong>$1</strong>",
-            options: .regularExpression
-        )
-        
-        // Italic
-        html = html.replacingOccurrences(
-            of: #"\*(.+?)\*"#,
-            with: "<em>$1</em>",
-            options: .regularExpression
-        )
-        
-        // Code blocks
-        html = html.replacingOccurrences(
-            of: #"`(.+?)`"#,
-            with: "<code>$1</code>",
-            options: .regularExpression
-        )
-        
-        // Line breaks
-        html = html.replacingOccurrences(of: "\n", with: "<br>")
+        // Convert to HTML
+        let html = renderHTML(from: document)
         
         // Wrap in HTML template
         let styledHTML = wrapInHTMLTemplate(html, includeLaTeX: enableLaTeX)
         
-        await MainActor.run {
-            self.renderedHTML = styledHTML
-        }
+        self.renderedHTML = styledHTML
+        self.parsingError = nil
         
         return styledHTML
+    }
+    
+    /// Recursively renders Markdown AST nodes to HTML
+    private func renderHTML(from markup: Markup) -> String {
+        var html = ""
+        
+        for child in markup.children {
+            html += renderNode(child)
+        }
+        
+        return html
+    }
+    
+    /// Renders a single Markdown node to HTML
+    private func renderNode(_ node: Markup) -> String {
+        switch node {
+        // Block elements
+        case let heading as Heading:
+            let level = heading.level
+            let content = renderHTML(from: heading)
+            return "<h\(level)>\(content)</h\(level)>\n"
+            
+        case let paragraph as Paragraph:
+            let content = renderHTML(from: paragraph)
+            return "<p>\(content)</p>\n"
+            
+        case let blockQuote as BlockQuote:
+            let content = renderHTML(from: blockQuote)
+            return "<blockquote>\n\(content)</blockquote>\n"
+            
+        case let codeBlock as CodeBlock:
+            let code = codeBlock.code.htmlEscaped
+            let language = codeBlock.language ?? ""
+            return "<pre><code class=\"language-\(language)\">\(code)</code></pre>\n"
+            
+        case let list as UnorderedList:
+            let content = renderHTML(from: list)
+            return "<ul>\n\(content)</ul>\n"
+            
+        case let list as OrderedList:
+            let start = list.startIndex
+            let startAttr = start > 1 ? " start=\"\(start)\"" : ""
+            let content = renderHTML(from: list)
+            return "<ol\(startAttr)>\n\(content)</ol>\n"
+            
+        case let listItem as ListItem:
+            let content = renderHTML(from: listItem)
+            // Check for task list checkbox
+            if let checkbox = listItem.checkbox {
+                let checked = checkbox == .checked ? " checked" : ""
+                return "<li class=\"task-list-item\"><input type=\"checkbox\"\(checked) disabled> \(content)</li>\n"
+            }
+            return "<li>\(content)</li>\n"
+            
+        case let table as Markdown.Table:
+            var tableHTML = "<table>\n"
+            
+            // Table head
+            let head = table.head
+            tableHTML += "<thead>\n<tr>\n"
+            for cell in head.cells {
+                let content = renderHTML(from: cell)
+                tableHTML += "<th>\(content)</th>\n"
+            }
+            tableHTML += "</tr>\n</thead>\n"
+            
+            // Table body
+            tableHTML += "<tbody>\n"
+            for row in table.body.rows {
+                tableHTML += "<tr>\n"
+                for cell in row.cells {
+                    let content = renderHTML(from: cell)
+                    tableHTML += "<td>\(content)</td>\n"
+                }
+                tableHTML += "</tr>\n"
+            }
+            tableHTML += "</tbody>\n</table>\n"
+            
+            return tableHTML
+            
+        case is ThematicBreak:
+            return "<hr>\n"
+            
+        // Inline elements
+        case let text as Markdown.Text:
+            return text.string.htmlEscaped
+            
+        case let strong as Strong:
+            let content = renderHTML(from: strong)
+            return "<strong>\(content)</strong>"
+            
+        case let emphasis as Emphasis:
+            let content = renderHTML(from: emphasis)
+            return "<em>\(content)</em>"
+            
+        case let code as InlineCode:
+            return "<code>\(code.code.htmlEscaped)</code>"
+            
+        case let link as Markdown.Link:
+            let url = link.destination?.htmlEscaped ?? ""
+            let title = link.title?.htmlEscaped ?? ""
+            let titleAttr = title.isEmpty ? "" : " title=\"\(title)\""
+            let content = renderHTML(from: link)
+            return "<a href=\"\(url)\"\(titleAttr)>\(content)</a>"
+            
+        case let image as Markdown.Image:
+            let url = image.source?.htmlEscaped ?? ""
+            let alt = renderHTML(from: image)
+            let title = image.title?.htmlEscaped ?? ""
+            let titleAttr = title.isEmpty ? "" : " title=\"\(title)\""
+            return "<img src=\"\(url)\" alt=\"\(alt)\"\(titleAttr)>"
+            
+        case let strikethrough as Strikethrough:
+            let content = renderHTML(from: strikethrough)
+            return "<del>\(content)</del>"
+            
+        case is SoftBreak:
+            return " "
+            
+        case is LineBreak:
+            return "<br>\n"
+            
+        default:
+            // Recursively process unknown node types
+            return renderHTML(from: node)
+        }
     }
     
     /// Wraps HTML content in a complete HTML document with styling
@@ -375,3 +460,17 @@ extension WKWebView {
     }
 }
 #endif
+
+// MARK: - String HTML Escaping Extension
+
+extension String {
+    /// Escapes HTML special characters
+    var htmlEscaped: String {
+        self
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "'", with: "&#39;")
+    }
+}
