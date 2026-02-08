@@ -253,19 +253,40 @@ struct EditorView: View {
         _ = await markdownManager.parseMarkdown(document.content)
     }
     
+    @MainActor
     private func exportToPDF() async {
         #if os(macOS)
+        print("📄 Export PDF button clicked!")
+        
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.pdf]
         panel.nameFieldStringValue = "\(document.title).pdf"
+        panel.canCreateDirectories = true
+        
+        print("📄 Opening PDF save panel...")
         
         let response = await panel.begin()
-        guard response == .OK, let url = panel.url else { return }
+        print("📄 Panel closed with response: \(response.rawValue)")
+        
+        guard response == .OK else {
+            print("📄 PDF export cancelled by user")
+            return
+        }
+        
+        guard let url = panel.url else {
+            print("📄 No URL selected - this shouldn't happen!")
+            return
+        }
+        
+        print("📄 User selected: \(url.path)")
+        print("📄 Starting export process...")
         
         do {
             try await markdownManager.exportToPDF(markdown: document.content, outputURL: url)
+            print("✅ PDF export completed successfully!")
         } catch {
-            print("PDF export failed: \(error)")
+            print("❌ PDF export failed with error: \(error)")
+            print("❌ Error details: \(error.localizedDescription)")
         }
         #else
         // iOS export implementation
@@ -273,19 +294,40 @@ struct EditorView: View {
         #endif
     }
     
+    @MainActor
     private func exportToHTML() async {
         #if os(macOS)
+        print("🌐 Export HTML button clicked!")
+        
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.html]
         panel.nameFieldStringValue = "\(document.title).html"
+        panel.canCreateDirectories = true
+        
+        print("🌐 Opening HTML save panel...")
         
         let response = await panel.begin()
-        guard response == .OK, let url = panel.url else { return }
+        print("🌐 Panel closed with response: \(response.rawValue)")
+        
+        guard response == .OK else {
+            print("🌐 HTML export cancelled by user")
+            return
+        }
+        
+        guard let url = panel.url else {
+            print("🌐 No URL selected - this shouldn't happen!")
+            return
+        }
+        
+        print("🌐 User selected: \(url.path)")
+        print("🌐 Starting export process...")
         
         do {
             try await markdownManager.exportToHTML(markdown: document.content, outputURL: url)
+            print("✅ HTML export completed successfully!")
         } catch {
-            print("HTML export failed: \(error)")
+            print("❌ HTML export failed with error: \(error)")
+            print("❌ Error details: \(error.localizedDescription)")
         }
         #else
         // iOS export implementation
@@ -293,20 +335,41 @@ struct EditorView: View {
         #endif
     }
     
+    @MainActor
     private func exportToMarkdown() async {
         #if os(macOS)
+        print("📝 Export Markdown button clicked!")
+        
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.plainText]
         panel.nameFieldStringValue = "\(document.title).md"
         panel.allowsOtherFileTypes = true
+        panel.canCreateDirectories = true
+        
+        print("📝 Opening Markdown save panel...")
         
         let response = await panel.begin()
-        guard response == .OK, let url = panel.url else { return }
+        print("📝 Panel closed with response: \(response.rawValue)")
+        
+        guard response == .OK else {
+            print("📝 Markdown export cancelled by user")
+            return
+        }
+        
+        guard let url = panel.url else {
+            print("📝 No URL selected - this shouldn't happen!")
+            return
+        }
+        
+        print("📝 User selected: \(url.path)")
+        print("📝 Starting export process...")
         
         do {
             try await markdownManager.exportToMarkdown(markdown: document.content, outputURL: url)
+            print("✅ Markdown export completed successfully!")
         } catch {
-            print("Markdown export failed: \(error)")
+            print("❌ Markdown export failed with error: \(error)")
+            print("❌ Error details: \(error.localizedDescription)")
         }
         #else
         // iOS export implementation

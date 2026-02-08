@@ -377,22 +377,31 @@ final class MarkdownManager {
     #if canImport(AppKit)
     /// Exports Markdown content as PDF (macOS)
     func exportToPDF(markdown: String, outputURL: URL) async throws {
+        print("📄 MarkdownManager: Starting PDF export...")
+        print("📄 Content length: \(markdown.count) characters")
+        
         let html = await parseMarkdown(markdown)
+        print("📄 HTML generated, length: \(html.count) characters")
         
         // Create a WebView for rendering
         let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 612, height: 792)) // US Letter size
+        print("📄 WebView created")
         
         // Load HTML
         webView.loadHTMLString(html, baseURL: nil)
+        print("📄 HTML loaded into WebView")
         
         // Wait for loading to complete
         try await Task.sleep(for: .milliseconds(500))
+        print("📄 Waited for WebView to render")
         
         // Create PDF data
         let pdfData = try await webView.pdf()
+        print("📄 PDF data created, size: \(pdfData.count) bytes")
         
         // Write to file
         try pdfData.write(to: outputURL)
+        print("📄 PDF written to file: \(outputURL.path)")
     }
     #else
     /// Exports Markdown content as PDF (iOS/iPadOS)
@@ -426,15 +435,26 @@ final class MarkdownManager {
     
     /// Exports Markdown content as standalone HTML file
     func exportToHTML(markdown: String, outputURL: URL) async throws {
+        print("🌐 MarkdownManager: Starting HTML export...")
+        print("🌐 Content length: \(markdown.count) characters")
+        
         let html = await parseMarkdown(markdown)
+        print("🌐 HTML generated, length: \(html.count) characters")
+        
         try html.write(to: outputURL, atomically: true, encoding: .utf8)
+        print("🌐 HTML written to file: \(outputURL.path)")
     }
     
     // MARK: - Markdown Export
     
     /// Exports raw Markdown content as .md file
     func exportToMarkdown(markdown: String, outputURL: URL) async throws {
+        print("📝 MarkdownManager: Starting Markdown export...")
+        print("📝 Content length: \(markdown.count) characters")
+        print("📝 Output URL: \(outputURL.path)")
+        
         try markdown.write(to: outputURL, atomically: true, encoding: .utf8)
+        print("📝 Markdown written to file successfully")
     }
     
     // MARK: - Task List Support
