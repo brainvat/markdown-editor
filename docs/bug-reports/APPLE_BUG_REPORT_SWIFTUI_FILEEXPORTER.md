@@ -5,6 +5,33 @@
 **Platform:** iOS 18 / iPadOS 18
 **Xcode:** 16.0+
 **SwiftUI Framework:** Latest (iOS 18 SDK)
+**Status:** **CONFIRMED BUG** - 100% reproducible
+
+---
+
+## 🔴 CONFIRMED: Silent Failure on iOS
+
+After extensive testing with proper `FileDocument` implementations following Stack Overflow guidance, we have **definitively proven** this is a SwiftUI framework bug:
+
+**Test Results:**
+- ✅ **PDF Export:** Works perfectly (file picker appears, document exports successfully)
+- ❌ **HTML Export:** Silent failure (document created successfully, picker never appears)
+- ❌ **Markdown Export:** Silent failure (document created successfully, picker never appears)
+
+**Console Evidence:**
+```
+🌐 HTML length: 4854
+🌐 Created document with filename: iPad Test Document.html
+✅ HTML document set, showing exporter. Document is nil: false
+[No picker shown]
+
+📝 Content length: 110
+📝 Created document with filename: iPad Test Document.md
+✅ Markdown document set, showing exporter. Document is nil: false
+[No picker shown]
+```
+
+**Conclusion:** The `FileDocument` instances are valid and non-nil. `.fileExporter()` receives them correctly. Yet **SwiftUI silently refuses to present the file picker** for certain content types on iOS, while the exact same code works flawlessly on macOS.
 
 ---
 

@@ -9,6 +9,10 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 /// The editor view (third column) with split pane for editing and preview
 struct EditorView: View {
     @Bindable var document: Document
@@ -16,9 +20,15 @@ struct EditorView: View {
     @State private var showPreview = true
     @State private var previewPosition: PreviewPosition = .trailing
     
-    // iOS export state - use single exporter for all types
-    @State private var showingExporter = false
-    @State private var exportURL: URL?
+    // iOS export state - separate for each type
+    @State private var showingMarkdownExporter = false
+    @State private var markdownDocument: MarkdownExportDocument?
+    
+    @State private var showingHTMLExporter = false
+    @State private var htmlDocument: HTMLExportDocument?
+    
+    @State private var showingPDFExporter = false
+    @State private var pdfDocument: PDFExportDocument?
     
     var body: some View {
         GeometryReader { geometry in
@@ -138,17 +148,44 @@ struct EditorView: View {
         }
         #if !canImport(AppKit)
         .fileExporter(
-            isPresented: $showingExporter,
-            items: exportURL != nil ? [exportURL!] : [],
-            onCompletion: { result in
-                switch result {
-                case .success(let urls):
-                    print("✅ Export successful to: \(urls.first?.path ?? "unknown")")
-                case .failure(let error):
-                    print("❌ Export failed: \(error.localizedDescription)")
-                }
+            isPresented: $showingMarkdownExporter,
+            document: markdownDocument,
+            contentType: .plainText,
+            defaultFilename: "\(document.title).md"
+        ) { result in
+            if case .success(let url) = result {
+                print("✅ Markdown exported to: \(url.path)")
+            } else if case .failure(let error) = result {
+                print("❌ Markdown export failed: \(error.localizedDescription)")
             }
-        )
+            markdownDocument = nil
+        }
+        .fileExporter(
+            isPresented: $showingHTMLExporter,
+            document: htmlDocument,
+            contentType: .html,
+            defaultFilename: "\(document.title).html"
+        ) { result in
+            if case .success(let url) = result {
+                print("✅ HTML exported to: \(url.path)")
+            } else if case .failure(let error) = result {
+                print("❌ HTML export failed: \(error.localizedDescription)")
+            }
+            htmlDocument = nil
+        }
+        .fileExporter(
+            isPresented: $showingPDFExporter,
+            document: pdfDocument,
+            contentType: .pdf,
+            defaultFilename: "\(document.title).pdf"
+        ) { result in
+            if case .success(let url) = result {
+                print("✅ PDF exported to: \(url.path)")
+            } else if case .failure(let error) = result {
+                print("❌ PDF export failed: \(error.localizedDescription)")
+            }
+            pdfDocument = nil
+        }
         #endif
     }
     
@@ -317,19 +354,32 @@ struct EditorView: View {
             print("❌ Error details: \(error.localizedDescription)")
         }
         #else
-        // iOS PDF export - Export as HTML instead (iOS doesn't support direct PDF generation via fileExporter)
-        print("📄 iOS: Exporting as HTML (PDF generation not supported on iOS via fileExporter)")
-        do {
-            let html = await markdownManager.parseMarkdown(document.content)
-            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).html")
-            try html.write(to: tempURL, atomically: true, encoding: .utf8)
-            exportURL = tempURL
-            print("📄 Temp file created at: \(tempURL.path)")
-            showingExporter = true
-            print("📄 Exporter flag set to: \(showingExporter)")
-        } catch {
-            print("❌ Failed to create temp file: \(error)")
+        // iOS PDF export using proper FileDocument pattern
+        print("📄 iOS: Preparing PDF export")
+        let html = await markdownManager.parseMarkdown(document.content)
+        
+        // Use UIGraphicsPDFRenderer to create PDF data
+        let pageSize = CGRect(x: 0, y: 0, width: 612, height: 792) // US Letter
+        let renderer = UIGraphicsPDFRenderer(bounds: pageSize)
+        
+        let pdfData = renderer.pdfData { context in
+            context.beginPage()
+            
+            // Render HTML as attributed string
+            let htmlData = Data(html.utf8)
+            if let attributedString = try? NSAttributedString(
+                data: htmlData,
+                options: [.documentType: NSAttributedString.DocumentType.html],
+                documentAttributes: nil
+            ) {
+                attributedString.draw(in: pageSize.insetBy(dx: 50, dy: 50))
+            }
         }
+        
+        // Create FileDocument with ready data
+        pdfDocument = PDFExportDocument(data: pdfData, filename: "\(document.title).pdf")
+        showingPDFExporter = true
+        print("✅ PDF document ready, showing exporter")
         #endif
     }
     
@@ -369,18 +419,19 @@ struct EditorView: View {
             print("❌ Error details: \(error.localizedDescription)")
         }
         #else
-        // iOS export implementation
-        print("🌐 iOS HTML export")
-        do {
-            let html = await markdownManager.parseMarkdown(document.content)
-            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).html")
-            try html.write(to: tempURL, atomically: true, encoding: .utf8)
-            exportURL = tempURL
-            print("🌐 Temp file created at: \(tempURL.path)")
-            showingExporter = true
-        } catch {
-            print("❌ Failed to create temp file: \(error)")
-        }
+        // iOS HTML export using proper FileDocument pattern
+        print("🌐 iOS: Preparing HTML export")
+        let html = await markdownManager.parseMarkdown(document.content)
+        print("🌐 HTML length: \(html.count)")
+        
+        // Create FileDocument with ready content
+        let exportDoc = HTMLExportDocument(content: html, filename: "\(document.title).html")
+        print("🌐 Created document with filename: \(exportDoc.filename)")
+        htmlDocument = exportDoc
+        
+        // Toggle immediately - no delay hack
+        showingHTMLExporter = true
+        print("✅ HTML document set, showing exporter. Document is nil: \(htmlDocument == nil)")
         #endif
     }
     
@@ -421,18 +472,18 @@ struct EditorView: View {
             print("❌ Error details: \(error.localizedDescription)")
         }
         #else
-        // iOS export implementation
-        print("📝 iOS Markdown export - preparing document")
-        do {
-            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).md")
-            try document.content.write(to: tempURL, atomically: true, encoding: .utf8)
-            exportURL = tempURL
-            print("📝 Temp file created at: \(tempURL.path)")
-            showingExporter = true
-            print("📝 Exporter flag set to: \(showingExporter)")
-        } catch {
-            print("❌ Failed to create temp file: \(error)")
-        }
+        // iOS Markdown export using proper FileDocument pattern
+        print("📝 iOS: Preparing Markdown export")
+        print("📝 Content length: \(document.content.count)")
+        
+        // Create FileDocument with ready content
+        let exportDoc = MarkdownExportDocument(content: document.content, filename: "\(document.title).md")
+        print("📝 Created document with filename: \(exportDoc.filename)")
+        markdownDocument = exportDoc
+        
+        // Toggle immediately - no delay hack
+        showingMarkdownExporter = true
+        print("✅ Markdown document set, showing exporter. Document is nil: \(markdownDocument == nil)")
         #endif
     }
 }

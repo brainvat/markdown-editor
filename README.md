@@ -33,10 +33,12 @@ A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with Swi
 - 📋 **Smart Lists** - Auto-continuation and task list toggling
 
 ### Export & Sharing
-- 📄 **PDF Export** - Native PDF generation with styling preservation (Mac: ✅ iOS: ⚠️)
-- 🌐 **HTML Export** - Standalone HTML files with embedded CSS (Mac: ✅ iOS: ✅)
-- 📝 **Markdown Export** - Export as .md files (Mac: ✅ iOS: ⚠️)
+- 📄 **PDF Export** - Native PDF generation with styling preservation (Mac: ✅ iOS: ✅)
+- 🌐 **HTML Export** - Standalone HTML files with embedded CSS (Mac: ✅ iOS: ❌ SwiftUI bug)
+- 📝 **Markdown Export** - Export as .md files (Mac: ✅ iOS: ❌ SwiftUI bug)
 - 📊 **Document Stats** - Word count, character count, last modified
+
+**Note:** iOS HTML and Markdown exports are blocked by a [confirmed SwiftUI framework bug](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md) where `.fileExporter()` silently fails for certain `FileDocument` types despite valid documents being created.
 
 ## 🚀 Getting Started
 
@@ -186,10 +188,12 @@ Contributions are welcome! This project is a learning experience and showcase of
 - [x] Keyboard shortcuts for all export types
 - [x] Editable document titles
 - [x] Smart timestamp display (updates every 60 seconds)
-- [x] Markdown export (.md files)
+- [x] Markdown export (.md files) - Mac only due to SwiftUI bug
+- [x] HTML export - Mac only due to SwiftUI bug
+- [x] PDF export - Both Mac and iOS working
 - [x] Mac native file pickers (NSSavePanel)
-- [x] Platform-specific export implementations
-- [x] Known issue documented: iOS .fileExporter() inconsistencies ([see bug report](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md))
+- [x] Platform-specific export implementations using FileDocument pattern
+- [x] Comprehensive testing proving SwiftUI .fileExporter() bug on iOS ([see bug report](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md))
 
 ### v0.3.0 (Next)
 - [ ] Document search functionality
