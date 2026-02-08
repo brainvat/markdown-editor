@@ -212,25 +212,30 @@ Close Xcode, edit project.pbxproj **very carefully** in a proper text editor (VS
 
 ## Next Steps
 
-### Current Attempt: Manual VSCode Edit (In Progress)
+### Attempt #7: Manual Nano Edit (FAILED - Spaces Instead of Tabs)
 
-**Status:** About to try manual editing of project.pbxproj in VSCode
+**Status:** FAILED - Nano inserted spaces instead of tabs
+**What happened:** Edited in nano, pressed TAB key, but nano converted tabs to spaces (lines had `20 20 20 09` instead of `09 09 09 09`)
+**Lesson:** Nano's default behavior depends on system config - can't trust it for pbxproj editing
+
+### Attempt #8: Python-Generated File with Proper Tabs (IN PROGRESS)
+
+**Status:** About to try Python-generated file with explicit `\t` characters
 
 **Steps to follow:**
 1. Close Xcode completely
-2. Commit current working state first
-3. Open `Markdown Editor.xcodeproj/project.pbxproj` in VSCode
-4. Search for: `CODE_SIGN_ENTITLEMENTS = "Markdown Editor/Markdown_Editor.entitlements";`
-5. Find both occurrences (around lines 299 and 339 for Debug and Release)
-6. Replace EACH single line with THESE TWO LINES:
-   ```
-   				CODE_SIGN_ENTITLEMENTS[sdk=macosx*] = "Markdown Editor/Markdown_Editor.entitlements";
-   				CODE_SIGN_ENTITLEMENTS[sdk=iphone*] = "Markdown Editor/Markdown_Editor_iOS.entitlements";
-   ```
-7. **CRITICAL:** Preserve exact indentation using TABS (not spaces)
-8. Save with Unix line endings (LF, not CRLF)
-9. Run `git diff` to verify changes look reasonable
-10. Open Xcode and test build for both Mac and iPad
+2. Python script creates `project.pbxproj.fixed` with proper tab characters (`\t`)
+3. Backup current project file: `cp project.pbxproj project.pbxproj.backup`
+4. Apply the fix: `mv project.pbxproj.fixed project.pbxproj`
+5. Verify with `git diff` - should show proper formatting
+6. Open Xcode and test build for both Mac and iPad
+
+**Commands:**
+```bash
+cd "/Users/ahammock/Desktop/projects/ideas/Markdown Editor"
+cp "Markdown Editor.xcodeproj/project.pbxproj" "Markdown Editor.xcodeproj/project.pbxproj.backup"
+mv "Markdown Editor.xcodeproj/project.pbxproj.fixed" "Markdown Editor.xcodeproj/project.pbxproj"
+```
 
 **If this works:** We'll have platform-specific entitlements configured!
 **If this fails:** Consider .xcconfig files or separate targets approach
