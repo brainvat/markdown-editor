@@ -14,6 +14,12 @@ struct AppCommands: Commands {
         CommandGroup(after: .newItem) {
             Divider()
             
+            Button("Export as Markdown...") {
+                // Trigger export action
+                NotificationCenter.default.post(name: .exportToMarkdown, object: nil)
+            }
+            .keyboardShortcut("e", modifiers: [.command, .option])
+            
             Button("Export as PDF...") {
                 // Trigger export action
                 NotificationCenter.default.post(name: .exportToPDF, object: nil)
@@ -88,6 +94,7 @@ struct AppCommands: Commands {
 
 extension Notification.Name {
     // Export
+    static let exportToMarkdown = Notification.Name("exportToMarkdown")
     static let exportToPDF = Notification.Name("exportToPDF")
     static let exportToHTML = Notification.Name("exportToHTML")
     

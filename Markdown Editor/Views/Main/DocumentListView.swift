@@ -195,9 +195,7 @@ struct DocumentRowView: View {
             }
             
             HStack {
-                Text(document.modifiedAt, style: .relative)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                RelativeTimestampViewSimple(date: document.modifiedAt)
                 
                 Text("•")
                     .foregroundStyle(.secondary)
@@ -225,6 +223,36 @@ enum SortOption {
     case created
     case title
     case wordCount
+}
+
+// MARK: - Relative Timestamp View
+
+/// Simple relative timestamp view that updates every minute
+struct RelativeTimestampViewSimple: View {
+    let date: Date
+    @State private var displayText = ""
+    
+    var body: some View {
+        Text(displayText)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .onAppear {
+                updateDisplayText()
+            }
+            .task {
+                // Update every minute instead of constantly
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .seconds(60))
+                    updateDisplayText()
+                }
+            }
+    }
+    
+    private func updateDisplayText() {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .abbreviated
+        displayText = formatter.localizedString(for: date, relativeTo: Date())
+    }
 }
 
 #Preview {

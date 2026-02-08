@@ -430,6 +430,13 @@ final class MarkdownManager {
         try html.write(to: outputURL, atomically: true, encoding: .utf8)
     }
     
+    // MARK: - Markdown Export
+    
+    /// Exports raw Markdown content as .md file
+    func exportToMarkdown(markdown: String, outputURL: URL) async throws {
+        try markdown.write(to: outputURL, atomically: true, encoding: .utf8)
+    }
+    
     // MARK: - Task List Support
     
     /// Toggles a checkbox in task list at the given line index

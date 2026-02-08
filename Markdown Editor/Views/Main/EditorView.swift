@@ -37,6 +37,11 @@ struct EditorView: View {
         .onReceive(NotificationCenter.default.publisher(for: .previewPositionBottom)) { _ in
             previewPosition = .bottom
         }
+        .onReceive(NotificationCenter.default.publisher(for: .exportToMarkdown)) { _ in
+            Task {
+                await exportToMarkdown()
+            }
+        }
         .onReceive(NotificationCenter.default.publisher(for: .exportToPDF)) { _ in
             Task {
                 await exportToPDF()
@@ -90,6 +95,14 @@ struct EditorView: View {
                 
                 // Export menu
                 Menu {
+                    Button {
+                        Task {
+                            await exportToMarkdown()
+                        }
+                    } label: {
+                        Label("Export as Markdown", systemImage: "doc.text")
+                    }
+                    
                     Button {
                         Task {
                             await exportToPDF()
@@ -178,28 +191,41 @@ struct EditorView: View {
     
     private var editorPane: some View {
         VStack(spacing: 0) {
-            // Stats bar
-            HStack {
-                Text("\(document.wordCount) words")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            // Title and Stats bar
+            VStack(spacing: 8) {
+                // Editable title
+                TextField("Document Title", text: $document.title)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .textFieldStyle(.plain)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
                 
-                Text("•")
-                    .foregroundStyle(.secondary)
-                
-                Text("\(document.characterCount) characters")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                
-                Spacer()
-                
-                Text("Modified \(document.modifiedAt, style: .relative)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                // Stats bar
+                HStack {
+                    Text("\(document.wordCount) words")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
+                    Text("•")
+                        .foregroundStyle(.secondary)
+                    
+                    Text("\(document.characterCount) characters")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
+                    Spacer()
+                    
+                    RelativeTimestampView(date: document.modifiedAt)
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 8)
             }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-            .background(.quaternary)
+            #if os(macOS)
+            .background(Color(nsColor: .controlBackgroundColor))
+            #else
+            .background(Color(uiColor: .secondarySystemBackground))
+            #endif
             
             // Editor
             TextEditor(text: $document.content)
@@ -266,6 +292,27 @@ struct EditorView: View {
         print("HTML export on iOS requires document picker")
         #endif
     }
+    
+    private func exportToMarkdown() async {
+        #if os(macOS)
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.plainText]
+        panel.nameFieldStringValue = "\(document.title).md"
+        panel.allowsOtherFileTypes = true
+        
+        let response = await panel.begin()
+        guard response == .OK, let url = panel.url else { return }
+        
+        do {
+            try await markdownManager.exportToMarkdown(markdown: document.content, outputURL: url)
+        } catch {
+            print("Markdown export failed: \(error)")
+        }
+        #else
+        // iOS export implementation
+        print("Markdown export on iOS requires document picker")
+        #endif
+    }
 }
 
 // MARK: - Preview Position
@@ -274,6 +321,36 @@ enum PreviewPosition {
     case leading
     case trailing
     case bottom
+}
+
+// MARK: - Relative Timestamp View
+
+/// A view that displays relative time (e.g., "2 minutes ago") but only updates every minute to avoid constant UI refreshes
+struct RelativeTimestampView: View {
+    let date: Date
+    @State private var displayText = ""
+    
+    var body: some View {
+        Text(displayText)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .onAppear {
+                updateDisplayText()
+            }
+            .task {
+                // Update every minute instead of constantly
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .seconds(60))
+                    updateDisplayText()
+                }
+            }
+    }
+    
+    private func updateDisplayText() {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        displayText = "Modified \(formatter.localizedString(for: date, relativeTo: Date()))"
+    }
 }
 
 #Preview {
