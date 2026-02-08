@@ -91,6 +91,33 @@ Markdown Editor/
 - Use `@Relationship(deleteRule: .cascade)` where appropriate
 - Query with `@Query` in views, filtering at the property wrapper level
 
+### Git Branch Conventions
+
+**Branch Naming Structure:**
+- `features/<feature-name>` - New feature development
+- `bugs/<feature-name>-bug-fixes` - Bug fixes for a specific feature
+- `hotfix/<description>` - Critical production fixes that go directly to main
+
+**Branch Workflow:**
+1. Create feature branch: `git checkout -b features/v0.2.0`
+2. Develop and test feature
+3. Merge feature to main when complete
+4. If bugs found, create bug fix branch: `git checkout -b bugs/v0.2.0-bug-fixes` from the feature branch or main
+5. Fix bugs, then merge bug fix branch to main
+6. Hotfixes go directly to main and should be immediately merged back to active feature/bug branches
+
+**Examples:**
+- `features/v0.2.0` - Version 0.2.0 feature development
+- `bugs/v0.2.0-bug-fixes` - Bug fixes for v0.2.0 features
+- `hotfix/branding-mac-md` - Emergency branding fix
+
+**Rules:**
+- Feature branches are prefixed with `features/`
+- Bug fix branches are prefixed with `bugs/` and suffixed with `-bug-fixes`
+- Bug fix branch names should match their parent feature branch name
+- Never push directly to main without a merge from a feature/bug/hotfix branch
+- Delete branches after successful merge (except long-lived feature branches)
+
 ## Build/Run Instructions
 
 ### Prerequisites
@@ -127,13 +154,17 @@ Markdown Editor/
 
 ## Dependencies (SPM)
 
+Current dependencies:
+- ✅ **swift-markdown v0.7.3** - Apple's official Markdown parser (CommonMark + GFM)
+- ✅ **Highlight.js 11.9.0** - Syntax highlighting via CDN (185 languages)
+
 To be added:
-- [ ] Markdown parsing library
-- [ ] Syntax highlighting library
-- [ ] LaTeX/Math rendering (if not using web-based solution)
+- [ ] LaTeX/Math rendering (MathJax or KaTeX via CDN)
 
 ## Known Issues
-- None yet (fresh project)
+- Keyboard shortcuts implemented but need testing across all scenarios
+- Export functionality (PDF/HTML) needs implementation
+- LaTeX rendering not yet implemented
 
 ## Future Enhancements
 - [ ] Extensions/Plugins system
