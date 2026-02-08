@@ -69,7 +69,7 @@ struct SidebarView: View {
                 }
             }
         }
-        .navigationTitle("MacDown Pro")
+        .navigationTitle("Mac MD")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {

@@ -1,7 +1,7 @@
-# MacDown Pro - Project Memory
+# Mac MD - Project Memory
 
 ## Project Overview
-MacDown Pro is a modern, Universal App recreation of MacDown 3000 - a feature-rich Markdown editor for macOS, iOS, and iPadOS. The goal is to achieve 1:1 feature parity with MacDown 3000 while modernizing the codebase with SwiftUI, SwiftData, and Swift 6 strict concurrency.
+Mac MD is a modern, Universal Markdown editor for macOS, iOS, and iPadOS, inspired by the classic MacDown application. Built with SwiftUI, SwiftData, and Swift 6 strict concurrency, Mac MD provides a feature-rich editing experience across all Apple platforms.
 
 **Key Features:**
 - Live dual-pane Markdown preview with support for CommonMark, GFM, and LaTeX
