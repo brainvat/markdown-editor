@@ -36,6 +36,20 @@ struct ContentView: View {
                 )
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToAllDocuments)) { _ in
+            selectedSidebarItem = .allDocuments
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToFavorites)) { _ in
+            selectedSidebarItem = .favorites
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToRecent)) { _ in
+            selectedSidebarItem = .recent
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .toggleFavorite)) { _ in
+            if let document = selectedDocument {
+                document.isFavorite.toggle()
+            }
+        }
     }
 }
 
