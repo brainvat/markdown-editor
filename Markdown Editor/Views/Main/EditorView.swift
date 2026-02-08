@@ -332,10 +332,13 @@ struct EditorView: View {
         }
         #else
         // iOS export implementation
-        print("📄 iOS PDF export")
+        print("📄 iOS PDF export - preparing document")
         let html = await markdownManager.parseMarkdown(document.content)
-        exportDocument = ExportDocument(content: html, filename: "\(document.title).pdf", contentType: .pdf)
+        let doc = ExportDocument(content: html, filename: "\(document.title).pdf", contentType: .pdf)
+        exportDocument = doc
+        print("📄 Document created, showing exporter")
         showingPDFExport = true
+        print("📄 Exporter flag set to: \(showingPDFExport)")
         #endif
     }
     
@@ -421,9 +424,12 @@ struct EditorView: View {
         }
         #else
         // iOS export implementation
-        print("📝 iOS Markdown export")
-        exportDocument = ExportDocument(content: document.content, filename: "\(document.title).md", contentType: .plainText)
+        print("📝 iOS Markdown export - preparing document")
+        let doc = ExportDocument(content: document.content, filename: "\(document.title).md", contentType: .plainText)
+        exportDocument = doc
+        print("📝 Document created, showing exporter")
         showingMarkdownExport = true
+        print("📝 Exporter flag set to: \(showingMarkdownExport)")
         #endif
     }
 }
