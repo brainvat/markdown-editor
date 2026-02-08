@@ -33,8 +33,9 @@ A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with Swi
 - 📋 **Smart Lists** - Auto-continuation and task list toggling
 
 ### Export & Sharing
-- 📄 **PDF Export** - Native PDF generation with styling preservation
-- 🌐 **HTML Export** - Standalone HTML files with embedded CSS
+- 📄 **PDF Export** - Native PDF generation with styling preservation (Mac: ✅ iOS: ⚠️)
+- 🌐 **HTML Export** - Standalone HTML files with embedded CSS (Mac: ✅ iOS: ✅)
+- 📝 **Markdown Export** - Export as .md files (Mac: ✅ iOS: ⚠️)
 - 📊 **Document Stats** - Word count, character count, last modified
 
 ## 🚀 Getting Started
@@ -171,19 +172,30 @@ Contributions are welcome! This project is a learning experience and showcase of
 
 ## 🗺️ Roadmap
 
-### v0.1.0-alpha (Current) ✅
+### v0.1.0-alpha ✅
 - [x] SwiftData schema with 5 models
 - [x] Three-column layout
 - [x] Basic Markdown rendering
 - [x] Live preview
-- [x] CloudKit syncing
+- [ ] CloudKit syncing (not working)
 - [x] PDF/HTML export
 
-### v0.2.0 (Next)
-- [ ] Integrate proper Markdown parser via SPM
-- [ ] Syntax highlighting for code blocks
-- [ ] Keyboard shortcuts
-- [ ] Document search
+### v0.2.0 (Current) ✅
+- [x] Integrate swift-markdown parser (v0.7.3)
+- [x] Syntax highlighting via Highlight.js (185 languages)
+- [x] Keyboard shortcuts for all export types
+- [x] Editable document titles
+- [x] Smart timestamp display (updates every 60 seconds)
+- [x] Markdown export (.md files)
+- [x] Mac native file pickers (NSSavePanel)
+- [x] Platform-specific export implementations
+- [x] Known issue documented: iOS .fileExporter() inconsistencies ([see bug report](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md))
+
+### v0.3.0 (Next)
+- [ ] Document search functionality
+- [ ] File system persistence (Documents folder)
+- [ ] iCloud sync verification and fixes
+- [ ] User acceptance testing
 - [ ] Performance optimizations
 
 ### v0.3.0
