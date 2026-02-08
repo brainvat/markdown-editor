@@ -16,13 +16,9 @@ struct EditorView: View {
     @State private var showPreview = true
     @State private var previewPosition: PreviewPosition = .trailing
     
-    // iOS export state
-    @State private var showingMarkdownExport = false
-    @State private var showingPDFExport = false
-    @State private var showingHTMLExport = false
-    @State private var markdownExportURL: URL?
-    @State private var pdfExportURL: URL?
-    @State private var htmlExportURL: URL?
+    // iOS export state - use single exporter for all types
+    @State private var showingExporter = false
+    @State private var exportURL: URL?
     
     var body: some View {
         GeometryReader { geometry in
@@ -142,19 +138,16 @@ struct EditorView: View {
         }
         #if !canImport(AppKit)
         .fileExporter(
-            isPresented: $showingMarkdownExport,
-            items: markdownExportURL != nil ? [markdownExportURL!] : [],
-            onCompletion: handleMarkdownExportCompletion
-        )
-        .fileExporter(
-            isPresented: $showingPDFExport,
-            items: pdfExportURL != nil ? [pdfExportURL!] : [],
-            onCompletion: handlePDFExportCompletion
-        )
-        .fileExporter(
-            isPresented: $showingHTMLExport,
-            items: htmlExportURL != nil ? [htmlExportURL!] : [],
-            onCompletion: handleHTMLExportCompletion
+            isPresented: $showingExporter,
+            items: exportURL != nil ? [exportURL!] : [],
+            onCompletion: { result in
+                switch result {
+                case .success(let urls):
+                    print("✅ Export successful to: \(urls.first?.path ?? "unknown")")
+                case .failure(let error):
+                    print("❌ Export failed: \(error.localizedDescription)")
+                }
+            }
         )
         #endif
     }
@@ -165,33 +158,6 @@ struct EditorView: View {
             print("✅ \(type) export successful to: \(url.path)")
         case .failure(let error):
             print("❌ \(type) export failed: \(error.localizedDescription)")
-        }
-    }
-    
-    private func handleMarkdownExportCompletion(_ result: Result<[URL], Error>) {
-        switch result {
-        case .success(let urls):
-            print("✅ Markdown export successful to: \(urls.first?.path ?? "unknown")")
-        case .failure(let error):
-            print("❌ Markdown export failed: \(error.localizedDescription)")
-        }
-    }
-    
-    private func handlePDFExportCompletion(_ result: Result<[URL], Error>) {
-        switch result {
-        case .success(let urls):
-            print("✅ PDF (as HTML) export successful to: \(urls.first?.path ?? "unknown")")
-        case .failure(let error):
-            print("❌ PDF export failed: \(error.localizedDescription)")
-        }
-    }
-    
-    private func handleHTMLExportCompletion(_ result: Result<[URL], Error>) {
-        switch result {
-        case .success(let urls):
-            print("✅ HTML export successful to: \(urls.first?.path ?? "unknown")")
-        case .failure(let error):
-            print("❌ HTML export failed: \(error.localizedDescription)")
         }
     }
     
@@ -357,10 +323,10 @@ struct EditorView: View {
             let html = await markdownManager.parseMarkdown(document.content)
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).html")
             try html.write(to: tempURL, atomically: true, encoding: .utf8)
-            pdfExportURL = tempURL
+            exportURL = tempURL
             print("📄 Temp file created at: \(tempURL.path)")
-            showingPDFExport = true
-            print("📄 Exporter flag set to: \(showingPDFExport)")
+            showingExporter = true
+            print("📄 Exporter flag set to: \(showingExporter)")
         } catch {
             print("❌ Failed to create temp file: \(error)")
         }
@@ -409,9 +375,9 @@ struct EditorView: View {
             let html = await markdownManager.parseMarkdown(document.content)
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).html")
             try html.write(to: tempURL, atomically: true, encoding: .utf8)
-            htmlExportURL = tempURL
+            exportURL = tempURL
             print("🌐 Temp file created at: \(tempURL.path)")
-            showingHTMLExport = true
+            showingExporter = true
         } catch {
             print("❌ Failed to create temp file: \(error)")
         }
@@ -460,10 +426,10 @@ struct EditorView: View {
         do {
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).md")
             try document.content.write(to: tempURL, atomically: true, encoding: .utf8)
-            markdownExportURL = tempURL
+            exportURL = tempURL
             print("📝 Temp file created at: \(tempURL.path)")
-            showingMarkdownExport = true
-            print("📝 Exporter flag set to: \(showingMarkdownExport)")
+            showingExporter = true
+            print("📝 Exporter flag set to: \(showingExporter)")
         } catch {
             print("❌ Failed to create temp file: \(error)")
         }
