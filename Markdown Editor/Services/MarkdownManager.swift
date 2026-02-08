@@ -196,6 +196,14 @@ final class MarkdownManager {
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         """ : ""
         
+        // Highlight.js for syntax highlighting
+        let highlightScripts = """
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+        """
+        
         return """
         <!DOCTYPE html>
         <html>
@@ -203,6 +211,7 @@ final class MarkdownManager {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Markdown Preview</title>
+            \(highlightScripts)
             <style>
                 :root {
                     color-scheme: light dark;
@@ -280,11 +289,19 @@ final class MarkdownManager {
                     background-color: #f6f8fa;
                     border-radius: 6px;
                     line-height: 1.45;
+                    margin-bottom: 16px;
                 }
                 
                 pre code {
                     background-color: transparent;
                     padding: 0;
+                    border-radius: 0;
+                }
+                
+                /* Highlight.js overrides for better integration */
+                pre code.hljs {
+                    padding: 0;
+                    background: transparent;
                 }
                 
                 blockquote {
