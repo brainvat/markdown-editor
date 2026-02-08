@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 /// The editor view (third column) with split pane for editing and preview
 struct EditorView: View {
@@ -14,6 +15,12 @@ struct EditorView: View {
     @State private var markdownManager = MarkdownManager.shared
     @State private var showPreview = true
     @State private var previewPosition: PreviewPosition = .trailing
+    
+    // iOS export state
+    @State private var showingMarkdownExport = false
+    @State private var showingPDFExport = false
+    @State private var showingHTMLExport = false
+    @State private var exportDocument: ExportDocument?
     
     var body: some View {
         GeometryReader { geometry in
@@ -72,19 +79,19 @@ struct EditorView: View {
                         Button {
                             previewPosition = .trailing
                         } label: {
-                            Label("Preview on Right", systemImage: "rectangle.leadinghalf.inset.filled.leading")
+                            Label("Preview on Right", systemImage: "sidebar.right")
                         }
                         
                         Button {
                             previewPosition = .leading
                         } label: {
-                            Label("Preview on Left", systemImage: "rectangle.trailinghalf.inset.filled.trailing")
+                            Label("Preview on Left", systemImage: "sidebar.left")
                         }
                         
                         Button {
                             previewPosition = .bottom
                         } label: {
-                            Label("Preview Below", systemImage: "rectangle.tophalf.inset.filled.top")
+                            Label("Preview Below", systemImage: "rectangle.split.1x2")
                         }
                     } label: {
                         Label("Preview Position", systemImage: "rectangle.split.2x1")
@@ -130,6 +137,41 @@ struct EditorView: View {
             
             // Initial render
             await updatePreview()
+        }
+        #if !canImport(AppKit)
+        .fileExporter(
+            isPresented: $showingMarkdownExport,
+            document: exportDocument,
+            contentType: .plainText,
+            defaultFilename: "\(document.title).md"
+        ) { result in
+            handleExportResult(result, type: "Markdown")
+        }
+        .fileExporter(
+            isPresented: $showingPDFExport,
+            document: exportDocument,
+            contentType: .pdf,
+            defaultFilename: "\(document.title).pdf"
+        ) { result in
+            handleExportResult(result, type: "PDF")
+        }
+        .fileExporter(
+            isPresented: $showingHTMLExport,
+            document: exportDocument,
+            contentType: .html,
+            defaultFilename: "\(document.title).html"
+        ) { result in
+            handleExportResult(result, type: "HTML")
+        }
+        #endif
+    }
+    
+    private func handleExportResult(_ result: Result<URL, Error>, type: String) {
+        switch result {
+        case .success(let url):
+            print("✅ \(type) export successful to: \(url.path)")
+        case .failure(let error):
+            print("❌ \(type) export failed: \(error.localizedDescription)")
         }
     }
     
@@ -255,7 +297,7 @@ struct EditorView: View {
     
     @MainActor
     private func exportToPDF() async {
-        #if os(macOS)
+        #if canImport(AppKit)
         print("📄 Export PDF button clicked!")
         
         let panel = NSSavePanel()
@@ -290,13 +332,16 @@ struct EditorView: View {
         }
         #else
         // iOS export implementation
-        print("PDF export on iOS requires document picker")
+        print("📄 iOS PDF export")
+        let html = await markdownManager.parseMarkdown(document.content)
+        exportDocument = ExportDocument(content: html, filename: "\(document.title).pdf", contentType: .pdf)
+        showingPDFExport = true
         #endif
     }
     
     @MainActor
     private func exportToHTML() async {
-        #if os(macOS)
+        #if canImport(AppKit)
         print("🌐 Export HTML button clicked!")
         
         let panel = NSSavePanel()
@@ -331,13 +376,16 @@ struct EditorView: View {
         }
         #else
         // iOS export implementation
-        print("HTML export on iOS requires document picker")
+        print("🌐 iOS HTML export")
+        let html = await markdownManager.parseMarkdown(document.content)
+        exportDocument = ExportDocument(content: html, filename: "\(document.title).html", contentType: .html)
+        showingHTMLExport = true
         #endif
     }
     
     @MainActor
     private func exportToMarkdown() async {
-        #if os(macOS)
+        #if canImport(AppKit)
         print("📝 Export Markdown button clicked!")
         
         let panel = NSSavePanel()
@@ -373,7 +421,9 @@ struct EditorView: View {
         }
         #else
         // iOS export implementation
-        print("Markdown export on iOS requires document picker")
+        print("📝 iOS Markdown export")
+        exportDocument = ExportDocument(content: document.content, filename: "\(document.title).md", contentType: .plainText)
+        showingMarkdownExport = true
         #endif
     }
 }
@@ -384,6 +434,32 @@ enum PreviewPosition {
     case leading
     case trailing
     case bottom
+}
+
+// MARK: - Export Document
+
+/// Wrapper for file export on iOS
+struct ExportDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.plainText, .pdf, .html] }
+    
+    let content: String
+    let filename: String
+    let contentType: UTType
+    
+    init(content: String, filename: String, contentType: UTType) {
+        self.content = content
+        self.filename = filename
+        self.contentType = contentType
+    }
+    
+    init(configuration: ReadConfiguration) throws {
+        fatalError("Reading not supported")
+    }
+    
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        let data = content.data(using: .utf8) ?? Data()
+        return FileWrapper(regularFileWithContents: data)
+    }
 }
 
 // MARK: - Relative Timestamp View
