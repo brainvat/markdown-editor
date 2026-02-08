@@ -20,7 +20,7 @@ struct EditorView: View {
     @State private var showingMarkdownExport = false
     @State private var showingPDFExport = false
     @State private var showingHTMLExport = false
-    @State private var exportDocument: ExportDocument?
+    @State private var exportFileURL: URL?
     
     var body: some View {
         GeometryReader { geometry in
@@ -141,28 +141,19 @@ struct EditorView: View {
         #if !canImport(AppKit)
         .fileExporter(
             isPresented: $showingMarkdownExport,
-            document: exportDocument,
-            contentType: .plainText,
-            defaultFilename: "\(document.title).md"
-        ) { result in
-            handleExportResult(result, type: "Markdown")
-        }
+            items: exportFileURL != nil ? [exportFileURL!] : [],
+            onCompletion: handleMarkdownExportCompletion
+        )
         .fileExporter(
             isPresented: $showingPDFExport,
-            document: exportDocument,
-            contentType: .html,
-            defaultFilename: "\(document.title).html"
-        ) { result in
-            handleExportResult(result, type: "PDF (as HTML)")
-        }
+            items: exportFileURL != nil ? [exportFileURL!] : [],
+            onCompletion: handlePDFExportCompletion
+        )
         .fileExporter(
             isPresented: $showingHTMLExport,
-            document: exportDocument,
-            contentType: .html,
-            defaultFilename: "\(document.title).html"
-        ) { result in
-            handleExportResult(result, type: "HTML")
-        }
+            items: exportFileURL != nil ? [exportFileURL!] : [],
+            onCompletion: handleHTMLExportCompletion
+        )
         #endif
     }
     
@@ -172,6 +163,33 @@ struct EditorView: View {
             print("✅ \(type) export successful to: \(url.path)")
         case .failure(let error):
             print("❌ \(type) export failed: \(error.localizedDescription)")
+        }
+    }
+    
+    private func handleMarkdownExportCompletion(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            print("✅ Markdown export successful to: \(urls.first?.path ?? "unknown")")
+        case .failure(let error):
+            print("❌ Markdown export failed: \(error.localizedDescription)")
+        }
+    }
+    
+    private func handlePDFExportCompletion(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            print("✅ PDF (as HTML) export successful to: \(urls.first?.path ?? "unknown")")
+        case .failure(let error):
+            print("❌ PDF export failed: \(error.localizedDescription)")
+        }
+    }
+    
+    private func handleHTMLExportCompletion(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            print("✅ HTML export successful to: \(urls.first?.path ?? "unknown")")
+        case .failure(let error):
+            print("❌ HTML export failed: \(error.localizedDescription)")
         }
     }
     
@@ -333,12 +351,17 @@ struct EditorView: View {
         #else
         // iOS PDF export - Export as HTML instead (iOS doesn't support direct PDF generation via fileExporter)
         print("📄 iOS: Exporting as HTML (PDF generation not supported on iOS via fileExporter)")
-        let html = await markdownManager.parseMarkdown(document.content)
-        let doc = ExportDocument(content: html, filename: "\(document.title).html", contentType: .html)
-        exportDocument = doc
-        print("📄 Document created, showing exporter")
-        showingPDFExport = true
-        print("📄 Exporter flag set to: \(showingPDFExport)")
+        do {
+            let html = await markdownManager.parseMarkdown(document.content)
+            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).html")
+            try html.write(to: tempURL, atomically: true, encoding: .utf8)
+            exportFileURL = tempURL
+            print("📄 Temp file created at: \(tempURL.path)")
+            showingPDFExport = true
+            print("📄 Exporter flag set to: \(showingPDFExport)")
+        } catch {
+            print("❌ Failed to create temp file: \(error)")
+        }
         #endif
     }
     
@@ -380,9 +403,16 @@ struct EditorView: View {
         #else
         // iOS export implementation
         print("🌐 iOS HTML export")
-        let html = await markdownManager.parseMarkdown(document.content)
-        exportDocument = ExportDocument(content: html, filename: "\(document.title).html", contentType: .html)
-        showingHTMLExport = true
+        do {
+            let html = await markdownManager.parseMarkdown(document.content)
+            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).html")
+            try html.write(to: tempURL, atomically: true, encoding: .utf8)
+            exportFileURL = tempURL
+            print("🌐 Temp file created at: \(tempURL.path)")
+            showingHTMLExport = true
+        } catch {
+            print("❌ Failed to create temp file: \(error)")
+        }
         #endif
     }
     
@@ -425,11 +455,16 @@ struct EditorView: View {
         #else
         // iOS export implementation
         print("📝 iOS Markdown export - preparing document")
-        let doc = ExportDocument(content: document.content, filename: "\(document.title).md", contentType: .plainText)
-        exportDocument = doc
-        print("📝 Document created, showing exporter")
-        showingMarkdownExport = true
-        print("📝 Exporter flag set to: \(showingMarkdownExport)")
+        do {
+            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).md")
+            try document.content.write(to: tempURL, atomically: true, encoding: .utf8)
+            exportFileURL = tempURL
+            print("📝 Temp file created at: \(tempURL.path)")
+            showingMarkdownExport = true
+            print("📝 Exporter flag set to: \(showingMarkdownExport)")
+        } catch {
+            print("❌ Failed to create temp file: \(error)")
+        }
         #endif
     }
 }
@@ -440,32 +475,6 @@ enum PreviewPosition {
     case leading
     case trailing
     case bottom
-}
-
-// MARK: - Export Document
-
-/// Wrapper for file export on iOS
-struct ExportDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.plainText, .pdf, .html] }
-    
-    let content: String
-    let filename: String
-    let contentType: UTType
-    
-    init(content: String, filename: String, contentType: UTType) {
-        self.content = content
-        self.filename = filename
-        self.contentType = contentType
-    }
-    
-    init(configuration: ReadConfiguration) throws {
-        fatalError("Reading not supported")
-    }
-    
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = content.data(using: .utf8) ?? Data()
-        return FileWrapper(regularFileWithContents: data)
-    }
 }
 
 // MARK: - Relative Timestamp View
