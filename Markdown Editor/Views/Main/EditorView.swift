@@ -150,10 +150,10 @@ struct EditorView: View {
         .fileExporter(
             isPresented: $showingPDFExport,
             document: exportDocument,
-            contentType: .pdf,
-            defaultFilename: "\(document.title).pdf"
+            contentType: .html,
+            defaultFilename: "\(document.title).html"
         ) { result in
-            handleExportResult(result, type: "PDF")
+            handleExportResult(result, type: "PDF (as HTML)")
         }
         .fileExporter(
             isPresented: $showingHTMLExport,
@@ -331,10 +331,10 @@ struct EditorView: View {
             print("❌ Error details: \(error.localizedDescription)")
         }
         #else
-        // iOS export implementation
-        print("📄 iOS PDF export - preparing document")
+        // iOS PDF export - Export as HTML instead (iOS doesn't support direct PDF generation via fileExporter)
+        print("📄 iOS: Exporting as HTML (PDF generation not supported on iOS via fileExporter)")
         let html = await markdownManager.parseMarkdown(document.content)
-        let doc = ExportDocument(content: html, filename: "\(document.title).pdf", contentType: .pdf)
+        let doc = ExportDocument(content: html, filename: "\(document.title).html", contentType: .html)
         exportDocument = doc
         print("📄 Document created, showing exporter")
         showingPDFExport = true
