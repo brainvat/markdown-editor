@@ -16,10 +16,12 @@ struct DocumentListView: View {
     @Binding var selectedDocument: Document?
     
     @Query private var allDocuments: [Document]
+    @State private var searchText = ""
+    @State private var isSearching = false
     
     var body: some View {
         List(selection: $selectedDocument) {
-            ForEach(filteredDocuments) { document in
+            ForEach(searchResults) { document in
                 NavigationLink(value: document) {
                     DocumentRowView(document: document)
                 }
@@ -40,7 +42,11 @@ struct DocumentListView: View {
                 }
             }
         }
+        .searchable(text: $searchText, isPresented: $isSearching, prompt: "Search documents")
         .navigationTitle(navigationTitle)
+        .onReceive(NotificationCenter.default.publisher(for: .showSearch)) { _ in
+            isSearching = true
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -70,6 +76,19 @@ struct DocumentListView: View {
     }
     
     // MARK: - Computed Properties
+    
+    private var searchResults: [Document] {
+        let documents = filteredDocuments
+        
+        guard !searchText.isEmpty else {
+            return documents
+        }
+        
+        return documents.filter { document in
+            document.title.localizedCaseInsensitiveContains(searchText) ||
+            document.content.localizedCaseInsensitiveContains(searchText)
+        }
+    }
     
     private var filteredDocuments: [Document] {
         guard let sidebarItem = sidebarItem else {
