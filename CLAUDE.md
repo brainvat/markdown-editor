@@ -1,0 +1,143 @@
+# MacDown Pro - Project Memory
+
+## Project Overview
+MacDown Pro is a modern, Universal App recreation of MacDown 3000 - a feature-rich Markdown editor for macOS, iOS, and iPadOS. The goal is to achieve 1:1 feature parity with MacDown 3000 while modernizing the codebase with SwiftUI, SwiftData, and Swift 6 strict concurrency.
+
+**Key Features:**
+- Live dual-pane Markdown preview with support for CommonMark, GFM, and LaTeX
+- Intelligent editor with auto-completion and syntax highlighting
+- SwiftData-based document library with CloudKit sync
+- Native PDF and HTML export
+- Three-column sidebar layout (Source List → Document List → Editor)
+- Task list support with interactive checkboxes
+- Organizational tools: Groups (folders) and Tags (many-to-many)
+
+## Target Platforms
+- macOS 15+
+- iOS 18+
+- iPadOS 18+
+
+## Key Architecture Decisions
+
+### Data Layer
+- **SwiftData** for all persistence (replacing Core Data)
+- **CloudKit** integration for cross-device syncing
+- Entity models: `Document`, `Snippet`, `Project`, `Tag`, `Group`
+- Many-to-many relationships between Documents and Tags
+
+### UI Layer
+- **SwiftUI** exclusively (no UIKit/AppKit representables unless absolutely necessary)
+- **Three-column NavigationSplitView** that collapses intelligently on smaller screens
+- **Responsive layouts** that adapt from macOS desktop to iPhone portrait mode
+
+### Rendering & Export
+- **MarkdownManager**: Central service for parsing and rendering
+- **SPM Dependencies**:
+  - Markdown parsing library (Ink or MarkdownUI)
+  - Syntax highlighting library
+  - MathJax/KaTeX for LaTeX rendering
+- **PDFKit** for native PDF generation
+- **WKWebView** or custom renderer for live preview
+
+### Concurrency
+- Swift 6 strict concurrency mode enabled
+- All data operations use `@MainActor` or explicit actors
+- Async/await throughout (no completion handlers)
+
+## Important Conventions
+
+### File Organization
+```
+Markdown Editor/
+├── App/
+│   └── Markdown_EditorApp.swift
+├── Models/
+│   ├── Document.swift
+│   ├── Snippet.swift
+│   ├── Project.swift
+│   ├── Tag.swift
+│   └── Group.swift
+├── Views/
+│   ├── Main/
+│   │   ├── ContentView.swift
+│   │   ├── SidebarView.swift
+│   │   ├── DocumentListView.swift
+│   │   └── EditorView.swift
+│   ├── Preview/
+│   │   └── MarkdownPreviewView.swift
+│   └── Components/
+│       ├── MarkdownEditor.swift
+│       └── SyntaxHighlightedText.swift
+├── Services/
+│   ├── MarkdownManager.swift
+│   ├── ExportService.swift
+│   └── SyntaxHighlighter.swift
+├── Utilities/
+│   └── Extensions/
+└── Resources/
+    └── Assets.xcassets
+```
+
+### Naming Conventions
+- **Models**: Singular nouns (Document, not Documents)
+- **Views**: Descriptive + "View" suffix
+- **Services**: Descriptive + "Manager" or "Service" suffix
+- **Properties**: camelCase, descriptive names
+- **State**: Always `@State private var` for local state
+
+### SwiftData Best Practices
+- Use `@Model` macro for all entities
+- Define relationships bidirectionally
+- Use `@Relationship(deleteRule: .cascade)` where appropriate
+- Query with `@Query` in views, filtering at the property wrapper level
+
+## Build/Run Instructions
+
+### Prerequisites
+1. Xcode 16+
+2. macOS Sequoia or later for development
+3. iCloud account for CloudKit testing
+
+### Setup
+1. Open `Markdown Editor.xcodeproj`
+2. Enable CloudKit capability in Signing & Capabilities
+3. Select target device (Mac, iPhone, or iPad)
+4. Build and run (⌘R)
+
+### Testing
+- Unit tests: `⌘U`
+- UI tests: Select UI test target and run
+- Preview any SwiftUI view with Xcode Previews (⌥⌘↩)
+
+## Quirks & Gotchas
+
+1. **SwiftData + CloudKit**: Ensure the CloudKit container name matches the bundle identifier. Changes can take time to propagate across devices.
+
+2. **Three-Column Layout**: `NavigationSplitView` behaves differently on iOS vs macOS. Test thoroughly on both platforms.
+
+3. **Markdown Rendering Performance**: Large documents with complex LaTeX can slow down. Implement debouncing on the preview updates.
+
+4. **iPad Split View**: Remember to test in various multitasking modes (Slide Over, Split View).
+
+5. **Syntax Highlighting**: Some libraries don't work well with SwiftUI's `Text`. May need to use `TextEditor` with attributed strings or custom rendering.
+
+6. **PDF Export**: PDFKit is macOS-only. iOS uses `UIGraphicsPDFRenderer`. Abstract this behind a protocol.
+
+7. **File Import/Export**: Use `.fileImporter`/`.fileExporter` modifiers, not old UIDocumentPickerViewController.
+
+## Dependencies (SPM)
+
+To be added:
+- [ ] Markdown parsing library
+- [ ] Syntax highlighting library
+- [ ] LaTeX/Math rendering (if not using web-based solution)
+
+## Known Issues
+- None yet (fresh project)
+
+## Future Enhancements
+- [ ] Extensions/Plugins system
+- [ ] Custom themes
+- [ ] Multi-cursor editing
+- [ ] Git integration
+- [ ] Collaborative editing
