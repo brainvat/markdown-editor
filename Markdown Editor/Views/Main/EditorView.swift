@@ -20,7 +20,9 @@ struct EditorView: View {
     @State private var showingMarkdownExport = false
     @State private var showingPDFExport = false
     @State private var showingHTMLExport = false
-    @State private var exportFileURL: URL?
+    @State private var markdownExportURL: URL?
+    @State private var pdfExportURL: URL?
+    @State private var htmlExportURL: URL?
     
     var body: some View {
         GeometryReader { geometry in
@@ -141,17 +143,17 @@ struct EditorView: View {
         #if !canImport(AppKit)
         .fileExporter(
             isPresented: $showingMarkdownExport,
-            items: exportFileURL != nil ? [exportFileURL!] : [],
+            items: markdownExportURL != nil ? [markdownExportURL!] : [],
             onCompletion: handleMarkdownExportCompletion
         )
         .fileExporter(
             isPresented: $showingPDFExport,
-            items: exportFileURL != nil ? [exportFileURL!] : [],
+            items: pdfExportURL != nil ? [pdfExportURL!] : [],
             onCompletion: handlePDFExportCompletion
         )
         .fileExporter(
             isPresented: $showingHTMLExport,
-            items: exportFileURL != nil ? [exportFileURL!] : [],
+            items: htmlExportURL != nil ? [htmlExportURL!] : [],
             onCompletion: handleHTMLExportCompletion
         )
         #endif
@@ -355,7 +357,7 @@ struct EditorView: View {
             let html = await markdownManager.parseMarkdown(document.content)
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).html")
             try html.write(to: tempURL, atomically: true, encoding: .utf8)
-            exportFileURL = tempURL
+            pdfExportURL = tempURL
             print("📄 Temp file created at: \(tempURL.path)")
             showingPDFExport = true
             print("📄 Exporter flag set to: \(showingPDFExport)")
@@ -407,7 +409,7 @@ struct EditorView: View {
             let html = await markdownManager.parseMarkdown(document.content)
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).html")
             try html.write(to: tempURL, atomically: true, encoding: .utf8)
-            exportFileURL = tempURL
+            htmlExportURL = tempURL
             print("🌐 Temp file created at: \(tempURL.path)")
             showingHTMLExport = true
         } catch {
@@ -458,7 +460,7 @@ struct EditorView: View {
         do {
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.title).md")
             try document.content.write(to: tempURL, atomically: true, encoding: .utf8)
-            exportFileURL = tempURL
+            markdownExportURL = tempURL
             print("📝 Temp file created at: \(tempURL.path)")
             showingMarkdownExport = true
             print("📝 Exporter flag set to: \(showingMarkdownExport)")
