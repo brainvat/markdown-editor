@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-/// Main three-column layout for MacDown Pro
+/// Main three-column layout for Mac MD
 struct ContentView: View {
     @State private var selectedSidebarItem: SidebarItem? = .allDocuments
     @State private var selectedDocument: Document?
@@ -57,9 +57,9 @@ struct ContentView: View {
     context.insert(tag2)
     
     let doc1 = Document(
-        title: "Welcome to MacDown Pro",
+        title: "Welcome to Mac MD",
         content: """
-        # Welcome to MacDown Pro
+        # Welcome to Mac MD
         
         This is a **modern** Markdown editor for macOS, iOS, and iPadOS.
         

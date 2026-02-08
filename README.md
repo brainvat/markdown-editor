@@ -1,6 +1,8 @@
-# MacDown Pro
+# Mac MD
 
-A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with SwiftUI and SwiftData. MacDown Pro is a Universal App that brings the beloved MacDown experience to all Apple platforms with seamless iCloud syncing.
+<img src="mac_md.png" alt="Mac MD Logo" width="200"/>
+
+A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with SwiftUI and SwiftData. Mac MD is a Universal App that provides seamless iCloud syncing across all your Apple devices.
 
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20iOS%20%7C%20iPadOS-lightgrey)
 ![Swift](https://img.shields.io/badge/Swift-6.0-orange)
@@ -63,14 +65,14 @@ open "Markdown Editor.xcodeproj"
 
 ### First Run
 
-On first launch, MacDown Pro will:
+On first launch, Mac MD will:
 - Request iCloud permissions for syncing (optional)
 - Create a sample document to get you started
 - Display the three-column layout
 
 ## 🏗️ Architecture
 
-MacDown Pro follows modern Swift and SwiftUI best practices:
+Mac MD follows modern Swift and SwiftUI best practices:
 
 ### Data Layer
 - **SwiftData** for local persistence with `@Model` macro
@@ -113,8 +115,9 @@ This project stands on the shoulders of giants and wouldn't exist without these 
 
 **[MacDown](https://macdown.app)** by [Tzu-ping Chung](https://github.com/uranusjr)
 - The original MacDown is a beloved open-source Markdown editor for macOS
-- MacDown Pro aims to bring that experience to iOS/iPadOS while modernizing the tech stack
-- If you're on macOS only, definitely check out the original!
+- Mac MD was inspired by MacDown's elegant approach to Markdown editing
+- Mac MD brings a similar experience to iOS/iPadOS with modern SwiftUI and iCloud sync
+- If you're on macOS only, definitely check out the original MacDown!
 
 **[Xcode 26.3 Intelligence Tutorial](https://www.youtube.com/watch?v=QdpaI_j0FRU)** by [Stewart Lynch](https://www.youtube.com/@StewartLynch)
 - Incredible tutorial on using Xcode Intelligence (Claude integration) for SwiftUI development
