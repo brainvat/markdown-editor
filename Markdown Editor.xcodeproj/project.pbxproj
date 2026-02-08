@@ -299,7 +299,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Markdown Editor/Markdown_Editor.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JNDQWFS7J8;
+				DEVELOPMENT_TEAM = VNUFNA2P3X;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Markdown Editor/Info.plist";
@@ -333,7 +333,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Markdown Editor/Markdown_Editor.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JNDQWFS7J8;
+				DEVELOPMENT_TEAM = VNUFNA2P3X;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Markdown Editor/Info.plist";
