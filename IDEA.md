@@ -18,7 +18,7 @@ Replicate the following MacDown 3000 features exactly:
 
 ### 3. ADVANCED EXPORT & UI
 - **PDF Engine:** Implement a native PDF export function using PDFKit/UIGraphicsPDFRenderer that preserves styling.
-- **HTML Export:** Include MacDown’s classic HTML export capability.
+- **HTML Export:** Include classic HTML export capability.
 - **UI Layout:** Use a Three-Column Sidebar layout (Source List -> Document List -> Editor) that collapses gracefully on smaller screens.
 
 ### 4. TECHNICAL CONSTRAINTS

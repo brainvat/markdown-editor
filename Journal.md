@@ -1,16 +1,16 @@
-# MacDown Pro - The Engineering Journey
+# Mac MD - The Engineering Journey
 
 ## The Big Picture
 
-Picture this: You're working on a long technical document, switching between plain text and a browser to see how it renders. Frustrating, right? That's what MacDown solved back in the day - a beautiful, distraction-free Markdown editor with a live preview sitting right next to your text.
+Picture this: You're working on a long technical document, switching between plain text and a browser to see how it renders. Frustrating, right? That's the problem we're solving with **Mac MD** - a beautiful, distraction-free Markdown editor with a live preview sitting right next to your text.
 
-**MacDown Pro** is that same magical experience, but turbocharged for 2026. We're building a Universal App that works seamlessly on your Mac, iPad, and iPhone. Write on your Mac during the day, polish on your iPad on the couch, and make quick edits on your iPhone when inspiration strikes. Everything syncs through iCloud. It's like having one brain across all your devices.
+**Mac MD** is a modern Universal App that works seamlessly on your Mac, iPad, and iPhone. Write on your Mac during the day, polish on your iPad on the couch, and make quick edits on your iPhone when inspiration strikes. Everything syncs through iCloud. It's like having one brain across all your devices.
 
-But we're not just cloning MacDown - we're bringing it into the modern era. SwiftUI for buttery-smooth interfaces. SwiftData for elegant data management. Swift 6 for rock-solid concurrency. Think of it as taking a vintage sports car and rebuilding it with a Tesla's electric engine while keeping that classic feel.
+Built with SwiftUI for buttery-smooth interfaces, SwiftData for elegant data management, and Swift 6 for rock-solid concurrency. Think of it as a modern take on classic Markdown editing, reimagined for 2026.
 
 ## Architecture Deep Dive
 
-Think of MacDown Pro like a restaurant kitchen:
+Think of Mac MD like a restaurant kitchen:
 
 ### The Data Layer (The Walk-In Cooler)
 **SwiftData** is our walk-in cooler - everything gets stored here, perfectly organized. We have four main "shelves":
@@ -112,7 +112,7 @@ Markdown Editor/
 ## The Journey
 
 ### Day 1: Project Inception
-**What We're Building**: A modern MacDown clone that works on Mac, iPad, and iPhone.
+**What We're Building**: A modern Markdown editor that works on Mac, iPad, and iPhone.
 
 **Initial Decisions**:
 - ✅ Swift 6 strict concurrency (future-proof)
