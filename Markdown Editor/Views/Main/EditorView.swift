@@ -23,6 +23,30 @@ struct EditorView: View {
                 editorOnlyView
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .togglePreview)) { _ in
+            withAnimation {
+                showPreview.toggle()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .previewPositionTrailing)) { _ in
+            previewPosition = .trailing
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .previewPositionLeading)) { _ in
+            previewPosition = .leading
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .previewPositionBottom)) { _ in
+            previewPosition = .bottom
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .exportToPDF)) { _ in
+            Task {
+                await exportToPDF()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .exportToHTML)) { _ in
+            Task {
+                await exportToHTML()
+            }
+        }
         .toolbar {
             ToolbarItemGroup {
                 // Preview toggle

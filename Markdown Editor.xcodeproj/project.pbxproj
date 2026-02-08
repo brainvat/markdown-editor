@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EA6A6A4D2F384AB8007AA423 /* Markdown in Frameworks */ = {isa = PBXBuildFile; productRef = EA6A6A4C2F384AB8007AA423 /* Markdown */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		EAD9D1FC2F3836CE00222D1E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA6A6A4D2F384AB8007AA423 /* Markdown in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +130,7 @@
 			);
 			name = "Markdown Editor";
 			packageProductDependencies = (
+				EA6A6A4C2F384AB8007AA423 /* Markdown */,
 			);
 			productName = "Markdown Editor";
 			productReference = EAD9D1EA2F3836CD00222D1E /* Markdown Editor.app */;
@@ -208,6 +214,9 @@
 			);
 			mainGroup = EAD9D1E12F3836CD00222D1E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EA6A6A4B2F384AB8007AA423 /* XCRemoteSwiftPackageReference "swift-markdown" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EAD9D1EB2F3836CD00222D1E /* Products */;
 			projectDirPath = "";
@@ -595,6 +604,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EA6A6A4B2F384AB8007AA423 /* XCRemoteSwiftPackageReference "swift-markdown" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swiftlang/swift-markdown";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.7.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EA6A6A4C2F384AB8007AA423 /* Markdown */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA6A6A4B2F384AB8007AA423 /* XCRemoteSwiftPackageReference "swift-markdown" */;
+			productName = Markdown;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EAD9D1E22F3836CD00222D1E /* Project object */;
 }

@@ -223,16 +223,61 @@ These will be answered as we build.
 **What's Next**:
 
 Still pending:
-- [ ] Integrate a proper Markdown parser (Ink or swift-markdown via SPM)
-- [ ] Add syntax highlighting for code blocks
 - [ ] Implement editor intelligence (auto-completion, snippets)
-- [ ] LaTeX/Math rendering with MathJax
-- [ ] Keyboard shortcuts (⌘N for new document, ⌘E for export, etc.)
-- [ ] Search functionality
+- [ ] LaTeX/Math rendering optimizations
 - [ ] Dark mode styling refinements
+- [ ] Performance profiling and optimizations
 
 But here's the thing: **The app builds and runs!** We have a functional three-column layout with live preview, SwiftData persistence, and CloudKit syncing. From zero to MVP in one session. That's the power of SwiftUI and SwiftData.
 
 ---
 
-*Last Updated: Day 1 - Core architecture complete, builds successfully*
+### Day 2 Progress: v0.2.0 Feature Complete! ✅
+
+**What We Built**:
+1. ✅ swift-markdown integration (v0.7.3) - Full CommonMark + GFM support
+2. ✅ Highlight.js syntax highlighting - 185 languages, auto dark mode
+3. ✅ Comprehensive keyboard shortcuts - Menu bar integration with Commands API
+4. ✅ Document search - Real-time filtering across titles and content
+
+**Key Achievements**:
+
+**swift-markdown Integration** - Replaced placeholder regex with Apple's official parser:
+- Proper AST-based HTML rendering (headings, lists, tables, code blocks, etc.)
+- Task list support with checkboxes
+- Strikethrough, links, images with proper HTML escaping
+- Thread-safe immutable types (perfect for Swift 6 concurrency)
+
+**Highlight.js** - Professional syntax highlighting without Swift dependencies:
+- 185 language support (vs ~5 with native Swift libraries)
+- GitHub light/dark themes that auto-switch with system appearance
+- Runs in WebView's JS engine (zero Swift performance impact)
+- CDN delivery (11.9.0 from cdnjs.cloudflare.com)
+
+**Keyboard Shortcuts** - Proper macOS app experience:
+- File: ⌘E (PDF export), ⌘⇧E (HTML export)
+- Navigate: ⌘1/2/3 (All/Favorites/Recent), ⌘D (toggle favorite)
+- View: ⌘⇧P (toggle preview)
+- Search: ⌘⇧F (find in documents)
+- Used SwiftUI Commands API (not ViewModifiers) for menu bar integration
+- Notification-based architecture for decoupled view communication
+
+**Document Search** - Native SwiftUI searchable:
+- Real-time filtering as user types
+- Searches both title and content (case-insensitive)
+- Respects sidebar filters (only searches visible documents)
+- Keyboard shortcut (⌘⇧F) activates search field
+
+**Technical Wisdom Gained**:
+
+1. **Commands > ViewModifiers for Keyboard Shortcuts** - SwiftUI's Commands API is the proper way to add menu bar items and shortcuts. ViewModifiers work but don't show up in menus.
+
+2. **Highlight.js > Swift Libraries** - For web-based rendering, using JS libraries in WKWebView is better than Swift packages. More languages, better maintained, zero Swift dependencies.
+
+3. **NotificationCenter Still Has a Place** - For decoupled command handling across views, NotificationCenter with type-safe notification names is elegant and SwiftUI-friendly.
+
+4. **searchable() Just Works** - SwiftUI's searchable modifier handles all the UI complexity. Just provide a binding and filtering logic.
+
+---
+
+*Last Updated: Day 2 - v0.2.0 feature complete*

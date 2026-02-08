@@ -38,5 +38,8 @@ struct Markdown_EditorApp: App {
             ContentView()
         }
         .modelContainer(sharedModelContainer)
+        .commands {
+            AppCommands()
+        }
     }
 }
