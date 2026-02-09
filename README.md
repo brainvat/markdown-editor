@@ -238,43 +238,120 @@ Contributions are welcome! This project is a learning experience and showcase of
 - [x] Tag color picker with live preview
 - [x] Cross-platform consistency improvements
 
-**Deferred to v0.4.0+:**
-- Multi-select documents (Cmd/Ctrl-Click)
-- Bulk tag operations
-- Settings screen
-- CloudKit sync verification
-- Automated testing
+### v0.4.0 - Polish & Organization
+**Goal:** Production-ready organizational features and app polish for 1.0 launch
+
+**Organizational Features**
+- [ ] Multi-select documents (Cmd/Ctrl-Click)
+- [ ] Bulk operations: Delete, tag, move to project
+- [ ] Bulk tag application from context menu
+
+**First Launch Experience**
+- [ ] Splash screen on first launch only
+- [ ] Welcome message explaining three-column layout
+- [ ] Sample document to demonstrate features
+- [ ] User preference to skip in future
+
+**Settings/Preferences Screen**
+- [ ] Preview font size adjustment
+- [ ] Editor font family and size selection
+- [ ] Default export location (Mac only)
+- [ ] CloudKit sync status display
+- [ ] About section with version info and credits
+
+**App Icon & Branding**
+- [ ] Beautiful app icon (1024x1024 master)
+- [ ] All required asset sizes (macOS, iOS, iPadOS)
+- [ ] Launch screen images
+- [ ] App Store marketing assets
+
+**Quality Assurance**
+- [ ] CloudKit sync verification across devices
+- [ ] Cross-platform testing (Mac, iPad, iPhone)
+- [ ] Performance testing with large document collections
+- [ ] Memory leak detection and fixes
 
 ### v1.0.0 - App Store Launch
-**Goal:** Polished, professional app ready for public release
+**Goal:** Public release on Mac App Store and iOS App Store
 
 **Visual Polish**
-- [ ] Beautiful app icon (all sizes)
-- [ ] Refined color scheme for Dark and Light modes
+- [ ] Final color scheme refinements for Dark and Light modes
 - [ ] Consistent iconography throughout
 - [ ] Polish animations and transitions
+- [ ] Accessibility audit (VoiceOver, Dynamic Type)
 
-**Marketing**
+**Marketing Materials**
 - [ ] Convert README.md to beautiful one-page website
 - [ ] Host marketing site on GitHub Pages
-- [ ] App Store screenshots and description
-- [ ] App Store preview video
+- [ ] App Store screenshots (all required sizes and devices)
+- [ ] App Store preview video (30 seconds)
+- [ ] App Store description and keywords
 
-**Release**
+**Release Process**
+- [ ] TestFlight beta testing (2 weeks minimum)
+- [ ] Beta feedback incorporation
 - [ ] App Store submission (Mac + iOS)
-- [ ] TestFlight beta testing
-- [ ] Public launch
+- [ ] App Store review process
+- [ ] Public launch announcement
 
-### Future Versions (Post-1.0)
-**Nice-to-Have Features (Not Required for 1.0):**
-- [ ] LaTeX/Math rendering via MathJax
-- [ ] Snippet insertion system
+**Documentation**
+- [ ] User guide on marketing website
+- [ ] FAQ section
+- [ ] Privacy policy
+- [ ] Support contact information
+
+### v2.0.0 - Advanced Features
+**Goal:** MacDown feature parity with advanced editing capabilities
+
+**Snippet System**
+- [ ] Snippet CRUD operations (create, edit, delete)
+- [ ] Snippet insertion UI (palette or quick-insert)
+- [ ] Keyboard shortcuts for common snippets
+- [ ] Snippet variables/placeholders with tab stops
+- [ ] Pre-loaded snippet library (code blocks, tables, etc.)
+- [ ] Snippet organization (categories, tags)
+
+**Editor Intelligence**
+- [ ] Auto-pairing: `[` → `[]`, `(` → `()`, `"` → `""`
+- [ ] Smart list continuation (auto-adds bullets on return)
+- [ ] Auto-indentation for nested lists
+- [ ] Smart quotes (curly quotes option)
+- [ ] Markdown-aware undo/redo
+- [ ] Auto-completion for Markdown symbols
+
+**LaTeX/Math Rendering**
+- [ ] Integrate MathJax or KaTeX via CDN
+- [ ] Support inline math `$...$`
+- [ ] Support block math `$$...$$`
+- [ ] Live preview of math expressions
+- [ ] Math symbol auto-completion
+
+**macOS System Extension**
+- [ ] System-wide text capture extension
+- [ ] Capture selected text from any app
+- [ ] Automatically create document in Mac MD
+- [ ] Auto-tag captured content with "For Review"
+- [ ] Keyboard shortcut activation
+- [ ] Background processing (no app launch required)
+
+**Additional Enhancements**
 - [ ] Custom themes and color schemes
-- [ ] Editor intelligence (auto-completion)
-- [ ] Document search functionality
-- [ ] File system integration (Documents folder)
-- [ ] Performance tuning (only if needed)
-- [ ] Comprehensive test coverage (if time permits)
+- [ ] Export templates (custom CSS for HTML/PDF)
+- [ ] Document templates
+- [ ] Full-text search across all documents
+- [ ] File system integration (import/export folders)
+- [ ] Git integration (version control)
+- [ ] Collaborative editing (iCloud shared documents)
+
+### Future Considerations (v3.0+)
+- [ ] Extensions/plugins API
+- [ ] Multi-cursor editing
+- [ ] Advanced table editing
+- [ ] Diagram support (Mermaid, PlantUML)
+- [ ] Bibliography management (BibTeX)
+- [ ] Presentation mode (slides from Markdown)
+- [ ] Web publishing integration
+- [ ] AI writing assistance
 
 ## 📝 License
 

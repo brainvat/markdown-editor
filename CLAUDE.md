@@ -187,17 +187,95 @@ Current dependencies:
 - ✅ **swift-markdown v0.7.3** - Apple's official Markdown parser (CommonMark + GFM)
 - ✅ **Highlight.js 11.9.0** - Syntax highlighting via CDN (185 languages)
 
-To be added:
+Future dependencies (v2.0+):
 - [ ] LaTeX/Math rendering (MathJax or KaTeX via CDN)
 
-## Known Issues
-- Keyboard shortcuts implemented but need testing across all scenarios
-- Export functionality (PDF/HTML) needs implementation
-- LaTeX rendering not yet implemented
+## Version Roadmap
 
-## Future Enhancements
-- [ ] Extensions/Plugins system
-- [ ] Custom themes
-- [ ] Multi-cursor editing
-- [ ] Git integration
-- [ ] Collaborative editing
+### v0.4.0 - Polish & Organization (Current Target)
+**Focus:** Production-ready features for 1.0 launch
+
+**Organizational Features:**
+- Multi-select documents (Cmd/Ctrl-Click)
+- Bulk operations: Delete, tag, move to project
+- Bulk tag application from context menu
+
+**First Launch Experience:**
+- Splash screen on first launch only
+- Welcome message explaining three-column layout
+- Sample document to demonstrate features
+- User preference to skip in future
+
+**Settings/Preferences Screen:**
+- Preview font size adjustment
+- Editor font family and size selection
+- Default export location (Mac only)
+- CloudKit sync status display
+- About section with version info and credits
+
+**App Icon & Branding:**
+- Beautiful app icon (1024x1024 master)
+- All required asset sizes (macOS, iOS, iPadOS)
+- Launch screen images
+- App Store marketing assets
+
+**Quality Assurance:**
+- CloudKit sync verification across devices
+- Cross-platform testing (Mac, iPad, iPhone)
+- Performance testing with large document collections
+- Memory leak detection and fixes
+
+### v1.0.0 - App Store Launch
+**Focus:** Public release on Mac App Store and iOS App Store
+
+- Visual polish and accessibility audit
+- Marketing materials (website, screenshots, preview video)
+- TestFlight beta testing (2 weeks minimum)
+- App Store submission and launch
+- User documentation and support
+
+### v2.0.0 - Advanced Features
+**Focus:** MacDown feature parity and advanced editing capabilities
+
+**Snippet System:**
+- Snippet CRUD operations (create, edit, delete)
+- Snippet insertion UI (palette or quick-insert)
+- Keyboard shortcuts for common snippets
+- Snippet variables/placeholders with tab stops
+- Pre-loaded snippet library (code blocks, tables, etc.)
+
+**Editor Intelligence:**
+- Auto-pairing: `[` → `[]`, `(` → `()`, `"` → `""`
+- Smart list continuation (auto-adds bullets on return)
+- Auto-indentation for nested lists
+- Markdown-aware undo/redo
+- Auto-completion for Markdown symbols
+
+**LaTeX/Math Rendering:**
+- Integrate MathJax or KaTeX via CDN
+- Support inline math `$...$` and block math `$$...$$`
+- Live preview of math expressions
+- Math symbol auto-completion
+
+**macOS System Extension:**
+- System-wide text capture from any app
+- Automatically create document in Mac MD
+- Auto-tag captured content with "For Review"
+- Keyboard shortcut activation
+- Background processing (no app launch required)
+
+**Additional Enhancements:**
+- Custom themes and color schemes
+- Export templates (custom CSS for HTML/PDF)
+- Document templates
+- Full-text search across all documents
+
+### v3.0+ - Future Considerations
+- Extensions/Plugins API
+- Multi-cursor editing
+- Advanced table editing
+- Git integration
+- Collaborative editing (iCloud shared documents)
+- Diagram support (Mermaid, PlantUML)
+- Bibliography management (BibTeX)
+- AI writing assistance

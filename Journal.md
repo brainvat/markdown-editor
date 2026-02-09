@@ -280,4 +280,39 @@ But here's the thing: **The app builds and runs!** We have a functional three-co
 
 ---
 
-*Last Updated: Day 2 - v0.2.0 feature complete*
+### v0.4.0 Planning: Scope Realignment
+
+**The Big Decision: Deferring Advanced Features to v2.0**
+
+After completing v0.3.0's comprehensive CRUD operations, we hit a critical planning moment. The original IDEA.md envisioned MacDown feature parity for v1.0, including:
+- Snippets system
+- Editor intelligence (auto-pairing, smart typing)
+- LaTeX/Math rendering
+- System extensions
+
+**The Reality Check**: These features are ambitious. Really ambitious. They're the "nice-to-haves" that sound great in planning but can delay shipping indefinitely. So we made a pragmatic call: **push advanced editing features to v2.0**.
+
+**What v0.4.0 Actually Needs**: The boring-but-essential features that make an app ready for prime time:
+1. **Multi-select & bulk operations** - Users with 50 documents don't want to tag them one-by-one
+2. **Splash screen** - First impressions matter; guide new users
+3. **Settings screen** - Font preferences, export locations, CloudKit status
+4. **App icon** - Can't ship without proper branding across all platforms
+5. **Quality assurance** - CloudKit testing, performance validation, memory leak detection
+
+**The v2.0 Vision**: Once we ship v1.0 and get real user feedback, THEN we tackle:
+- Complete Snippet system with variables and tab stops
+- Smart editor features (auto-pairing, list continuation)
+- LaTeX/Math rendering for academic users
+- **macOS System Extension** - The killer feature: capture text from ANY app, auto-create document, auto-tag "For Review"
+
+This is the "ship it, then improve it" philosophy. Get a solid 1.0 out the door, validate the core concept, THEN add the bells and whistles.
+
+**Lessons for Future Planning:**
+- Don't let perfect be the enemy of good
+- User feedback on v1.0 will inform v2.0 priorities better than guessing now
+- Advanced features are only valuable if the foundation is solid
+- Shipping beats polishing every time
+
+---
+
+*Last Updated: v0.4.0 Planning - Scope realignment complete*
