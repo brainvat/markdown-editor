@@ -101,6 +101,31 @@ struct SidebarView: View {
     }
     
     private var addButton: some ToolbarContent {
+        #if os(macOS)
+        ToolbarItem(placement: .navigation) {
+            Menu {
+                Button {
+                    createNewDocument()
+                } label: {
+                    Label("New Document", systemImage: "doc.badge.plus")
+                }
+                
+                Button {
+                    createNewProject()
+                } label: {
+                    Label("New Project", systemImage: "folder.badge.plus")
+                }
+                
+                Button {
+                    createNewTag()
+                } label: {
+                    Label("New Tag", systemImage: "tag")
+                }
+            } label: {
+                Label("Add", systemImage: "plus")
+            }
+        }
+        #else
         ToolbarItem(placement: .primaryAction) {
             Menu {
                 Button {
@@ -124,6 +149,7 @@ struct SidebarView: View {
                 Label("Add", systemImage: "plus")
             }
         }
+        #endif
     }
     
     // MARK: - Actions
