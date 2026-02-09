@@ -78,6 +78,10 @@ struct TagEditSheet: View {
                                 .fill(selectedColor)
                                 .frame(width: 32, height: 32)
                             
+                            Text("Tag Color")
+                            
+                            Spacer()
+                            
                             ColorPicker("Select color", selection: $selectedColor, supportsOpacity: false)
                                 .labelsHidden()
                         }
