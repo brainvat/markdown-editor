@@ -70,11 +70,10 @@ struct SidebarView: View {
                 Label("Archived", systemImage: "archivebox")
             }
         } header: {
-            HStack {
+            HStack(spacing: 4) {
                 Text("Documents")
-                Spacer()
                 Button(action: quickAddDocument) {
-                    Image(systemName: "plus")
+                    Image(systemName: "plus.circle")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -94,11 +93,10 @@ struct SidebarView: View {
                 )
             }
         } header: {
-            HStack {
+            HStack(spacing: 4) {
                 Text("Projects")
-                Spacer()
                 Button(action: quickAddProject) {
-                    Image(systemName: "plus")
+                    Image(systemName: "plus.circle")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -120,11 +118,10 @@ struct SidebarView: View {
                 }
             }
         } header: {
-            HStack {
+            HStack(spacing: 4) {
                 Text("Tags")
-                Spacer()
                 Button(action: quickAddTag) {
-                    Image(systemName: "plus")
+                    Image(systemName: "plus.circle")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
