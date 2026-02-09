@@ -19,11 +19,11 @@ A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with Swi
 - 🌓 **Dark Mode** - Beautiful styling that adapts to system appearance
 
 ### Document Organization
-- 📂 **Projects** - Group related documents together
-- 🏷️ **Tags** - Flexible many-to-many tagging system with colors
-- 📁 **Groups** - Nested folder organization (Xcode-style)
+- 📂 **Projects** - Group related documents together with icons and colors
+- 🏷️ **Tags** - Flexible many-to-many tagging system with colored badges
 - ⭐ **Favorites** - Quick access to important documents
 - 🕐 **Recents** - Smart collection of recently accessed documents
+- 📦 **Archived** - Hide completed documents without deleting
 
 ### Markdown Support
 - ✅ **CommonMark** - Full standard Markdown support
@@ -79,8 +79,8 @@ Mac MD follows modern Swift and SwiftUI best practices:
 
 ### Data Layer
 - **SwiftData** for local persistence with `@Model` macro
-- **CloudKit** integration for automatic iCloud syncing
-- Five core entities: `Document`, `Tag`, `Project`, `Snippet`, `Group`
+- **CloudKit** integration for automatic iCloud syncing (disabled for development)
+- Four core entities: `Document`, `Tag`, `Project`, `Snippet`
 - Bidirectional relationships with proper cascade rules
 
 ### UI Layer
@@ -101,12 +101,13 @@ Markdown Editor/
 │   ├── Document.swift
 │   ├── Tag.swift
 │   ├── Project.swift
-│   ├── Snippet.swift
-│   └── Group.swift
+│   └── Snippet.swift
 ├── Views/
 │   ├── Main/           # Three-column layout
-│   └── Preview/        # WebKit-based renderer
+│   ├── Preview/        # WebKit-based renderer
+│   └── Components/     # Reusable sheets and dialogs
 ├── Services/           # Business logic
+├── Utilities/          # Extensions and helpers
 └── App/                # Entry point
 ```
 
@@ -195,47 +196,54 @@ Contributions are welcome! This project is a learning experience and showcase of
 - [x] Platform-specific export implementations using FileDocument pattern
 - [x] Comprehensive testing proving SwiftUI .fileExporter() bug on iOS ([see bug report](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md))
 
-### v0.3.0 - App Store Ready (Next)
-**Goal:** Production-ready with verified CloudKit sync and complete CRUD operations
+### v0.3.0 - Complete CRUD Operations ✅
+**Goal:** Simplified data model with complete document management
 
-**iCloud Sync (Mission Critical)**
-- [ ] Verify CloudKit sync working: Mac ↔ Mac, Mac ↔ iPad, Mac ↔ iPhone
-- [ ] Test conflict resolution and merge behavior
-- [ ] Document sync limitations and requirements
+**Data Model Simplification** ✅
+- [x] Remove Group entity entirely (use Projects as folders)
+- [x] Document belongs to one Project (one-to-many)
+- [x] Tags remain many-to-many with Documents
+- [x] Update UI to reflect simplified model
 
-**Data Model Simplification**
-- [ ] Remove Group entity entirely (use Projects as folders)
-- [ ] Document belongs to one Project (one-to-many with cascade delete)
-- [ ] Tags remain many-to-many with Documents
-- [ ] Update UI to reflect simplified model
+**Document CRUD** ✅
+- [x] Create: Quick-add with + button
+- [x] Read: Three-column layout with live preview
+- [x] Update: Editable titles, real-time content editing
+- [x] Delete: Confirmation dialog with swipe action
+- [x] Duplicate: Context menu creates copy with "(Copy)" suffix
+- [x] Archive: Hide without deleting, toggleable
+- [x] Favorites: Star/unstar with visual indicator
+- [x] Sorting: By date modified, date created, title, word count
 
-**CRUD Operations**
-- [ ] Document: Create, Read, Update, Delete, Duplicate
-- [ ] Project: Create, Read, Update, Delete, Rename
-- [ ] Tag: Create, Read, Update, Delete, Assign/Remove from Documents
+**Project CRUD** ✅
+- [x] Create: Quick-add or detailed edit sheet
+- [x] Edit: Full sheet with name, description, icon, color picker
+- [x] Delete: Confirmation dialog (documents stay intact)
+- [x] Drag-drop: Drag documents onto projects to move
+- [x] Context menu: Edit, Delete with confirmation
+- [x] Platform-specific: Custom layout on Mac, Form on iOS
 
-**Preview Enhancements**
-- [ ] Keep existing preview positions (Left, Right, Bottom)
-- [ ] Mac: Add option to open preview in separate native window
-- [ ] iPad: Add option to show preview in modal sheet
-- [ ] Maintain preview sync when detached
-- [ ] Remember user's preview preference per document
+**Tag CRUD** ✅
+- [x] Create: Quick-add or detailed edit sheet
+- [x] Edit: Full sheet with name and color picker
+- [x] Delete: Confirmation dialog (removed from all documents)
+- [x] Apply: Context menu to toggle tags on documents
+- [x] Visual badges: Colored circles in document list (up to 3 + count)
+- [x] Platform-specific: Custom layout on Mac, Form on iOS
 
-**Settings Screen**
-- [ ] Version info display
-- [ ] MIT License text
-- [ ] Credits: Stewart Lynch, Paul Hudson, Antoine van der Lee, Tzu-ping Chung
-- [ ] Links to inspiration sources
+**UI Polish** ✅
+- [x] Inline quick-add buttons (+ icon next to section headers)
+- [x] Section headers for Documents, Projects, Tags
+- [x] Colored circle icons for tags (not SF Symbols)
+- [x] Tag color picker with live preview
+- [x] Cross-platform consistency improvements
 
-**Splash Screen**
-- [ ] Design beautiful splash screen for first launch
-- [ ] Show once, then suppress (UserDefaults preference)
-- [ ] Platform-specific adaptations (Mac vs iPad)
-
-**Basic Testing**
-- [ ] Programmatic export tests (PDF, HTML, Markdown) on Mac
-- [ ] Verify PDF export on iPad
-- [ ] Basic CRUD operation tests
+**Deferred to v0.4.0+:**
+- Multi-select documents (Cmd/Ctrl-Click)
+- Bulk tag operations
+- Settings screen
+- CloudKit sync verification
+- Automated testing
 
 ### v1.0.0 - App Store Launch
 **Goal:** Polished, professional app ready for public release
@@ -290,4 +298,4 @@ Project Link: [https://github.com/brainvat/markdown-editor](https://github.com/b
 
 ---
 
-**Note**: This is an alpha release (v0.1.0-alpha). The core architecture is complete and functional, but some features are still in development. Feedback and contributions are welcome!
+**Note**: This is v0.3.0 with complete CRUD operations for Documents, Projects, and Tags. The app is fully functional for daily use. CloudKit sync and additional features are in development. Feedback and contributions are welcome!
