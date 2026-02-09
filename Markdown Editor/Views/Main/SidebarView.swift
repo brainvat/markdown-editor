@@ -69,11 +69,22 @@ struct SidebarView: View {
             NavigationLink(value: SidebarItem.archived) {
                 Label("Archived", systemImage: "archivebox")
             }
+        } header: {
+            HStack {
+                Text("Documents")
+                Spacer()
+                Button(action: quickAddDocument) {
+                    Image(systemName: "plus")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
     
     private var projectsSection: some View {
-        Section("Projects") {
+        Section {
             ForEach(projects) { project in
                 ProjectRowView(
                     project: project,
@@ -82,11 +93,22 @@ struct SidebarView: View {
                     onDocumentsDrop: { docs in moveDocumentsToProject(docs, to: project) }
                 )
             }
+        } header: {
+            HStack {
+                Text("Projects")
+                Spacer()
+                Button(action: quickAddProject) {
+                    Image(systemName: "plus")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
     
     private var tagsSection: some View {
-        Section("Tags") {
+        Section {
             ForEach(tags) { tag in
                 NavigationLink(value: SidebarItem.tag(tag)) {
                     Label {
@@ -96,6 +118,17 @@ struct SidebarView: View {
                             .foregroundStyle(Color(hex: tag.colorHex))
                     }
                 }
+            }
+        } header: {
+            HStack {
+                Text("Tags")
+                Spacer()
+                Button(action: quickAddTag) {
+                    Image(systemName: "plus")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -164,6 +197,23 @@ struct SidebarView: View {
     }
     
     private func createNewTag() {
+        let tag = Tag(name: "New Tag")
+        modelContext.insert(tag)
+    }
+    
+    // MARK: - Quick Add (inline creation without sheets)
+    
+    private func quickAddDocument() {
+        let document = Document(title: "Untitled Document")
+        modelContext.insert(document)
+    }
+    
+    private func quickAddProject() {
+        let project = Project(name: "New Project")
+        modelContext.insert(project)
+    }
+    
+    private func quickAddTag() {
         let tag = Tag(name: "New Tag")
         modelContext.insert(tag)
     }
