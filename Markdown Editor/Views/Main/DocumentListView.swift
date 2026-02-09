@@ -21,8 +21,8 @@ struct DocumentListView: View {
     @State private var isSearching = false
     @State private var documentToDelete: Document?
     @State private var showDeleteConfirmation = false
-    @State private var showingProjectSheet = false
-    @State private var projectToEdit: Project?
+    @State private var projectSheetItem: ProjectSheetItem?
+    @State private var documentForNewProject: Document?
     
     var body: some View {
         List(selection: $selectedDocument) {
@@ -58,10 +58,17 @@ struct DocumentListView: View {
         } message: {
             Text("This action cannot be undone.")
         }
-        .sheet(isPresented: $showingProjectSheet) {
-            if let project = projectToEdit {
-                ProjectEditSheet(project: project)
-            }
+        .sheet(item: $projectSheetItem) { sheetItem in
+            ProjectEditSheet(project: sheetItem.project)
+                .onDisappear {
+                    // If we were creating a new project for a document, assign it
+                    if let document = documentForNewProject,
+                       let newProject = sheetItem.project,
+                       allProjects.contains(where: { $0.id == newProject.id }) {
+                        document.project = newProject
+                    }
+                    documentForNewProject = nil
+                }
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -218,12 +225,11 @@ struct DocumentListView: View {
         let newProject = Project(name: "New Project")
         modelContext.insert(newProject)
         
-        // Assign the document to the new project
-        document.project = newProject
+        // Store the document to assign after sheet dismissal
+        documentForNewProject = document
         
         // Open the edit sheet for the new project
-        projectToEdit = newProject
-        showingProjectSheet = true
+        projectSheetItem = ProjectSheetItem(project: newProject)
     }
 }
 
@@ -425,3 +431,5 @@ struct RelativeTimestampViewSimple: View {
         Text("Detail")
     }
 }
+
+

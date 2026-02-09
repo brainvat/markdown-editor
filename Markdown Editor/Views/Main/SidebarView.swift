@@ -17,8 +17,7 @@ struct SidebarView: View {
     
     @Binding var selectedSidebarItem: SidebarItem?
     
-    @State private var showingProjectSheet = false
-    @State private var projectToEdit: Project?
+    @State private var projectSheetItem: ProjectSheetItem?
     @State private var projectToDelete: Project?
     @State private var showDeleteProjectConfirmation = false
     
@@ -28,8 +27,8 @@ struct SidebarView: View {
             .toolbar {
                 addButton
             }
-            .sheet(isPresented: $showingProjectSheet) {
-                ProjectEditSheet(project: projectToEdit)
+            .sheet(item: $projectSheetItem) { sheetItem in
+                ProjectEditSheet(project: sheetItem.project)
             }
             .confirmationDialog(
                 "Delete Project",
@@ -135,8 +134,7 @@ struct SidebarView: View {
     }
     
     private func createNewProject() {
-        projectToEdit = nil // nil means create new
-        showingProjectSheet = true
+        projectSheetItem = ProjectSheetItem(project: nil)
     }
     
     private func createNewTag() {
@@ -147,8 +145,7 @@ struct SidebarView: View {
     // MARK: - Project CRUD
     
     private func editProject(_ project: Project) {
-        projectToEdit = project
-        showingProjectSheet = true
+        projectSheetItem = ProjectSheetItem(project: project)
     }
     
     private func confirmDeleteProject(_ project: Project) {
