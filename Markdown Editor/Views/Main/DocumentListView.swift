@@ -17,6 +17,7 @@ struct DocumentListView: View {
     
     @Query private var allDocuments: [Document]
     @Query private var allProjects: [Project]
+    @Query private var allTags: [Tag]
     @State private var searchText = ""
     @State private var isSearching = false
     @State private var documentToDelete: Document?
@@ -31,12 +32,15 @@ struct DocumentListView: View {
                 DocumentListItemView(
                     document: document,
                     allProjects: allProjects,
+                    allTags: allTags,
                     onFavorite: { toggleFavorite(document) },
                     onDuplicate: { duplicateDocument(document) },
                     onArchive: { toggleArchive(document) },
                     onDelete: { confirmDelete(document) },
                     onMoveToProject: { project in moveDocumentToProject(document, project: project) },
-                    onCreateProjectAndMove: { createProjectAndMove(document) }
+                    onCreateProjectAndMove: { createProjectAndMove(document) },
+                    onApplyTag: { tag in applyTagToDocument(document, tag: tag) },
+                    onRemoveTag: { tag in removeTagFromDocument(document, tag: tag) }
                 )
             }
         }
@@ -247,6 +251,16 @@ struct DocumentListView: View {
         // Open the edit sheet for the new project
         projectSheetItem = ProjectSheetItem(project: newProject)
     }
+    
+    private func applyTagToDocument(_ document: Document, tag: Tag) {
+        if !document.tags.contains(where: { $0.id == tag.id }) {
+            document.tags.append(tag)
+        }
+    }
+    
+    private func removeTagFromDocument(_ document: Document, tag: Tag) {
+        document.tags.removeAll(where: { $0.id == tag.id })
+    }
 }
 
 // MARK: - Document List Item View
@@ -254,12 +268,15 @@ struct DocumentListView: View {
 struct DocumentListItemView: View {
     let document: Document
     let allProjects: [Project]
+    let allTags: [Tag]
     let onFavorite: () -> Void
     let onDuplicate: () -> Void
     let onArchive: () -> Void
     let onDelete: () -> Void
     let onMoveToProject: (Project?) -> Void
     let onCreateProjectAndMove: () -> Void
+    let onApplyTag: (Tag) -> Void
+    let onRemoveTag: (Tag) -> Void
     
     var body: some View {
         NavigationLink(value: document) {
@@ -343,6 +360,34 @@ struct DocumentListItemView: View {
             Label("Move to Project", systemImage: "folder")
         }
         
+        Menu {
+            ForEach(allTags) { tag in
+                let isApplied = document.tags.contains(where: { $0.id == tag.id })
+                
+                Button {
+                    if isApplied {
+                        onRemoveTag(tag)
+                    } else {
+                        onApplyTag(tag)
+                    }
+                } label: {
+                    Label {
+                        Text(tag.name)
+                    } icon: {
+                        if isApplied {
+                            Image(systemName: "checkmark")
+                        } else {
+                            Circle()
+                                .fill(Color(hex: tag.colorHex))
+                                .frame(width: 12, height: 12)
+                        }
+                    }
+                }
+            }
+        } label: {
+            Label("Apply Tags", systemImage: "tag")
+        }
+        
         Divider()
         
         Button(role: .destructive, action: onDelete) {
@@ -365,6 +410,23 @@ struct DocumentRowView: View {
                     .lineLimit(1)
                 
                 Spacer()
+                
+                // Tag badges
+                if !document.tags.isEmpty {
+                    HStack(spacing: 4) {
+                        ForEach(document.tags.prefix(3)) { tag in
+                            Circle()
+                                .fill(Color(hex: tag.colorHex))
+                                .frame(width: 8, height: 8)
+                        }
+                        
+                        if document.tags.count > 3 {
+                            Text("+\(document.tags.count - 3)")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
                 
                 if document.isFavorite {
                     Image(systemName: "star.fill")
