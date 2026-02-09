@@ -39,6 +39,16 @@ struct ProjectEditSheet: View {
     }
     
     var body: some View {
+        #if os(macOS)
+        macOSContent
+        #else
+        iOSContent
+        #endif
+    }
+    
+    // MARK: - iOS Content
+    
+    private var iOSContent: some View {
         NavigationStack {
             Form {
                 Section("Project Information") {
@@ -105,6 +115,122 @@ struct ProjectEditSheet: View {
         }
     }
     
+    // MARK: - macOS Content
+    
+    private var macOSContent: some View {
+        VStack(spacing: 0) {
+            // Title Bar
+            HStack {
+                Text(project == nil ? "New Project" : "Edit Project")
+                    .font(.headline)
+                Spacer()
+            }
+            .padding()
+            .background(.background.secondary)
+            
+            // Content
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Project Information
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Project Information")
+                            .font(.headline)
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Name")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            TextField("", text: $name)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Description (Optional)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            TextEditor(text: $projectDescription)
+                                .frame(height: 60)
+                                .font(.body)
+                                .border(Color.secondary.opacity(0.3), width: 1)
+                        }
+                    }
+                    
+                    Divider()
+                    
+                    // Icon Selection
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Icon")
+                            .font(.headline)
+                        
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 50))], spacing: 8) {
+                            ForEach(availableIcons, id: \.self) { icon in
+                                Button {
+                                    iconName = icon
+                                } label: {
+                                    Image(systemName: icon)
+                                        .font(.title2)
+                                        .foregroundStyle(iconName == icon ? Color(hex: colorHex) : .secondary)
+                                        .frame(width: 50, height: 50)
+                                        .background(iconName == icon ? Color(hex: colorHex).opacity(0.15) : Color.secondary.opacity(0.05))
+                                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .stroke(iconName == icon ? Color(hex: colorHex) : Color.clear, lineWidth: 2)
+                                        )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    
+                    Divider()
+                    
+                    // Color Picker
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Color")
+                            .font(.headline)
+                        
+                        ColorPicker("Project Color", selection: Binding(
+                            get: { Color(hex: colorHex) },
+                            set: { newColor in
+                                colorHex = newColor.toHex()
+                            }
+                        ))
+                        .labelsHidden()
+                    }
+                    
+                    // Archived Toggle (only for existing projects)
+                    if project != nil {
+                        Divider()
+                        
+                        Toggle("Archived", isOn: $isArchived)
+                    }
+                }
+                .padding(20)
+            }
+            
+            Divider()
+            
+            // Bottom Buttons
+            HStack {
+                Spacer()
+                Button("Cancel") {
+                    dismiss()
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Button("Save") {
+                    saveProject()
+                }
+                .keyboardShortcut(.defaultAction)
+                .disabled(name.isEmpty)
+            }
+            .padding()
+            .background(.background.secondary)
+        }
+        .frame(width: 480, height: 600)
+    }
+    
     private func saveProject() {
         if let project = project {
             // Update existing project
@@ -127,28 +253,6 @@ struct ProjectEditSheet: View {
         }
         
         dismiss()
-    }
-}
-
-// Extension to convert Color to hex string
-extension Color {
-    func toHex() -> String {
-        #if os(iOS)
-        let nativeColor = UIColor(self)
-        #else
-        let nativeColor = NSColor(self)
-        #endif
-        
-        guard let components = nativeColor.cgColor.components else { return "#000000" }
-        
-        let r = components[0]
-        let g = components.count > 1 ? components[1] : components[0]
-        let b = components.count > 2 ? components[2] : components[0]
-        
-        return String(format: "#%02X%02X%02X",
-                     Int(r * 255),
-                     Int(g * 255),
-                     Int(b * 255))
     }
 }
 
