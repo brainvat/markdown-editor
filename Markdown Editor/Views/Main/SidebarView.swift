@@ -21,6 +21,10 @@ struct SidebarView: View {
     @State private var projectToDelete: Project?
     @State private var showDeleteProjectConfirmation = false
     
+    @State private var tagSheetItem: TagSheetItem?
+    @State private var tagToDelete: Tag?
+    @State private var showDeleteTagConfirmation = false
+    
     var body: some View {
         listContent
             .navigationTitle("Mac MD")
@@ -29,6 +33,9 @@ struct SidebarView: View {
             }
             .sheet(item: $projectSheetItem) { sheetItem in
                 ProjectEditSheet(project: sheetItem.project)
+            }
+            .sheet(item: $tagSheetItem) { sheetItem in
+                TagEditSheet(tag: sheetItem.tag)
             }
             .confirmationDialog(
                 "Delete Project",
@@ -41,6 +48,18 @@ struct SidebarView: View {
                 Button("Cancel", role: .cancel) {}
             } message: { project in
                 Text("Delete '\(project.name)'? Documents in this project will not be deleted.")
+            }
+            .confirmationDialog(
+                "Delete Tag",
+                isPresented: $showDeleteTagConfirmation,
+                presenting: tagToDelete
+            ) { tag in
+                Button("Delete Tag", role: .destructive) {
+                    deleteTag()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: { tag in
+                Text("Delete '\(tag.name)'? This tag will be removed from all documents.")
             }
     }
     
@@ -108,14 +127,12 @@ struct SidebarView: View {
     private var tagsSection: some View {
         Section {
             ForEach(tags) { tag in
-                NavigationLink(value: SidebarItem.tag(tag)) {
-                    Label {
-                        Text(tag.name)
-                    } icon: {
-                        Image(systemName: "tag.fill")
-                            .foregroundStyle(Color(hex: tag.colorHex))
-                    }
-                }
+                TagRowView(
+                    tag: tag,
+                    onEdit: { editTag(tag) },
+                    onDelete: { confirmDeleteTag(tag) },
+                    onDocumentsDrop: { docs in applyTagToDocuments(tag, documentIDs: docs) }
+                )
             }
         } header: {
             HStack(spacing: 4) {
@@ -241,6 +258,35 @@ struct SidebarView: View {
             document.project = project
         }
     }
+    
+    // MARK: - Tag CRUD
+    
+    private func editTag(_ tag: Tag) {
+        tagSheetItem = TagSheetItem(tag: tag)
+    }
+    
+    private func confirmDeleteTag(_ tag: Tag) {
+        tagToDelete = tag
+        showDeleteTagConfirmation = true
+    }
+    
+    private func deleteTag() {
+        guard let tag = tagToDelete else { return }
+        modelContext.delete(tag)
+        tagToDelete = nil
+    }
+    
+    private func applyTagToDocuments(_ tag: Tag, documentIDs: [String]) {
+        for idString in documentIDs {
+            guard let uuid = UUID(uuidString: idString),
+                  let document = allDocuments.first(where: { $0.id == uuid }) else {
+                continue
+            }
+            if !document.tags.contains(where: { $0.id == tag.id }) {
+                document.tags.append(tag)
+            }
+        }
+    }
 }
 
 // MARK: - Sidebar Item
@@ -299,6 +345,50 @@ struct ProjectRowView: View {
             return true
         }
     }
+}
+
+// MARK: - Tag Row View
+
+struct TagRowView: View {
+    let tag: Tag
+    let onEdit: () -> Void
+    let onDelete: () -> Void
+    let onDocumentsDrop: ([String]) -> Void
+    
+    var body: some View {
+        NavigationLink(value: SidebarItem.tag(tag)) {
+            Label {
+                Text(tag.name)
+            } icon: {
+                Circle()
+                    .fill(Color(hex: tag.colorHex))
+                    .frame(width: 12, height: 12)
+            }
+        }
+        .contextMenu {
+            Button(action: onEdit) {
+                Label("Edit", systemImage: "pencil")
+            }
+            
+            Divider()
+            
+            Button(role: .destructive, action: onDelete) {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+        .dropDestination(for: String.self) { droppedIDs, location in
+            onDocumentsDrop(droppedIDs)
+            return true
+        }
+    }
+}
+
+// MARK: - Tag Sheet Item
+
+/// Wrapper to make tag editing identifiable for .sheet(item:)
+struct TagSheetItem: Identifiable {
+    let id = UUID()
+    let tag: Tag?
 }
 
 #Preview {
