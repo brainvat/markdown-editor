@@ -106,8 +106,6 @@ struct EditorView: View {
                     }
                 }
                 
-                Divider()
-                
                 // Export menu
                 Menu {
                     Button {
