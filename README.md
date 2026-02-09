@@ -195,24 +195,78 @@ Contributions are welcome! This project is a learning experience and showcase of
 - [x] Platform-specific export implementations using FileDocument pattern
 - [x] Comprehensive testing proving SwiftUI .fileExporter() bug on iOS ([see bug report](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md))
 
-### v0.3.0 (Next)
-- [ ] Document search functionality
-- [ ] File system persistence (Documents folder)
-- [ ] iCloud sync verification and fixes
-- [ ] User acceptance testing
-- [ ] Performance optimizations
+### v0.3.0 - App Store Ready (Next)
+**Goal:** Production-ready with verified CloudKit sync and complete CRUD operations
 
-### v0.3.0
+**iCloud Sync (Mission Critical)**
+- [ ] Verify CloudKit sync working: Mac ↔ Mac, Mac ↔ iPad, Mac ↔ iPhone
+- [ ] Test conflict resolution and merge behavior
+- [ ] Document sync limitations and requirements
+
+**Data Model Simplification**
+- [ ] Remove Group entity entirely (use Projects as folders)
+- [ ] Document belongs to one Project (one-to-many with cascade delete)
+- [ ] Tags remain many-to-many with Documents
+- [ ] Update UI to reflect simplified model
+
+**CRUD Operations**
+- [ ] Document: Create, Read, Update, Delete, Duplicate
+- [ ] Project: Create, Read, Update, Delete, Rename
+- [ ] Tag: Create, Read, Update, Delete, Assign/Remove from Documents
+
+**Preview Enhancements**
+- [ ] Keep existing preview positions (Left, Right, Bottom)
+- [ ] Mac: Add option to open preview in separate native window
+- [ ] iPad: Add option to show preview in modal sheet
+- [ ] Maintain preview sync when detached
+- [ ] Remember user's preview preference per document
+
+**Settings Screen**
+- [ ] Version info display
+- [ ] MIT License text
+- [ ] Credits: Stewart Lynch, Paul Hudson, Antoine van der Lee, Tzu-ping Chung
+- [ ] Links to inspiration sources
+
+**Splash Screen**
+- [ ] Design beautiful splash screen for first launch
+- [ ] Show once, then suppress (UserDefaults preference)
+- [ ] Platform-specific adaptations (Mac vs iPad)
+
+**Basic Testing**
+- [ ] Programmatic export tests (PDF, HTML, Markdown) on Mac
+- [ ] Verify PDF export on iPad
+- [ ] Basic CRUD operation tests
+
+### v1.0.0 - App Store Launch
+**Goal:** Polished, professional app ready for public release
+
+**Visual Polish**
+- [ ] Beautiful app icon (all sizes)
+- [ ] Refined color scheme for Dark and Light modes
+- [ ] Consistent iconography throughout
+- [ ] Polish animations and transitions
+
+**Marketing**
+- [ ] Convert README.md to beautiful one-page website
+- [ ] Host marketing site on GitHub Pages
+- [ ] App Store screenshots and description
+- [ ] App Store preview video
+
+**Release**
+- [ ] App Store submission (Mac + iOS)
+- [ ] TestFlight beta testing
+- [ ] Public launch
+
+### Future Versions (Post-1.0)
+**Nice-to-Have Features (Not Required for 1.0):**
+- [ ] LaTeX/Math rendering via MathJax
+- [ ] Snippet insertion system
+- [ ] Custom themes and color schemes
 - [ ] Editor intelligence (auto-completion)
-- [ ] Snippet insertion
-- [ ] Custom themes
-- [ ] Advanced LaTeX rendering
-
-### v1.0.0
-- [ ] Feature parity with MacDown 3000
-- [ ] Comprehensive test coverage
-- [ ] Performance tuning
-- [ ] App Store release
+- [ ] Document search functionality
+- [ ] File system integration (Documents folder)
+- [ ] Performance tuning (only if needed)
+- [ ] Comprehensive test coverage (if time permits)
 
 ## 📝 License
 

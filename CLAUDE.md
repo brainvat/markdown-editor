@@ -4,13 +4,13 @@
 Mac MD is a modern, Universal Markdown editor for macOS, iOS, and iPadOS, inspired by the classic MacDown application. Built with SwiftUI, SwiftData, and Swift 6 strict concurrency, Mac MD provides a feature-rich editing experience across all Apple platforms.
 
 **Key Features:**
-- Live dual-pane Markdown preview with support for CommonMark, GFM, and LaTeX
-- Intelligent editor with auto-completion and syntax highlighting
+- Live dual-pane Markdown preview with support for CommonMark, GFM, and syntax highlighting
+- Flexible preview positioning: Left, Right, Bottom, or detached (separate window on Mac, modal on iPad)
 - SwiftData-based document library with CloudKit sync
-- Native PDF and HTML export
-- Three-column sidebar layout (Source List → Document List → Editor)
+- Native PDF export (Mac + iOS), HTML/Markdown export (Mac only - iOS blocked by SwiftUI bug)
+- Three-column sidebar layout (Projects → Documents → Editor)
 - Task list support with interactive checkboxes
-- Organizational tools: Groups (folders) and Tags (many-to-many)
+- Organizational tools: Projects (folders) and Tags (many-to-many)
 
 ## Target Platforms
 - macOS 15+
@@ -21,9 +21,12 @@ Mac MD is a modern, Universal Markdown editor for macOS, iOS, and iPadOS, inspir
 
 ### Data Layer
 - **SwiftData** for all persistence (replacing Core Data)
-- **CloudKit** integration for cross-device syncing
-- Entity models: `Document`, `Snippet`, `Project`, `Tag`, `Group`
-- Many-to-many relationships between Documents and Tags
+- **CloudKit** integration for cross-device syncing (verified working in v0.3.0)
+- Entity models: `Document`, `Snippet`, `Project`, `Tag` (Groups removed in v0.3.0)
+- Relationships:
+  - Document belongs to one Project (one-to-many)
+  - Document has many Tags (many-to-many)
+  - Project has many Documents (one-to-many with cascade delete)
 
 ### UI Layer
 - **SwiftUI** exclusively (no UIKit/AppKit representables unless absolutely necessary)
@@ -117,6 +120,32 @@ Markdown Editor/
 - Bug fix branch names should match their parent feature branch name
 - Never push directly to main without a merge from a feature/bug/hotfix branch
 - Delete branches after successful merge (except long-lived feature branches)
+
+### Development Workflow with Claude
+
+**CRITICAL: Always Wait for User Testing Before Committing**
+
+1. **Make changes** - Write code, update files
+2. **Build successfully** - Ensure project builds without errors
+3. **STOP and ask user to test** - NEVER commit without explicit user approval
+4. **User tests the changes** - User will test on Mac, iPad, etc.
+5. **Only after user confirms** - Then proceed with git commit
+
+**Why this matters:**
+- User often catches issues during manual testing
+- User may want to make tweaks before committing
+- Committing untested code wastes git history
+- User will explicitly say "okay to commit" or similar
+
+**What to say after building:**
+- "Build succeeded! Please test the changes and let me know when you're ready to commit."
+- "Ready for testing. Let me know if you find any issues or when you'd like me to commit."
+- "Changes complete and building. Test it out and I'll wait for your go-ahead to commit."
+
+**Never say:**
+- "Let me commit these changes..." (without asking first)
+- "I'll create a commit now..." (without user approval)
+- Just silently attempt to commit
 
 ## Build/Run Instructions
 
