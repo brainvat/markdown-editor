@@ -23,6 +23,7 @@ struct DocumentListView: View {
     @State private var showDeleteConfirmation = false
     @State private var projectSheetItem: ProjectSheetItem?
     @State private var documentForNewProject: Document?
+    @State private var sortOption: SortOption = .modified
     
     var body: some View {
         List(selection: $selectedDocument) {
@@ -81,7 +82,7 @@ struct DocumentListView: View {
             
             ToolbarItem {
                 Menu {
-                    Picker("Sort By", selection: .constant(SortOption.modified)) {
+                    Picker("Sort By", selection: $sortOption) {
                         Label("Date Modified", systemImage: "calendar")
                             .tag(SortOption.modified)
                         Label("Date Created", systemImage: "calendar.badge.plus")
@@ -101,15 +102,30 @@ struct DocumentListView: View {
     // MARK: - Computed Properties
     
     private var searchResults: [Document] {
-        let documents = filteredDocuments
+        var documents = filteredDocuments
         
-        guard !searchText.isEmpty else {
-            return documents
+        // Apply search filter
+        if !searchText.isEmpty {
+            documents = documents.filter { document in
+                document.title.localizedCaseInsensitiveContains(searchText) ||
+                document.content.localizedCaseInsensitiveContains(searchText)
+            }
         }
         
-        return documents.filter { document in
-            document.title.localizedCaseInsensitiveContains(searchText) ||
-            document.content.localizedCaseInsensitiveContains(searchText)
+        // Apply sorting
+        return sortedDocuments(documents)
+    }
+    
+    private func sortedDocuments(_ documents: [Document]) -> [Document] {
+        switch sortOption {
+        case .modified:
+            return documents.sorted { $0.modifiedAt > $1.modifiedAt }
+        case .created:
+            return documents.sorted { $0.createdAt > $1.createdAt }
+        case .title:
+            return documents.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+        case .wordCount:
+            return documents.sorted { $0.wordCount > $1.wordCount }
         }
     }
     
