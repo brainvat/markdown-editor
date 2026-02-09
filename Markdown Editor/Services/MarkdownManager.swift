@@ -383,19 +383,30 @@ final class MarkdownManager {
         let html = await parseMarkdown(markdown)
         print("📄 HTML generated, length: \(html.count) characters")
         
-        // Create a WebView for rendering
-        let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 612, height: 792)) // US Letter size
+        // Create a WebView for rendering with US Letter width
+        let pageWidth: CGFloat = 612 // US Letter width
+        let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: pageWidth, height: 792))
         print("📄 WebView created")
         
         // Load HTML
         webView.loadHTMLString(html, baseURL: nil)
         print("📄 HTML loaded into WebView")
         
-        // Wait for loading to complete
+        // Wait for loading to complete and content to render
         try await Task.sleep(for: .milliseconds(500))
-        print("📄 Waited for WebView to render")
         
-        // Create PDF data
+        // Get the actual content height from the WebView
+        let contentHeight = try await webView.evaluateJavaScript("document.documentElement.scrollHeight") as? CGFloat ?? 792
+        print("📄 Content height calculated: \(contentHeight) points")
+        
+        // Resize WebView to full content height to capture all pages
+        webView.frame = CGRect(x: 0, y: 0, width: pageWidth, height: contentHeight)
+        print("📄 WebView resized to full content height")
+        
+        // Wait a bit more for layout to settle
+        try await Task.sleep(for: .milliseconds(200))
+        
+        // Create PDF data with full content
         let pdfData = try await webView.pdf()
         print("📄 PDF data created, size: \(pdfData.count) bytes")
         
