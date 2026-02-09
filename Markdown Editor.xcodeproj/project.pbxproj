@@ -97,6 +97,7 @@
 				EAD9D1FE2F3836CE00222D1E /* Markdown EditorTests */,
 				EAD9D2082F3836CE00222D1E /* Markdown EditorUITests */,
 				EAD9D1EB2F3836CD00222D1E /* Products */,
+				EAFD388C2F3961A10041BE2A /* docs 2 */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,6 +109,13 @@
 				EAD9D2052F3836CE00222D1E /* Markdown EditorUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EAFD388C2F3961A10041BE2A /* docs 2 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "docs 2";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -55,7 +55,7 @@ struct ContentView: View {
 
 #Preview("With Documents") {
     let container = try! ModelContainer(
-        for: Document.self, Project.self, Group.self, Tag.self,
+        for: Document.self, Project.self, Tag.self,
         configurations: ModelConfiguration(isStoredInMemoryOnly: true)
     )
     
@@ -120,7 +120,7 @@ struct ContentView: View {
 #Preview("Empty State") {
     ContentView()
         .modelContainer(
-            for: [Document.self, Project.self, Group.self, Tag.self],
+            for: [Document.self, Project.self, Tag.self],
             inMemory: true
         )
 }

@@ -18,6 +18,8 @@ struct DocumentListView: View {
     @Query private var allDocuments: [Document]
     @State private var searchText = ""
     @State private var isSearching = false
+    @State private var documentToDelete: Document?
+    @State private var showDeleteConfirmation = false
     
     var body: some View {
         List(selection: $selectedDocument) {
@@ -32,10 +34,54 @@ struct DocumentListView: View {
                         Label("Favorite", systemImage: document.isFavorite ? "star.fill" : "star")
                     }
                     .tint(.yellow)
+                    
+                    Button {
+                        duplicateDocument(document)
+                    } label: {
+                        Label("Duplicate", systemImage: "doc.on.doc")
+                    }
+                    .tint(.blue)
                 }
                 .swipeActions(edge: .trailing) {
+                    Button {
+                        toggleArchive(document)
+                    } label: {
+                        Label(document.isArchived ? "Unarchive" : "Archive", 
+                              systemImage: document.isArchived ? "tray.and.arrow.up" : "tray.and.arrow.down")
+                    }
+                    .tint(.orange)
+                    
                     Button(role: .destructive) {
-                        deleteDocument(document)
+                        confirmDelete(document)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+                .contextMenu {
+                    Button {
+                        duplicateDocument(document)
+                    } label: {
+                        Label("Duplicate", systemImage: "doc.on.doc")
+                    }
+                    
+                    Button {
+                        toggleFavorite(document)
+                    } label: {
+                        Label(document.isFavorite ? "Remove from Favorites" : "Add to Favorites", 
+                              systemImage: document.isFavorite ? "star.slash" : "star")
+                    }
+                    
+                    Button {
+                        toggleArchive(document)
+                    } label: {
+                        Label(document.isArchived ? "Unarchive" : "Archive", 
+                              systemImage: document.isArchived ? "tray.and.arrow.up" : "tray.and.arrow.down")
+                    }
+                    
+                    Divider()
+                    
+                    Button(role: .destructive) {
+                        confirmDelete(document)
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
@@ -46,6 +92,20 @@ struct DocumentListView: View {
         .navigationTitle(navigationTitle)
         .onReceive(NotificationCenter.default.publisher(for: .showSearch)) { _ in
             isSearching = true
+        }
+        .confirmationDialog(
+            "Delete \"\(documentToDelete?.title ?? "document")\"?",
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let doc = documentToDelete {
+                    deleteDocument(doc)
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This action cannot be undone.")
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -108,11 +168,11 @@ struct DocumentListView: View {
                 .sorted { $0.lastAccessedAt > $1.lastAccessedAt }
                 .prefix(20))
             
+        case .archived:
+            return allDocuments.filter { $0.isArchived }
+            
         case .project(let project):
             return allDocuments.filter { $0.project?.id == project.id && !$0.isArchived }
-            
-        case .group(let group):
-            return allDocuments.filter { $0.group?.id == group.id && !$0.isArchived }
             
         case .tag(let tag):
             return allDocuments.filter { document in
@@ -133,10 +193,10 @@ struct DocumentListView: View {
             return "Favorites"
         case .recent:
             return "Recent"
+        case .archived:
+            return "Archived"
         case .project(let project):
             return project.name
-        case .group(let group):
-            return group.name
         case .tag(let tag):
             return tag.name
         }
@@ -152,8 +212,6 @@ struct DocumentListView: View {
             switch sidebarItem {
             case .project(let project):
                 document.project = project
-            case .group(let group):
-                document.group = group
             case .tag(let tag):
                 document.tags.append(tag)
             default:
@@ -169,8 +227,30 @@ struct DocumentListView: View {
         document.isFavorite.toggle()
     }
     
+    private func toggleArchive(_ document: Document) {
+        document.isArchived.toggle()
+    }
+    
+    private func duplicateDocument(_ document: Document) {
+        let duplicate = Document(
+            title: "\(document.title) (Copy)",
+            content: document.content,
+            tags: document.tags,
+            project: document.project
+        )
+        modelContext.insert(duplicate)
+    }
+    
+    private func confirmDelete(_ document: Document) {
+        documentToDelete = document
+        showDeleteConfirmation = true
+    }
+    
     private func deleteDocument(_ document: Document) {
         modelContext.delete(document)
+        if selectedDocument?.id == document.id {
+            selectedDocument = nil
+        }
     }
 }
 

@@ -12,7 +12,6 @@ import SwiftData
 struct SidebarView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var projects: [Project]
-    @Query private var groups: [Group]
     @Query private var tags: [Tag]
     
     @Binding var selectedSidebarItem: SidebarItem?
@@ -32,6 +31,10 @@ struct SidebarView: View {
                 NavigationLink(value: SidebarItem.recent) {
                     Label("Recent", systemImage: "clock")
                 }
+                
+                NavigationLink(value: SidebarItem.archived) {
+                    Label("Archived", systemImage: "archivebox")
+                }
             }
             
             // Projects
@@ -45,13 +48,6 @@ struct SidebarView: View {
                                 .foregroundStyle(Color(hex: project.colorHex))
                         }
                     }
-                }
-            }
-            
-            // Groups (Folders)
-            Section("Groups") {
-                ForEach(groups.filter { !$0.isNested }) { group in
-                    GroupRowView(group: group, selectedItem: $selectedSidebarItem)
                 }
             }
             
@@ -86,12 +82,6 @@ struct SidebarView: View {
                     }
                     
                     Button {
-                        createNewGroup()
-                    } label: {
-                        Label("New Group", systemImage: "folder.badge.plus")
-                    }
-                    
-                    Button {
                         createNewTag()
                     } label: {
                         Label("New Tag", systemImage: "tag")
@@ -115,37 +105,9 @@ struct SidebarView: View {
         modelContext.insert(project)
     }
     
-    private func createNewGroup() {
-        let group = Group(name: "New Group")
-        modelContext.insert(group)
-    }
-    
     private func createNewTag() {
         let tag = Tag(name: "New Tag")
         modelContext.insert(tag)
-    }
-}
-
-/// Recursive view for displaying groups with subgroups
-struct GroupRowView: View {
-    let group: Group
-    @Binding var selectedItem: SidebarItem?
-    
-    var body: some View {
-        DisclosureGroup {
-            ForEach(group.subgroups) { subgroup in
-                GroupRowView(group: subgroup, selectedItem: $selectedItem)
-            }
-        } label: {
-            NavigationLink(value: SidebarItem.group(group)) {
-                Label {
-                    Text(group.name)
-                } icon: {
-                    Image(systemName: group.iconName)
-                        .foregroundStyle(Color(hex: group.colorHex))
-                }
-            }
-        }
     }
 }
 
@@ -156,8 +118,8 @@ enum SidebarItem: Hashable, Identifiable {
     case allDocuments
     case favorites
     case recent
+    case archived
     case project(Project)
-    case group(Group)
     case tag(Tag)
     
     var id: String {
@@ -165,8 +127,8 @@ enum SidebarItem: Hashable, Identifiable {
         case .allDocuments: return "all"
         case .favorites: return "favorites"
         case .recent: return "recent"
+        case .archived: return "archived"
         case .project(let project): return "project-\(project.id)"
-        case .group(let group): return "group-\(group.id)"
         case .tag(let tag): return "tag-\(tag.id)"
         }
     }
@@ -200,7 +162,7 @@ extension Color {
 #Preview {
     NavigationSplitView {
         SidebarView(selectedSidebarItem: .constant(.allDocuments))
-            .modelContainer(for: [Document.self, Project.self, Group.self, Tag.self], inMemory: true)
+            .modelContainer(for: [Document.self, Project.self, Tag.self], inMemory: true)
     } detail: {
         Text("Select an item")
     }

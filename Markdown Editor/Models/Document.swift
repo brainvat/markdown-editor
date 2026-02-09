@@ -54,18 +54,13 @@ final class Document {
     @Relationship(deleteRule: .nullify, inverse: \Project.documents)
     var project: Project?
     
-    /// The group (folder) this document belongs to (optional)
-    @Relationship(deleteRule: .nullify, inverse: \Group.documents)
-    var group: Group?
-    
     // MARK: - Initialization
     
     init(
         title: String = "Untitled",
         content: String = "",
         tags: [Tag] = [],
-        project: Project? = nil,
-        group: Group? = nil
+        project: Project? = nil
     ) {
         self.id = UUID()
         self.title = title
@@ -81,7 +76,6 @@ final class Document {
         self.sortOrder = 0
         self.tags = tags
         self.project = project
-        self.group = group
         
         // Compute initial word count
         updateMetrics()

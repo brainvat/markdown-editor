@@ -97,12 +97,12 @@ Markdown Editor/
 ### Git Branch Conventions
 
 **Branch Naming Structure:**
-- `features/<feature-name>` - New feature development
+- `feature/<feature-name>` - New feature development
 - `bugs/<feature-name>-bug-fixes` - Bug fixes for a specific feature
 - `hotfix/<description>` - Critical production fixes that go directly to main
 
 **Branch Workflow:**
-1. Create feature branch: `git checkout -b features/v0.2.0`
+1. Create feature branch: `git checkout -b feature/v0.2.0`
 2. Develop and test feature
 3. Merge feature to main when complete
 4. If bugs found, create bug fix branch: `git checkout -b bugs/v0.2.0-bug-fixes` from the feature branch or main
@@ -110,12 +110,12 @@ Markdown Editor/
 6. Hotfixes go directly to main and should be immediately merged back to active feature/bug branches
 
 **Examples:**
-- `features/v0.2.0` - Version 0.2.0 feature development
+- `feature/v0.2.0` - Version 0.2.0 feature development
 - `bugs/v0.2.0-bug-fixes` - Bug fixes for v0.2.0 features
 - `hotfix/branding-mac-md` - Emergency branding fix
 
 **Rules:**
-- Feature branches are prefixed with `features/`
+- Feature branches are prefixed with `feature/` (singular)
 - Bug fix branches are prefixed with `bugs/` and suffixed with `-bug-fixes`
 - Bug fix branch names should match their parent feature branch name
 - Never push directly to main without a merge from a feature/bug/hotfix branch

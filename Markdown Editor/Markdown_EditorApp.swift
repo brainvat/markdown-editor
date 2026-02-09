@@ -15,15 +15,13 @@ struct Markdown_EditorApp: App {
             Document.self,
             Tag.self,
             Project.self,
-            Snippet.self,
-            Group.self
+            Snippet.self
         ])
         
-        // Enable CloudKit syncing
+        // CloudKit syncing temporarily disabled - TODO: Re-enable for v0.3.0
         let modelConfiguration = ModelConfiguration(
-            schema: schema,
             isStoredInMemoryOnly: false,
-            cloudKitDatabase: .automatic
+            cloudKitDatabase: .none  // Disabled CloudKit for now
         )
 
         do {
