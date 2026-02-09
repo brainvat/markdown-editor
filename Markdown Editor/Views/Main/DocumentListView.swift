@@ -16,76 +16,27 @@ struct DocumentListView: View {
     @Binding var selectedDocument: Document?
     
     @Query private var allDocuments: [Document]
+    @Query private var allProjects: [Project]
     @State private var searchText = ""
     @State private var isSearching = false
     @State private var documentToDelete: Document?
     @State private var showDeleteConfirmation = false
+    @State private var showingProjectSheet = false
+    @State private var projectToEdit: Project?
     
     var body: some View {
         List(selection: $selectedDocument) {
             ForEach(searchResults) { document in
-                NavigationLink(value: document) {
-                    DocumentRowView(document: document)
-                }
-                .swipeActions(edge: .leading) {
-                    Button {
-                        toggleFavorite(document)
-                    } label: {
-                        Label("Favorite", systemImage: document.isFavorite ? "star.fill" : "star")
-                    }
-                    .tint(.yellow)
-                    
-                    Button {
-                        duplicateDocument(document)
-                    } label: {
-                        Label("Duplicate", systemImage: "doc.on.doc")
-                    }
-                    .tint(.blue)
-                }
-                .swipeActions(edge: .trailing) {
-                    Button {
-                        toggleArchive(document)
-                    } label: {
-                        Label(document.isArchived ? "Unarchive" : "Archive", 
-                              systemImage: document.isArchived ? "tray.and.arrow.up" : "tray.and.arrow.down")
-                    }
-                    .tint(.orange)
-                    
-                    Button(role: .destructive) {
-                        confirmDelete(document)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-                }
-                .contextMenu {
-                    Button {
-                        duplicateDocument(document)
-                    } label: {
-                        Label("Duplicate", systemImage: "doc.on.doc")
-                    }
-                    
-                    Button {
-                        toggleFavorite(document)
-                    } label: {
-                        Label(document.isFavorite ? "Remove from Favorites" : "Add to Favorites", 
-                              systemImage: document.isFavorite ? "star.slash" : "star")
-                    }
-                    
-                    Button {
-                        toggleArchive(document)
-                    } label: {
-                        Label(document.isArchived ? "Unarchive" : "Archive", 
-                              systemImage: document.isArchived ? "tray.and.arrow.up" : "tray.and.arrow.down")
-                    }
-                    
-                    Divider()
-                    
-                    Button(role: .destructive) {
-                        confirmDelete(document)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-                }
+                DocumentListItemView(
+                    document: document,
+                    allProjects: allProjects,
+                    onFavorite: { toggleFavorite(document) },
+                    onDuplicate: { duplicateDocument(document) },
+                    onArchive: { toggleArchive(document) },
+                    onDelete: { confirmDelete(document) },
+                    onMoveToProject: { project in moveDocumentToProject(document, project: project) },
+                    onCreateProjectAndMove: { createProjectAndMove(document) }
+                )
             }
         }
         .searchable(text: $searchText, isPresented: $isSearching, prompt: "Search documents")
@@ -106,6 +57,11 @@ struct DocumentListView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("This action cannot be undone.")
+        }
+        .sheet(isPresented: $showingProjectSheet) {
+            if let project = projectToEdit {
+                ProjectEditSheet(project: project)
+            }
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -252,7 +208,128 @@ struct DocumentListView: View {
             selectedDocument = nil
         }
     }
+    
+    private func moveDocumentToProject(_ document: Document, project: Project?) {
+        document.project = project
+    }
+    
+    private func createProjectAndMove(_ document: Document) {
+        // Create a new project
+        let newProject = Project(name: "New Project")
+        modelContext.insert(newProject)
+        
+        // Assign the document to the new project
+        document.project = newProject
+        
+        // Open the edit sheet for the new project
+        projectToEdit = newProject
+        showingProjectSheet = true
+    }
 }
+
+// MARK: - Document List Item View
+
+struct DocumentListItemView: View {
+    let document: Document
+    let allProjects: [Project]
+    let onFavorite: () -> Void
+    let onDuplicate: () -> Void
+    let onArchive: () -> Void
+    let onDelete: () -> Void
+    let onMoveToProject: (Project?) -> Void
+    let onCreateProjectAndMove: () -> Void
+    
+    var body: some View {
+        NavigationLink(value: document) {
+            DocumentRowView(document: document)
+        }
+        .draggable(document.id.uuidString)
+        .swipeActions(edge: .leading) {
+            Button(action: onFavorite) {
+                Label("Favorite", systemImage: document.isFavorite ? "star.fill" : "star")
+            }
+            .tint(.yellow)
+            
+            Button(action: onDuplicate) {
+                Label("Duplicate", systemImage: "doc.on.doc")
+            }
+            .tint(.blue)
+        }
+        .swipeActions(edge: .trailing) {
+            Button(action: onArchive) {
+                Label(document.isArchived ? "Unarchive" : "Archive", 
+                      systemImage: document.isArchived ? "tray.and.arrow.up" : "tray.and.arrow.down")
+            }
+            .tint(.orange)
+            
+            Button(role: .destructive, action: onDelete) {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+        .contextMenu {
+            contextMenuContent
+        }
+    }
+    
+    @ViewBuilder
+    private var contextMenuContent: some View {
+        Button(action: onDuplicate) {
+            Label("Duplicate", systemImage: "doc.on.doc")
+        }
+        
+        Button(action: onFavorite) {
+            Label(document.isFavorite ? "Remove from Favorites" : "Add to Favorites", 
+                  systemImage: document.isFavorite ? "star.slash" : "star")
+        }
+        
+        Button(action: onArchive) {
+            Label(document.isArchived ? "Unarchive" : "Archive", 
+                  systemImage: document.isArchived ? "tray.and.arrow.up" : "tray.and.arrow.down")
+        }
+        
+        Divider()
+        
+        Menu {
+            Button {
+                onMoveToProject(nil)
+            } label: {
+                Label("None", systemImage: "folder.badge.minus")
+            }
+            
+            Divider()
+            
+            Button {
+                onCreateProjectAndMove()
+            } label: {
+                Label("New Project...", systemImage: "folder.badge.plus")
+            }
+            
+            Divider()
+            
+            ForEach(allProjects) { project in
+                Button {
+                    onMoveToProject(project)
+                } label: {
+                    Label {
+                        Text(project.name)
+                    } icon: {
+                        Image(systemName: project.iconName)
+                    }
+                }
+            }
+        } label: {
+            Label("Move to Project", systemImage: "folder")
+        }
+        
+        Divider()
+        
+        Button(role: .destructive, action: onDelete) {
+            Label("Delete", systemImage: "trash")
+        }
+    }
+}
+
+// MARK: - Document Row View
 
 /// Row view for displaying a document in the list
 struct DocumentRowView: View {

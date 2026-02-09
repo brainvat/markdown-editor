@@ -13,82 +13,116 @@ struct SidebarView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var projects: [Project]
     @Query private var tags: [Tag]
+    @Query private var allDocuments: [Document]
     
     @Binding var selectedSidebarItem: SidebarItem?
     
+    @State private var showingProjectSheet = false
+    @State private var projectToEdit: Project?
+    @State private var projectToDelete: Project?
+    @State private var showDeleteProjectConfirmation = false
+    
     var body: some View {
+        listContent
+            .navigationTitle("Mac MD")
+            .toolbar {
+                addButton
+            }
+            .sheet(isPresented: $showingProjectSheet) {
+                ProjectEditSheet(project: projectToEdit)
+            }
+            .confirmationDialog(
+                "Delete Project",
+                isPresented: $showDeleteProjectConfirmation,
+                presenting: projectToDelete
+            ) { project in
+                Button("Delete Project Only", role: .destructive) {
+                    deleteProject()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: { project in
+                Text("Delete '\(project.name)'? Documents in this project will not be deleted.")
+            }
+    }
+    
+    private var listContent: some View {
         List(selection: $selectedSidebarItem) {
-            // All Documents
-            Section {
-                NavigationLink(value: SidebarItem.allDocuments) {
-                    Label("All Documents", systemImage: "doc.text")
-                }
-                
-                NavigationLink(value: SidebarItem.favorites) {
-                    Label("Favorites", systemImage: "star")
-                }
-                
-                NavigationLink(value: SidebarItem.recent) {
-                    Label("Recent", systemImage: "clock")
-                }
-                
-                NavigationLink(value: SidebarItem.archived) {
-                    Label("Archived", systemImage: "archivebox")
-                }
+            smartCollectionsSection
+            projectsSection
+            tagsSection
+        }
+    }
+    
+    private var smartCollectionsSection: some View {
+        Section {
+            NavigationLink(value: SidebarItem.allDocuments) {
+                Label("All Documents", systemImage: "doc.text")
             }
             
-            // Projects
-            Section("Projects") {
-                ForEach(projects) { project in
-                    NavigationLink(value: SidebarItem.project(project)) {
-                        Label {
-                            Text(project.name)
-                        } icon: {
-                            Image(systemName: project.iconName)
-                                .foregroundStyle(Color(hex: project.colorHex))
-                        }
-                    }
-                }
+            NavigationLink(value: SidebarItem.favorites) {
+                Label("Favorites", systemImage: "star")
             }
             
-            // Tags
-            Section("Tags") {
-                ForEach(tags) { tag in
-                    NavigationLink(value: SidebarItem.tag(tag)) {
-                        Label {
-                            Text(tag.name)
-                        } icon: {
-                            Image(systemName: "tag.fill")
-                                .foregroundStyle(Color(hex: tag.colorHex))
-                        }
+            NavigationLink(value: SidebarItem.recent) {
+                Label("Recent", systemImage: "clock")
+            }
+            
+            NavigationLink(value: SidebarItem.archived) {
+                Label("Archived", systemImage: "archivebox")
+            }
+        }
+    }
+    
+    private var projectsSection: some View {
+        Section("Projects") {
+            ForEach(projects) { project in
+                ProjectRowView(
+                    project: project,
+                    onEdit: { editProject(project) },
+                    onDelete: { confirmDeleteProject(project) },
+                    onDocumentsDrop: { docs in moveDocumentsToProject(docs, to: project) }
+                )
+            }
+        }
+    }
+    
+    private var tagsSection: some View {
+        Section("Tags") {
+            ForEach(tags) { tag in
+                NavigationLink(value: SidebarItem.tag(tag)) {
+                    Label {
+                        Text(tag.name)
+                    } icon: {
+                        Image(systemName: "tag.fill")
+                            .foregroundStyle(Color(hex: tag.colorHex))
                     }
                 }
             }
         }
-        .navigationTitle("Mac MD")
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Menu {
-                    Button {
-                        createNewDocument()
-                    } label: {
-                        Label("New Document", systemImage: "doc.badge.plus")
-                    }
-                    
-                    Button {
-                        createNewProject()
-                    } label: {
-                        Label("New Project", systemImage: "folder.badge.plus")
-                    }
-                    
-                    Button {
-                        createNewTag()
-                    } label: {
-                        Label("New Tag", systemImage: "tag")
-                    }
+    }
+    
+    private var addButton: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Menu {
+                Button {
+                    createNewDocument()
                 } label: {
-                    Label("Add", systemImage: "plus")
+                    Label("New Document", systemImage: "doc.badge.plus")
                 }
+                
+                Button {
+                    createNewProject()
+                } label: {
+                    Label("New Project", systemImage: "folder.badge.plus")
+                }
+                
+                Button {
+                    createNewTag()
+                } label: {
+                    Label("New Tag", systemImage: "tag")
+                }
+            } label: {
+                Label("Add", systemImage: "plus")
             }
         }
     }
@@ -101,13 +135,41 @@ struct SidebarView: View {
     }
     
     private func createNewProject() {
-        let project = Project(name: "New Project")
-        modelContext.insert(project)
+        projectToEdit = nil // nil means create new
+        showingProjectSheet = true
     }
     
     private func createNewTag() {
         let tag = Tag(name: "New Tag")
         modelContext.insert(tag)
+    }
+    
+    // MARK: - Project CRUD
+    
+    private func editProject(_ project: Project) {
+        projectToEdit = project
+        showingProjectSheet = true
+    }
+    
+    private func confirmDeleteProject(_ project: Project) {
+        projectToDelete = project
+        showDeleteProjectConfirmation = true
+    }
+    
+    private func deleteProject() {
+        guard let project = projectToDelete else { return }
+        modelContext.delete(project)
+        projectToDelete = nil
+    }
+    
+    private func moveDocumentsToProject(_ documentIDs: [String], to project: Project) {
+        for idString in documentIDs {
+            guard let uuid = UUID(uuidString: idString),
+                  let document = allDocuments.first(where: { $0.id == uuid }) else {
+                continue
+            }
+            document.project = project
+        }
     }
 }
 
@@ -130,6 +192,41 @@ enum SidebarItem: Hashable, Identifiable {
         case .archived: return "archived"
         case .project(let project): return "project-\(project.id)"
         case .tag(let tag): return "tag-\(tag.id)"
+        }
+    }
+}
+
+// MARK: - Project Row View
+
+struct ProjectRowView: View {
+    let project: Project
+    let onEdit: () -> Void
+    let onDelete: () -> Void
+    let onDocumentsDrop: ([String]) -> Void
+    
+    var body: some View {
+        NavigationLink(value: SidebarItem.project(project)) {
+            Label {
+                Text(project.name)
+            } icon: {
+                Image(systemName: project.iconName)
+                    .foregroundStyle(Color(hex: project.colorHex))
+            }
+        }
+        .contextMenu {
+            Button(action: onEdit) {
+                Label("Edit", systemImage: "pencil")
+            }
+            
+            Divider()
+            
+            Button(role: .destructive, action: onDelete) {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+        .dropDestination(for: String.self) { droppedIDs, location in
+            onDocumentsDrop(droppedIDs)
+            return true
         }
     }
 }

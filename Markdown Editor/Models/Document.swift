@@ -95,3 +95,4 @@ final class Document {
         self.lastAccessedAt = Date()
     }
 }
+
