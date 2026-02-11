@@ -18,11 +18,12 @@ struct ContentView: View {
     @State private var selectedDocument: Document?
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var showWelcomeSplash = false
+    @State private var showSettings = false
     
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             // First column: Sidebar (source list)
-            SidebarView(selectedSidebarItem: $selectedSidebarItem)
+            SidebarView(selectedSidebarItem: $selectedSidebarItem, showSettings: $showSettings)
         } content: {
             // Second column: Document list
             DocumentListView(
@@ -57,6 +58,9 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showWelcomeSplash) {
             WelcomeSplashView()
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .onAppear {
             checkFirstLaunch()

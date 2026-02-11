@@ -20,6 +20,11 @@ struct EditorView: View {
     @State private var showPreview = true
     @State private var previewPosition: PreviewPosition = .trailing
     
+    // Appearance preferences
+    @AppStorage("editorFontSize")     private var editorFontSize: Double = 14
+    @AppStorage("editorFontFamily")   private var editorFontFamily: String = "monospaced"
+    @AppStorage("selectedColorTheme") private var selectedColorTheme: String = "Basic"
+    
     // iOS export state - separate for each type
     @State private var showingMarkdownExporter = false
     @State private var markdownDocument: MarkdownExportDocument?
@@ -292,7 +297,10 @@ struct EditorView: View {
             
             // Editor
             TextEditor(text: $document.content)
-                .font(.system(.body, design: .monospaced))
+                .font(.system(size: editorFontSize, design: editorFontDesign))
+                .foregroundStyle(currentEditorTheme.foreground)
+                .scrollContentBackground(.hidden)
+                .background(currentEditorTheme.background)
                 .padding()
                 .onChange(of: document.content) { oldValue, newValue in
                     document.updateMetrics()
@@ -308,6 +316,21 @@ struct EditorView: View {
     
     private var previewPane: some View {
         MarkdownPreviewView(html: markdownManager.renderedHTML)
+    }
+    
+    // MARK: - Appearance Helpers
+    
+    private var currentEditorTheme: ColorTheme {
+        ColorTheme.preset(named: selectedColorTheme)
+    }
+    
+    private var editorFontDesign: Font.Design {
+        switch editorFontFamily {
+        case "default":  return .default
+        case "serif":    return .serif
+        case "rounded":  return .rounded
+        default:         return .monospaced
+        }
     }
     
     // MARK: - Actions

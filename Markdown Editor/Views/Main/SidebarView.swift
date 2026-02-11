@@ -16,6 +16,7 @@ struct SidebarView: View {
     @Query private var allDocuments: [Document]
     
     @Binding var selectedSidebarItem: SidebarItem?
+    @Binding var showSettings: Bool
     
     @State private var projectSheetItem: ProjectSheetItem?
     @State private var projectToDelete: Project?
@@ -173,7 +174,13 @@ struct SidebarView: View {
             }
         }
         #else
-        ToolbarItem(placement: .primaryAction) {
+        ToolbarItemGroup(placement: .topBarTrailing) {
+            Button {
+                showSettings = true
+            } label: {
+                Label("Settings", systemImage: "gearshape")
+            }
+            
             Menu {
                 Button {
                     createNewDocument()
@@ -393,7 +400,7 @@ struct TagSheetItem: Identifiable {
 
 #Preview {
     NavigationSplitView {
-        SidebarView(selectedSidebarItem: .constant(.allDocuments))
+        SidebarView(selectedSidebarItem: .constant(.allDocuments), showSettings: .constant(false))
             .modelContainer(for: [Document.self, Project.self, Tag.self], inMemory: true)
     } detail: {
         Text("Select an item")

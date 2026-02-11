@@ -39,5 +39,11 @@ struct Markdown_EditorApp: App {
         .commands {
             AppCommands()
         }
+        
+        #if os(macOS)
+        Settings {
+            SettingsView()
+        }
+        #endif
     }
 }
