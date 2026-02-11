@@ -316,3 +316,51 @@ This is the "ship it, then improve it" philosophy. Get a solid 1.0 out the door,
 ---
 
 *Last Updated: v0.4.0 Planning - Scope realignment complete*
+
+---
+
+### v0.4.0: Polish & Organization — Complete ✅
+
+**What We Built**:
+1. ✅ Multi-select documents with bulk operations (delete, move to project, apply tag)
+2. ✅ Welcome splash screen on first launch with sample document
+3. ✅ Settings/Preferences with 10 Terminal-inspired color themes and font controls
+4. ✅ App icon for iOS, iPadOS, and macOS
+5. ✅ PDF export multi-page fix
+
+**Feature Deep Dives**:
+
+**Multi-Select & Bulk Operations** — The SwiftUI `List` natively supports multi-select by swapping the selection binding from `Document?` to `Set<Document>`. On macOS, Cmd-Click and Shift-Click work for free. On iOS, you need `.environment(\.editMode, .constant(.active))` to show the tap-to-select checkmarks — but here's the gotcha: `editMode` doesn't exist on macOS at all. Without a `#if !os(macOS)` guard, the Mac build breaks. Two separate selection states live in `DocumentListView`: one for the editor (`selectedDocument: Document?`) and one for bulk ops (`selectedDocuments: Set<Document>`). A `isSelecting` bool flips between them.
+
+**Terminal Color Themes** — Ten presets modelled on real Terminal.app themes (Basic, Grass, Homebrew, Man Page, Novel, Ocean, Pro, Red Sands, Silver Aerogel, Solid Colors). Each theme is a `ColorTheme` struct with background, foreground, and 8 ANSI colors. Stored in `@AppStorage`, picked up live by `EditorView` via computed properties. Scope deliberately limited to the editor pane only — not the preview HTML or UI chrome. This keeps the feature manageable and avoids a rabbit hole of CSS injection.
+
+**Settings Architecture** — macOS gets a native `Settings { SettingsView() }` scene (⌘,). iOS/iPadOS gets a gear button in the sidebar toolbar that opens a sheet. The key trap: placing `.toolbar` on `NavigationSplitView` is silently ignored on iOS — buttons must go inside the column view (SidebarView) with a binding passed down from ContentView.
+
+**PDF Multi-Page Fix** — `WKWebView` was being created at a fixed 792pt height. Fix: evaluate `document.documentElement.scrollHeight` via JavaScript, resize the WebView to that height, wait 200ms for layout, then call `createPDF()`. Simple, but easy to miss.
+
+**War Stories**:
+
+**The Launch Screen from Hell** — Tried to hand-craft a `LaunchScreen.storyboard` XML with silver sheen gradients and a centered logo. Interface Builder refused to parse it with `com.apple.InterfaceBuilder error -1`. Tried fixing `targetRuntime`, removing runtime attributes, adding `standalone="no"`. All failed. `ibtool` was equally unimpressed. Resolution: you simply cannot write IB storyboard XML by hand — the format has internal consistency requirements that tools enforce. The only way in is through Xcode's File → New → Launch Screen template. Lesson: **never hand-write storyboard XML**. It looks like XML but it's not really.
+
+**The Mac Build → iOS Storyboard Conflict** — When you add a `UILaunchStoryboardName` key to a shared `Info.plist` on a multi-platform project (iOS + macOS), the Mac target also reads it and then tries to compile an iOS storyboard for macOS. It fails with "iOS storyboards do not support target device type mac." The fix is to use `INFOPLIST_KEY_UILaunchStoryboardName` as a build setting (which Xcode only injects for iOS/iPadOS), not the Info.plist directly.
+
+**The Mac App Icon Cache** — Getting a custom icon to show on Mac is a multi-step ordeal. The asset catalog needs a proper `.icns` file (not just a PNG) in `AppIcon.appiconset`. Even when it's there and the build embeds it, macOS may still show the old icon due to aggressive caching. `killall Dock`, `sudo rm -rf /Library/Caches/com.apple.iconservices.store`, and `touch`ing the app bundle are all sometimes needed. This is a known macOS pain point with no clean solution during development.
+
+**The `git reset --hard` Surprise** — Reset nuked the `mac_md.png` from the asset set because it was untracked (only the `Contents.json` was committed, not the image file itself). Lesson: always commit both the JSON *and* the image files in asset sets together. Checking `git status` before reset would have caught this.
+
+**Engineering Wisdom Gained**:
+
+1. **Platform-conditional build settings > shared Info.plist keys** — For anything iOS-specific (`UILaunchStoryboardName`, UI orientations), use `INFOPLIST_KEY_*` build settings rather than putting them in the shared plist. This way the Mac target never even sees them.
+
+2. **Two selection states, one list** — For multi-select UX, keep single-selection (navigation) and multi-selection (bulk ops) as completely separate state. Don't try to multiplex one binding. The `isSelecting` bool acts as a mode switch; the List binding swaps accordingly.
+
+3. **Launch screens are a frozen snapshot** — No custom classes, no runtime attributes, no dynamic content. Whatever you want on the launch screen must be expressible purely through static Interface Builder properties. If you're fighting this constraint, a simple white screen with your logo image (no animation, no gradients) is always the right call. Users see it for under a second anyway.
+
+4. **The asset catalog handles `.icns` generation — except when it doesn't** — For a standard iOS/macOS split project, the asset catalog compiler auto-generates `AppIcon.icns`. For a "Designed for iPhone/iPad" multi-platform project targeting macOS natively, it may not. When in doubt, generate the `.icns` yourself with `sips` + `iconutil` and add it to the bundle via a Copy Files build phase (or just drop it in the asset set).
+
+5. **`#if !os(macOS)` is sometimes the right answer** — The SwiftUI skill says prefer environment values over platform checks. That's true for layout. But for APIs that genuinely don't exist on certain platforms (`editMode`, `UIApplication`, etc.), a platform guard is the correct tool. Don't contort your code to avoid it.
+
+**What's Next (v1.0.0)**:
+- TestFlight beta, accessibility audit, App Store submission
+- Marketing materials and App Store screenshots
+- The app is fully functional — this is the finish line sprint

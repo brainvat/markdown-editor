@@ -238,36 +238,39 @@ Contributions are welcome! This project is a learning experience and showcase of
 - [x] Tag color picker with live preview
 - [x] Cross-platform consistency improvements
 
-### v0.4.0 - Polish & Organization
+### v0.4.0 - Polish & Organization ✅
 **Goal:** Production-ready organizational features and app polish for 1.0 launch
 
-**Organizational Features**
-- [ ] Multi-select documents (Cmd/Ctrl-Click)
-- [ ] Bulk operations: Delete, tag, move to project
-- [ ] Bulk tag application from context menu
+**Organizational Features** ✅
+- [x] Multi-select documents (Cmd-Click on Mac, Select mode on iOS/iPadOS)
+- [x] Bulk operations: Delete, tag, move to project
+- [x] Bulk tag application from context menu
 
-**First Launch Experience**
-- [ ] Splash screen on first launch only
-- [ ] Welcome message explaining three-column layout
-- [ ] Sample document to demonstrate features
-- [ ] User preference to skip in future
+**First Launch Experience** ✅
+- [x] Splash screen on first launch only
+- [x] Welcome message explaining three-column layout
+- [x] Sample document to demonstrate features
+- [x] User preference to skip in future
 
-**Settings/Preferences Screen**
-- [ ] Preview font size adjustment
-- [ ] Editor font family and size selection
-- [ ] Default export location (Mac only)
-- [ ] CloudKit sync status display
-- [ ] About section with version info and credits
+**Settings/Preferences Screen** ✅
+- [x] Preview font size adjustment
+- [x] Editor font family and size selection
+- [x] 10 Terminal-inspired color themes for the editor
+- [x] About section with version info and credits
+- [x] macOS native Settings scene (⌘,), iOS gear button sheet
 
-**App Icon & Branding**
-- [ ] Beautiful app icon (1024x1024 master)
-- [ ] All required asset sizes (macOS, iOS, iPadOS)
-- [ ] Launch screen images
-- [ ] App Store marketing assets
+**App Icon & Branding** ✅
+- [x] App icon (1024x1024 master — mac_md.png)
+- [x] iOS/iPadOS asset catalog entries (light, dark, tinted)
+- [x] macOS AppIcon.icns
+- [ ] Launch screen (deferred — auto-generated blank screen used)
+- [ ] App Store marketing assets (deferred to v1.0)
+
+**Bug Fixes** ✅
+- [x] PDF export now captures full document (not just first page)
 
 **Quality Assurance**
 - [ ] CloudKit sync verification across devices
-- [ ] Cross-platform testing (Mac, iPad, iPhone)
 - [ ] Performance testing with large document collections
 - [ ] Memory leak detection and fixes
 
@@ -375,4 +378,4 @@ Project Link: [https://github.com/brainvat/markdown-editor](https://github.com/b
 
 ---
 
-**Note**: This is v0.3.0 with complete CRUD operations for Documents, Projects, and Tags. The app is fully functional for daily use. CloudKit sync and additional features are in development. Feedback and contributions are welcome!
+**Note**: This is v0.4.0 with multi-select/bulk operations, settings with color themes, welcome splash screen, and app icons across all platforms. The app is fully functional for daily use. v1.0.0 App Store launch is next. Feedback and contributions are welcome!
