@@ -26,56 +26,103 @@ struct DocumentListView: View {
     @State private var documentForNewProject: Document?
     @State private var sortOption: SortOption = .modified
     
+    // Multi-select state
+    @State private var selectedDocuments: Set<Document> = []
+    @State private var isSelecting = false
+    @State private var showBulkDeleteConfirmation = false
+    
     var body: some View {
-        List(selection: $selectedDocument) {
-            ForEach(searchResults) { document in
-                DocumentListItemView(
-                    document: document,
-                    allProjects: allProjects,
-                    allTags: allTags,
-                    onFavorite: { toggleFavorite(document) },
-                    onDuplicate: { duplicateDocument(document) },
-                    onArchive: { toggleArchive(document) },
-                    onDelete: { confirmDelete(document) },
-                    onMoveToProject: { project in moveDocumentToProject(document, project: project) },
-                    onCreateProjectAndMove: { createProjectAndMove(document) },
-                    onApplyTag: { tag in applyTagToDocument(document, tag: tag) },
-                    onRemoveTag: { tag in removeTagFromDocument(document, tag: tag) }
-                )
+        listView
+            .searchable(text: $searchText, isPresented: $isSearching, prompt: "Search documents")
+            .navigationTitle(navigationTitle)
+            .onReceive(NotificationCenter.default.publisher(for: .showSearch)) { _ in
+                isSearching = true
             }
-        }
-        .searchable(text: $searchText, isPresented: $isSearching, prompt: "Search documents")
-        .navigationTitle(navigationTitle)
-        .onReceive(NotificationCenter.default.publisher(for: .showSearch)) { _ in
-            isSearching = true
-        }
-        .confirmationDialog(
-            "Delete \"\(documentToDelete?.title ?? "document")\"?",
-            isPresented: $showDeleteConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Delete", role: .destructive) {
-                if let doc = documentToDelete {
-                    deleteDocument(doc)
-                }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This action cannot be undone.")
-        }
-        .sheet(item: $projectSheetItem) { sheetItem in
-            ProjectEditSheet(project: sheetItem.project)
-                .onDisappear {
-                    // If we were creating a new project for a document, assign it
-                    if let document = documentForNewProject,
-                       let newProject = sheetItem.project,
-                       allProjects.contains(where: { $0.id == newProject.id }) {
-                        document.project = newProject
+            // Single-document delete confirmation
+            .confirmationDialog(
+                "Delete \"\(documentToDelete?.title ?? "document")\"?",
+                isPresented: $showDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    if let doc = documentToDelete {
+                        deleteDocument(doc)
                     }
-                    documentForNewProject = nil
                 }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This action cannot be undone.")
+            }
+            // Bulk delete confirmation
+            .confirmationDialog(
+                "Delete \(selectedDocuments.count) Documents?",
+                isPresented: $showBulkDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Delete \(selectedDocuments.count) Documents", role: .destructive) {
+                    bulkDelete()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This action cannot be undone.")
+            }
+            .sheet(item: $projectSheetItem) { sheetItem in
+                ProjectEditSheet(project: sheetItem.project)
+                    .onDisappear {
+                        if let document = documentForNewProject,
+                           let newProject = sheetItem.project,
+                           allProjects.contains(where: { $0.id == newProject.id }) {
+                            document.project = newProject
+                        }
+                        documentForNewProject = nil
+                    }
+            }
+            .toolbar { toolbarContent }
+    }
+    
+    // MARK: - List View
+    
+    @ViewBuilder
+    private var listView: some View {
+        if isSelecting {
+            List(selection: $selectedDocuments) {
+                ForEach(searchResults) { document in
+                    // Simplified row in selection mode — no swipe actions or context menus
+                    DocumentRowView(document: document)
+                        .tag(document)
+                }
+            }
+            #if !os(macOS)
+            // Required on iOS/iPadOS: activates the leading circle tap-to-select UI
+            .environment(\.editMode, .constant(.active))
+            #endif
+        } else {
+            List(selection: $selectedDocument) {
+                ForEach(searchResults) { document in
+                    DocumentListItemView(
+                        document: document,
+                        allProjects: allProjects,
+                        allTags: allTags,
+                        onFavorite: { toggleFavorite(document) },
+                        onDuplicate: { duplicateDocument(document) },
+                        onArchive: { toggleArchive(document) },
+                        onDelete: { confirmDelete(document) },
+                        onMoveToProject: { project in moveDocumentToProject(document, project: project) },
+                        onCreateProjectAndMove: { createProjectAndMove(document) },
+                        onApplyTag: { tag in applyTagToDocument(document, tag: tag) },
+                        onRemoveTag: { tag in removeTagFromDocument(document, tag: tag) }
+                    )
+                }
+            }
         }
-        .toolbar {
+    }
+    
+    // MARK: - Toolbar
+    
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        // New document button (hidden while selecting)
+        if !isSelecting {
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     createNewDocument()
@@ -83,7 +130,10 @@ struct DocumentListView: View {
                     Label("New Document", systemImage: "square.and.pencil")
                 }
             }
-            
+        }
+        
+        // Sort menu (hidden while selecting)
+        if !isSelecting {
             ToolbarItem {
                 Menu {
                     Picker("Sort By", selection: $sortOption) {
@@ -100,6 +150,113 @@ struct DocumentListView: View {
                     Label("Sort", systemImage: "arrow.up.arrow.down")
                 }
             }
+        }
+        
+        #if os(macOS)
+        // macOS: Select/Done toggle
+        ToolbarItem {
+            if isSelecting {
+                Button("Done") {
+                    isSelecting = false
+                    selectedDocuments = []
+                }
+            } else {
+                Button("Select") {
+                    isSelecting = true
+                }
+            }
+        }
+        // macOS: bulk Actions menu when something is selected
+        if isSelecting && !selectedDocuments.isEmpty {
+            ToolbarItem {
+                bulkActionsMenu
+            }
+        }
+        #else
+        // iOS: explicit Select / Done toggle
+        ToolbarItem(placement: .topBarLeading) {
+            if isSelecting {
+                Button("Done") {
+                    isSelecting = false
+                    selectedDocuments = []
+                }
+            } else {
+                Button("Select") {
+                    isSelecting = true
+                }
+            }
+        }
+        
+        // iOS: Actions menu when in select mode and something is selected
+        if isSelecting && !selectedDocuments.isEmpty {
+            ToolbarItem(placement: .bottomBar) {
+                bulkActionsMenu
+            }
+        }
+        #endif
+    }
+    
+    // MARK: - Bulk Actions Menu
+    
+    private var bulkActionsMenu: some View {
+        Menu {
+            // Delete
+            Button(role: .destructive) {
+                showBulkDeleteConfirmation = true
+            } label: {
+                Label("Delete \(selectedDocuments.count) Documents", systemImage: "trash")
+            }
+            
+            Divider()
+            
+            // Move to Project
+            Menu {
+                Button {
+                    bulkMoveToProject(nil)
+                } label: {
+                    Label("None", systemImage: "folder.badge.minus")
+                }
+                
+                Divider()
+                
+                ForEach(allProjects) { project in
+                    Button {
+                        bulkMoveToProject(project)
+                    } label: {
+                        Label(project.name, systemImage: project.iconName)
+                    }
+                }
+            } label: {
+                Label("Move to Project", systemImage: "folder")
+            }
+            
+            // Apply Tag
+            if !allTags.isEmpty {
+                Menu {
+                    ForEach(allTags) { tag in
+                        let allHaveTag = selectedDocuments.allSatisfy { doc in
+                            doc.tags.contains(where: { $0.id == tag.id })
+                        }
+                        Button {
+                            bulkApplyTag(tag)
+                        } label: {
+                            Label {
+                                Text(tag.name)
+                            } icon: {
+                                if allHaveTag {
+                                    Image(systemName: "checkmark")
+                                } else {
+                                    Image(systemName: "tag")
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    Label("Apply Tag", systemImage: "tag")
+                }
+            }
+        } label: {
+            Label("Actions (\(selectedDocuments.count))", systemImage: "ellipsis.circle")
         }
     }
     
@@ -260,6 +417,37 @@ struct DocumentListView: View {
     
     private func removeTagFromDocument(_ document: Document, tag: Tag) {
         document.tags.removeAll(where: { $0.id == tag.id })
+    }
+    
+    // MARK: - Bulk Actions
+    
+    private func bulkDelete() {
+        let deletedIDs = selectedDocuments.map { $0.id }
+        for document in selectedDocuments {
+            modelContext.delete(document)
+        }
+        if let current = selectedDocument, deletedIDs.contains(current.id) {
+            selectedDocument = nil
+        }
+        selectedDocuments = []
+        isSelecting = false
+    }
+    
+    private func bulkMoveToProject(_ project: Project?) {
+        for document in selectedDocuments {
+            document.project = project
+        }
+        selectedDocuments = []
+        isSelecting = false
+    }
+    
+    private func bulkApplyTag(_ tag: Tag) {
+        for document in selectedDocuments {
+            if !document.tags.contains(where: { $0.id == tag.id }) {
+                document.tags.append(tag)
+            }
+        }
+        // Don't exit select mode — user may want to apply more tags
     }
 }
 
