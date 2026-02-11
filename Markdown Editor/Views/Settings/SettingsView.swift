@@ -13,15 +13,21 @@ import SwiftUI
 struct SettingsView: View {
     
     // MARK: - Preferences
-    
-    @AppStorage("editorFontSize")     private var editorFontSize: Double = 14
-    @AppStorage("editorFontFamily")   private var editorFontFamily: String = "monospaced"
-    @AppStorage("previewFontSize")    private var previewFontSize: Double = 16
-    @AppStorage("selectedColorTheme") private var selectedColorTheme: String = "Basic"
-    
+
+    @AppStorage("editorFontSize")      private var editorFontSize: Double = 14
+    @AppStorage("editorFontFamily")    private var editorFontFamily: String = "monospaced"
+    @AppStorage("previewFontSize")     private var previewFontSize: Double = 16
+    @AppStorage("selectedColorTheme")  private var selectedColorTheme: String = "Basic"
+    @AppStorage("iCloudSyncEnabled")   private var iCloudSyncEnabled: Bool = false
+
     // MARK: - Environment
-    
+
     @Environment(\.dismiss) private var dismiss
+    @Environment(SubscriptionManager.self) private var subscriptionManager
+
+    // MARK: - Sheet State
+
+    @State private var showPaywall = false
     
     // MARK: - Body
     
@@ -51,17 +57,22 @@ struct SettingsView: View {
                 .tabItem {
                     Label("Editor", systemImage: "pencil")
                 }
-            
+
             previewSection
                 .tabItem {
                     Label("Preview", systemImage: "eye")
                 }
-            
+
             themeSection
                 .tabItem {
                     Label("Themes", systemImage: "paintpalette")
                 }
-            
+
+            syncSection
+                .tabItem {
+                    Label("Sync", systemImage: "icloud")
+                }
+
             aboutSection
                 .tabItem {
                     Label("About", systemImage: "info.circle")
@@ -69,6 +80,10 @@ struct SettingsView: View {
         }
         .frame(width: 480)
         .padding()
+        .sheet(isPresented: $showPaywall) {
+            PremiumPaywallView(trigger: .iCloudSync)
+                .environment(subscriptionManager)
+        }
     }
     #endif
     
@@ -79,7 +94,12 @@ struct SettingsView: View {
             Section("Editor") { editorControls }
             Section("Preview") { previewControls }
             Section("Color Theme") { themeControls }
+            Section("Sync") { syncControls }
             Section("About") { aboutControls }
+        }
+        .sheet(isPresented: $showPaywall) {
+            PremiumPaywallView(trigger: .iCloudSync)
+                .environment(subscriptionManager)
         }
     }
     
@@ -167,8 +187,57 @@ struct SettingsView: View {
         ThemePickerView(selectedThemeName: $selectedColorTheme)
     }
     
+    // MARK: - Sync Section
+
+    private var syncSection: some View {
+        Form {
+            Section("Sync") { syncControls }
+        }
+        .formStyle(.grouped)
+        .frame(minHeight: 120)
+    }
+
+    private var syncControls: some View {
+        Group {
+            if subscriptionManager.isPremium {
+                Toggle(isOn: $iCloudSyncEnabled) {
+                    Label("iCloud Sync", systemImage: "icloud")
+                }
+                if iCloudSyncEnabled {
+                    Text("Restart Mac MD to apply sync changes.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                Button {
+                    showPaywall = true
+                } label: {
+                    HStack {
+                        Label("iCloud Sync", systemImage: "icloud")
+                        Spacer()
+                        HStack(spacing: 4) {
+                            Image(systemName: "lock.fill")
+                                .font(.caption)
+                            Text("Premium")
+                                .font(.caption.weight(.medium))
+                        }
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(.quaternary, in: Capsule())
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Text("Subscribe to Mac MD Premium to sync your documents across all your Apple devices.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     // MARK: - About Section
-    
+
     private var aboutSection: some View {
         Form {
             Section("About") { aboutControls }

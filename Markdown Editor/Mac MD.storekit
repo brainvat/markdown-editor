@@ -1,0 +1,121 @@
+{
+  "identifier" : "Mac MD Premium",
+  "nonConsumableProducts" : [
+
+  ],
+  "nonRenewingSubscriptionProducts" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : true,
+    "_continueAfterFailedAttempts" : true,
+    "_customerInfoAppBundleIdentifier" : "com.ahammock.macmd",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Fetch Offers"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Redeem Offer Code"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "com.ahammock.macmd.premium",
+      "localizations" : [
+
+      ],
+      "name" : "Mac MD Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "2.99",
+          "familySharable" : false,
+          "groupNumber" : 1,
+          "internalID" : "com.ahammock.macmd.premium.monthly",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Full access to iCloud Sync and all premium features. Billed monthly.",
+              "displayName" : "Mac MD Premium (Monthly)",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.ahammock.macmd.premium.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Monthly",
+          "subscriptionGroupID" : "com.ahammock.macmd.premium",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "23.99",
+          "familySharable" : false,
+          "groupNumber" : 2,
+          "internalID" : "com.ahammock.macmd.premium.annual",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Full access to iCloud Sync and all premium features. Save 33% vs monthly. Billed annually.",
+              "displayName" : "Mac MD Premium (Annual)",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.ahammock.macmd.premium.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Premium Annual",
+          "subscriptionGroupID" : "com.ahammock.macmd.premium",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
