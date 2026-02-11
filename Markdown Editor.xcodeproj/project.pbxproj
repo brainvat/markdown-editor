@@ -27,6 +27,18 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		EA1634332F3C303E000F5FDF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		EAD9D1EA2F3836CD00222D1E /* Markdown Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Markdown Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAD9D1FB2F3836CE00222D1E /* Markdown EditorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Markdown EditorTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,7 +109,6 @@
 				EAD9D1FE2F3836CE00222D1E /* Markdown EditorTests */,
 				EAD9D2082F3836CE00222D1E /* Markdown EditorUITests */,
 				EAD9D1EB2F3836CD00222D1E /* Products */,
-				EAFD388C2F3961A10041BE2A /* docs 2 */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,13 +122,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		EAFD388C2F3961A10041BE2A /* docs 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "docs 2";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -128,6 +132,7 @@
 				EAD9D1E62F3836CD00222D1E /* Sources */,
 				EAD9D1E72F3836CD00222D1E /* Frameworks */,
 				EAD9D1E82F3836CD00222D1E /* Resources */,
+				EA1634332F3C303E000F5FDF /* CopyFiles */,
 			);
 			buildRules = (
 			);
