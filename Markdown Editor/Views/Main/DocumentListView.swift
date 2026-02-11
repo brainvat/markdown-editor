@@ -8,9 +8,17 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - View Mode
+
+enum DocumentViewMode: String {
+    case list
+    case grid
+}
+
 /// The document list (second column) showing documents filtered by the selected sidebar item
 struct DocumentListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     let sidebarItem: SidebarItem?
     @Binding var selectedDocument: Document?
@@ -26,15 +34,31 @@ struct DocumentListView: View {
     @State private var documentForNewProject: Document?
     @State private var sortOption: SortOption = .modified
     
+    // View mode — persisted, but auto-defaults to grid on wide layouts
+    @AppStorage("documentViewMode") private var storedViewMode: String = DocumentViewMode.list.rawValue
+    @State private var hasAppliedDefaultViewMode = false
+    
+    private var viewMode: DocumentViewMode {
+        DocumentViewMode(rawValue: storedViewMode) ?? .list
+    }
+    
     // Multi-select state
     @State private var selectedDocuments: Set<Document> = []
     @State private var isSelecting = false
     @State private var showBulkDeleteConfirmation = false
     
     var body: some View {
-        listView
+        contentView
             .searchable(text: $searchText, isPresented: $isSearching, prompt: "Search documents")
             .navigationTitle(navigationTitle)
+            .onAppear {
+                // Auto-switch to grid on first launch for wide layouts (iPad landscape / Mac)
+                guard !hasAppliedDefaultViewMode else { return }
+                hasAppliedDefaultViewMode = true
+                if horizontalSizeClass == .regular && storedViewMode == DocumentViewMode.list.rawValue {
+                    storedViewMode = DocumentViewMode.grid.rawValue
+                }
+            }
             .onReceive(NotificationCenter.default.publisher(for: .showSearch)) { _ in
                 isSearching = true
             }
@@ -78,6 +102,48 @@ struct DocumentListView: View {
                     }
             }
             .toolbar { toolbarContent }
+    }
+    
+    // MARK: - Content View (switches between list and grid)
+    
+    @ViewBuilder
+    private var contentView: some View {
+        if viewMode == .grid && !isSelecting {
+            gridView
+        } else {
+            listView
+        }
+    }
+    
+    // MARK: - Grid View
+    
+    private var gridColumns: [GridItem] {
+        [GridItem(.adaptive(minimum: 200, maximum: 260), spacing: 12)]
+    }
+    
+    private var gridView: some View {
+        ScrollView {
+            LazyVGrid(columns: gridColumns, spacing: 12) {
+                ForEach(searchResults) { document in
+                    DocumentGridItemView(
+                        document: document,
+                        isSelected: selectedDocument?.id == document.id,
+                        allProjects: allProjects,
+                        allTags: allTags,
+                        onSelect: { selectedDocument = document },
+                        onFavorite: { toggleFavorite(document) },
+                        onDuplicate: { duplicateDocument(document) },
+                        onArchive: { toggleArchive(document) },
+                        onDelete: { confirmDelete(document) },
+                        onMoveToProject: { project in moveDocumentToProject(document, project: project) },
+                        onCreateProjectAndMove: { createProjectAndMove(document) },
+                        onApplyTag: { tag in applyTagToDocument(document, tag: tag) },
+                        onRemoveTag: { tag in removeTagFromDocument(document, tag: tag) }
+                    )
+                }
+            }
+            .padding(12)
+        }
     }
     
     // MARK: - List View
@@ -148,6 +214,24 @@ struct DocumentListView: View {
                     }
                 } label: {
                     Label("Sort", systemImage: "arrow.up.arrow.down")
+                }
+            }
+        }
+        
+        // View mode toggle (hidden while selecting)
+        if !isSelecting {
+            ToolbarItem {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        storedViewMode = (viewMode == .list)
+                            ? DocumentViewMode.grid.rawValue
+                            : DocumentViewMode.list.rawValue
+                    }
+                } label: {
+                    Label(
+                        viewMode == .list ? "Grid View" : "List View",
+                        systemImage: viewMode == .list ? "square.grid.2x2" : "list.bullet"
+                    )
                 }
             }
         }
@@ -642,6 +726,172 @@ struct DocumentRowView: View {
             }
         }
         .padding(.vertical, 4)
+    }
+}
+
+// MARK: - Document Grid Item View
+
+struct DocumentGridItemView: View {
+    let document: Document
+    let isSelected: Bool
+    let allProjects: [Project]
+    let allTags: [Tag]
+    let onSelect: () -> Void
+    let onFavorite: () -> Void
+    let onDuplicate: () -> Void
+    let onArchive: () -> Void
+    let onDelete: () -> Void
+    let onMoveToProject: (Project?) -> Void
+    let onCreateProjectAndMove: () -> Void
+    let onApplyTag: (Tag) -> Void
+    let onRemoveTag: (Tag) -> Void
+    
+    /// Strip Markdown syntax characters for a clean preview snippet
+    private var previewText: String {
+        let stripped = document.content
+            .replacingOccurrences(of: #"#{1,6}\s"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\*{1,2}([^*]+)\*{1,2}"#, with: "$1", options: .regularExpression)
+            .replacingOccurrences(of: #"`[^`]+`"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"!\[.*?\]\(.*?\)"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\[([^\]]+)\]\(.*?\)"#, with: "$1", options: .regularExpression)
+            .replacingOccurrences(of: #"[-*+]\s"#, with: "", options: .regularExpression)
+        return stripped.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    var body: some View {
+        Button(action: onSelect) {
+            VStack(alignment: .leading, spacing: 8) {
+                // Title
+                Text(document.title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                // Content preview
+                if !previewText.isEmpty {
+                    Text(previewText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(4)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    Text("No content")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .italic()
+                }
+                
+                Spacer(minLength: 0)
+                
+                // Footer: tags + star + word count
+                HStack(spacing: 4) {
+                    // Tag dots
+                    ForEach(document.tags.prefix(4)) { tag in
+                        Circle()
+                            .fill(Color(hex: tag.colorHex))
+                            .frame(width: 7, height: 7)
+                    }
+                    if document.tags.count > 4 {
+                        Text("+\(document.tags.count - 4)")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                    
+                    Spacer()
+                    
+                    if document.isFavorite {
+                        Image(systemName: "star.fill")
+                            .foregroundStyle(.yellow)
+                            .font(.caption2)
+                    }
+                    
+                    Text("\(document.wordCount)w")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, minHeight: 140)
+            .background {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(.background)
+                    .shadow(
+                        color: .black.opacity(isSelected ? 0.2 : 0.08),
+                        radius: isSelected ? 6 : 3,
+                        y: isSelected ? 3 : 1
+                    )
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .strokeBorder(
+                        isSelected ? Color.accentColor : Color.clear,
+                        lineWidth: 2
+                    )
+            }
+        }
+        .buttonStyle(.plain)
+        .contextMenu { gridContextMenu }
+        .animation(.easeInOut(duration: 0.15), value: isSelected)
+    }
+    
+    @ViewBuilder
+    private var gridContextMenu: some View {
+        Button(action: onDuplicate) {
+            Label("Duplicate", systemImage: "doc.on.doc")
+        }
+        Button(action: onFavorite) {
+            Label(
+                document.isFavorite ? "Remove from Favorites" : "Add to Favorites",
+                systemImage: document.isFavorite ? "star.slash" : "star"
+            )
+        }
+        Button(action: onArchive) {
+            Label(
+                document.isArchived ? "Unarchive" : "Archive",
+                systemImage: document.isArchived ? "tray.and.arrow.up" : "tray.and.arrow.down"
+            )
+        }
+        Divider()
+        Menu {
+            Button { onMoveToProject(nil) } label: {
+                Label("None", systemImage: "folder.badge.minus")
+            }
+            Divider()
+            Button(action: onCreateProjectAndMove) {
+                Label("New Project...", systemImage: "folder.badge.plus")
+            }
+            Divider()
+            ForEach(allProjects) { project in
+                Button { onMoveToProject(project) } label: {
+                    Label(project.name, systemImage: project.iconName)
+                }
+            }
+        } label: {
+            Label("Move to Project", systemImage: "folder")
+        }
+        if !allTags.isEmpty {
+            Menu {
+                ForEach(allTags) { tag in
+                    let isApplied = document.tags.contains(where: { $0.id == tag.id })
+                    Button {
+                        isApplied ? onRemoveTag(tag) : onApplyTag(tag)
+                    } label: {
+                        Label {
+                            Text(tag.name)
+                        } icon: {
+                            Image(systemName: isApplied ? "checkmark" : "tag")
+                        }
+                    }
+                }
+            } label: {
+                Label("Apply Tags", systemImage: "tag")
+            }
+        }
+        Divider()
+        Button(role: .destructive, action: onDelete) {
+            Label("Delete", systemImage: "trash")
+        }
     }
 }
 
