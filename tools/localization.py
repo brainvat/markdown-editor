@@ -152,6 +152,53 @@ class FileLoader:
         return True
 
 
+class TranslationDetector:
+    """Detects missing translations for localization keys."""
+    
+    def __init__(self, localizable_data: dict, supported_languages: list):
+        """
+        Initialize the TranslationDetector.
+        
+        Args:
+            localizable_data: Parsed Localizable.xcstrings data
+            supported_languages: List of supported language codes
+        """
+        self.localizable_data = localizable_data
+        self.supported_languages = supported_languages
+        self.logger = logging.getLogger(__name__)
+    
+    def find_missing_translations(self) -> dict:
+        """
+        Find missing translations for all localization keys.
+        
+        Iterates through all keys in the localizable data and identifies
+        which languages are missing translations for each key.
+        
+        Returns:
+            Dictionary mapping localization keys to lists of missing language codes
+            Format: {localization_key: [missing_language_codes]}
+        """
+        missing_translations = {}
+        strings = self.localizable_data.get("strings", {})
+        
+        for key in strings:
+            # Get the localizations dictionary for this key
+            localizations = strings[key].get("localizations", {})
+            
+            # Find which languages are missing
+            missing_langs = []
+            for lang in self.supported_languages:
+                if lang not in localizations:
+                    missing_langs.append(lang)
+            
+            # Only add to result if there are missing translations
+            if missing_langs:
+                missing_translations[key] = missing_langs
+        
+        self.logger.info(f"Detected missing translations for {len(missing_translations)} keys")
+        return missing_translations
+
+
 def setup_logging():
     """Configure logging for the application."""
     logging.basicConfig(
@@ -231,8 +278,25 @@ def main():
         logger.info(f"Source language: {localizable_data.get('sourceLanguage', 'unknown')}")
         logger.info(f"Version: {localizable_data.get('version', 'unknown')}")
         
+        # Detect missing translations
+        logger.info("Detecting missing translations...")
+        supported_languages = list(languages_data.keys())
+        detector = TranslationDetector(localizable_data, supported_languages)
+        missing_translations = detector.find_missing_translations()
+        
+        # Display summary of missing translations
+        total_missing = sum(len(langs) for langs in missing_translations.values())
+        logger.info(f"Found {len(missing_translations)} keys with missing translations")
+        logger.info(f"Total missing translations: {total_missing}")
+        
+        # Show sample of keys with missing translations (first 5)
+        if missing_translations:
+            logger.info("Sample keys with missing translations:")
+            for i, (key, missing_langs) in enumerate(list(missing_translations.items())[:5]):
+                key_display = key if len(key) <= 40 else key[:37] + "..."
+                logger.info(f"  '{key_display}' - missing {len(missing_langs)} languages: {', '.join(missing_langs[:5])}{'...' if len(missing_langs) > 5 else ''}")
+        
         # TODO: Implement workflow orchestration
-        # - Detect missing translations
         # - Generate translations
         # - Insert translations
         # - Track new keys
