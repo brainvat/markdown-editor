@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "麥克醫學博士",
+    "tagline": "適用於所有蘋果裝置的現代Markdown編輯器",
+    "subtitle": "透過無縫的iCloud同步，在Mac、iPad和iPhone上書寫精美",
+    "downloadButton": "在GitHub上下載",
+    "getStartedButton": "開始"
+  },
+  "features": {
+    "heading": "你需要寫的一切",
+    "livePreview": {
+      "title": "實時預覽",
+      "description": "使用GitHub Flavored Markdown的實時渲染和185種語言的語法高亮顯示"
+    },
+    "icloudSync": {
+      "title": "iCloud 同步",
+      "description": "在您的所有蘋果裝置上實現無縫同步。 在Mac上開始，在iPad上完成"
+    },
+    "universalApp": {
+      "title": "通用應用程式",
+      "description": "具有自適應佈局的macOS、iPad和iPhone上的原生體驗"
+    },
+    "smartOrganization": {
+      "title": "智慧組織",
+      "description": "專案、標籤、收藏夾和檔案讓您的文件井然有序"
+    },
+    "exportAnywhere": {
+      "title": "出口到任何地方",
+      "description": "匯出到PDF、HTML或Markdown，保留精美的樣式"
+    },
+    "languages": {
+      "title": "38種語言",
+      "description": "具有自動翻譯管理的全面本地化支援"
+    }
+  },
+  "platforms": {
+    "heading": "無論你做什麼，都有效",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "開源和免費",
+    "description1": "Mac MD採用現代Swift和SwiftUI構建，根據麻省理工學院許可證，它是完全開源的。",
+    "description2": "靈感來自心愛的MacDown，併為現代蘋果生態系統而打造。",
+    "viewButton": "在GitHub上檢視"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD。 獲得麻省理工學院許可。",
+    "createdBy": "由...建立"
+  }
+}

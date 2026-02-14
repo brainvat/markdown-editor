@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "Современный редактор Markdown для всех ваших устройств Apple",
+    "subtitle": "Пишите красиво на Mac, iPad и iPhone с бесшовной синхронизацией iCloud",
+    "downloadButton": "Скачать на GitHub",
+    "getStartedButton": "Начать"
+  },
+  "features": {
+    "heading": "Все, что вам нужно написать",
+    "livePreview": {
+      "title": "Предварительный просмотр в реальном времени",
+      "description": "Рендеринг в режиме реального времени с GitHub Flavored Markdown и подсветкой синтаксиса для 185 языков"
+    },
+    "icloudSync": {
+      "title": "Синхронизация iCloud",
+      "description": "Бесшовная синхронизация на всех ваших устройствах Apple. Начать на Mac, закончить на iPad"
+    },
+    "universalApp": {
+      "title": "Универсальное приложение",
+      "description": "Родной опыт на macOS, iPad и iPhone с адаптивными макетами"
+    },
+    "smartOrganization": {
+      "title": "Умная Организация",
+      "description": "Проекты, теги, избранное и архивы организуют ваши документы"
+    },
+    "exportAnywhere": {
+      "title": "Экспортировать куда угодно",
+      "description": "Экспорт в PDF, HTML или Markdown с сохраненным красивым стилем"
+    },
+    "languages": {
+      "title": "38 Языков",
+      "description": "Полная поддержка локализации с автоматизированным управлением переводом"
+    }
+  },
+  "platforms": {
+    "heading": "Работает везде, где вы это делаете",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Открытый исходный код и бесплатный",
+    "description1": "Mac MD построен с современными Swift и SwiftUI, и он полностью открыт под лицензией MIT.",
+    "description2": "Вдохновленный любимым MacDown и созданный для современной экосистемы Apple.",
+    "viewButton": "Посмотреть на GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Лицензировано в соответствии с MIT.",
+    "createdBy": "Создано"
+  }
+}

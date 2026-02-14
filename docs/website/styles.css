@@ -40,6 +40,44 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+
+.language-selector-wrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.language-selector {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.language-selector:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.language-selector:focus {
+    outline: none;
+    border-color: white;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.language-selector option {
+    background: var(--text-dark);
+    color: white;
 }
 
 .logo {
@@ -249,6 +287,16 @@ footer a:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .language-selector-wrapper {
+        top: 10px;
+        right: 10px;
+    }
+
+    .language-selector {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
     .hero h1 {
         font-size: 2.5rem;
     }
@@ -324,5 +372,26 @@ footer a:hover {
     
     .platforms {
         background: #000000;
+    }
+}
+
+/* RTL Support */
+[dir="rtl"] {
+    text-align: right;
+}
+
+[dir="rtl"] .language-selector-wrapper {
+    right: auto;
+    left: 20px;
+}
+
+[dir="rtl"] .cta-buttons {
+    flex-direction: row-reverse;
+}
+
+@media (max-width: 768px) {
+    [dir="rtl"] .language-selector-wrapper {
+        left: 10px;
+        right: auto;
     }
 }

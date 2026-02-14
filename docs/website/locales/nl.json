@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "Een moderne Markdown-editor voor al uw Apple-apparaten",
+    "subtitle": "Schrijf prachtig op Mac, iPad en iPhone met naadloze iCloud-synchronisatie",
+    "downloadButton": "Downloaden op GitHub",
+    "getStartedButton": "Aan de slag"
+  },
+  "features": {
+    "heading": "Alles wat je nodig hebt om te schrijven",
+    "livePreview": {
+      "title": "Live voorbeeld",
+      "description": "Realtime weergave met GitHub Flavored Markdown en syntaxismarkering voor 185 talen"
+    },
+    "icloudSync": {
+      "title": "iCloud-synchronisatie",
+      "description": "Naadloze synchronisatie op al uw Apple-apparaten. Start op Mac, eindig op iPad"
+    },
+    "universalApp": {
+      "title": "Universele app",
+      "description": "Native ervaring op macOS, iPad en iPhone met adaptieve lay-outs"
+    },
+    "smartOrganization": {
+      "title": "Slimme organisatie",
+      "description": "Projecten, tags, favorieten en archieven houden uw documenten georganiseerd"
+    },
+    "exportAnywhere": {
+      "title": "Overal exporteren",
+      "description": "Exporteren naar PDF, HTML of Markdown met prachtige styling behouden"
+    },
+    "languages": {
+      "title": "38 Talen",
+      "description": "Volledige lokalisatieondersteuning met geautomatiseerd vertaalbeheer"
+    }
+  },
+  "platforms": {
+    "heading": "Werkt overal waar je doet",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Open Source & Gratis",
+    "description1": "Mac MD is gebouwd met moderne Swift en SwiftUI, en het is volledig open source onder de MIT-licentie.",
+    "description2": "Geïnspireerd door de geliefde MacDown en gebouwd voor het moderne Apple ecosysteem.",
+    "viewButton": "Bekijk op GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Gelicentieerd onder MIT.",
+    "createdBy": "Gemaakt door"
+  }
+}

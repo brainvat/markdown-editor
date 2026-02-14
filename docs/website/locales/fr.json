@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "Un éditeur Markdown moderne pour tous vos appareils Apple",
+    "subtitle": "Écrivez magnifiquement sur Mac, iPad et iPhone avec une synchronisation iCloud transparente",
+    "downloadButton": "Télécharger sur GitHub",
+    "getStartedButton": "Commencer"
+  },
+  "features": {
+    "heading": "Tout ce que vous devez écrire",
+    "livePreview": {
+      "title": "Aperçu en direct",
+      "description": "Rendu en temps réel avec GitHub Flavored Markdown et coloration syntaxique pour 185 langues"
+    },
+    "icloudSync": {
+      "title": "Synchronisation iCloud",
+      "description": "Synchronisation transparente sur tous vos appareils Apple. Commencer sur Mac, terminer sur iPad"
+    },
+    "universalApp": {
+      "title": "Application universelle",
+      "description": "Expérience native sur macOS, iPad et iPhone avec des mises en page adaptatives"
+    },
+    "smartOrganization": {
+      "title": "Organisation intelligente",
+      "description": "Les projets, les étiquettes, les favoris et les archives gardent vos documents organisés"
+    },
+    "exportAnywhere": {
+      "title": "Exporter n'importe où",
+      "description": "Exporter au format PDF, HTML ou Markdown avec un beau style préservé"
+    },
+    "languages": {
+      "title": "38 langues",
+      "description": "Prise en charge complète de la localisation avec gestion automatisée de la traduction"
+    }
+  },
+  "platforms": {
+    "heading": "Fonctionne partout où vous le faites",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Open Source et gratuit",
+    "description1": "Mac MD est construit avec Swift et SwiftUI modernes, et il est complètement open source sous la licence MIT.",
+    "description2": "Inspiré par le MacDown bien-aimé et conçu pour l'écosystème Apple moderne.",
+    "viewButton": "Voir sur GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Sous licence MIT.",
+    "createdBy": "Créé par"
+  }
+}

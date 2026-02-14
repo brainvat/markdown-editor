@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "Editor Markdown modern untuk semua perangkat Apple Anda",
+    "subtitle": "Menulis dengan indah di Mac, iPad, dan iPhone dengan sinkronisasi iCloud yang mulus",
+    "downloadButton": "Unduh di GitHub",
+    "getStartedButton": "Mulai"
+  },
+  "features": {
+    "heading": "Semua yang kamu butuhkan untuk menulis",
+    "livePreview": {
+      "title": "Pratinjau Langsung",
+      "description": "Rendering waktu nyata dengan GitHub Flavored Markdown dan penyorotan sintaks untuk 185 bahasa"
+    },
+    "icloudSync": {
+      "title": "Sinkronisasi iCloud",
+      "description": "Sinkronisasi yang mulus di semua perangkat Apple Anda. Mulai di Mac, selesaikan di iPad"
+    },
+    "universalApp": {
+      "title": "Aplikasi Universal",
+      "description": "Pengalaman asli di macOS, iPad, dan iPhone dengan tata letak adaptif"
+    },
+    "smartOrganization": {
+      "title": "Organisasi Cerdas",
+      "description": "Proyek, tag, favorit, dan arsip menjaga dokumen Anda tetap teratur"
+    },
+    "exportAnywhere": {
+      "title": "Ekspor Ke Mana Saja",
+      "description": "Ekspor ke PDF, HTML, atau Markdown dengan gaya yang indah dipertahankan"
+    },
+    "languages": {
+      "title": "38 Bahasa",
+      "description": "Dukungan lokalisasi penuh dengan manajemen terjemahan otomatis"
+    }
+  },
+  "platforms": {
+    "heading": "Bekerja di mana pun Anda melakukannya",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Sumber Terbuka & Gratis",
+    "description1": "Mac MD dibangun dengan Swift dan SwiftUI modern, dan sepenuhnya sumber terbuka di bawah Lisensi MIT.",
+    "description2": "Terinspirasi oleh MacDown yang dicintai dan dibuat untuk ekosistem Apple modern.",
+    "viewButton": "Lihat di GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Berlisensi di bawah MIT.",
+    "createdBy": "Dibuat oleh"
+  }
+}

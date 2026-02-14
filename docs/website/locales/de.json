@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "Ein moderner Markdown-Editor für alle Ihre Apple-Geräte",
+    "subtitle": "Schreiben Sie wunderbar auf Mac, iPad und iPhone mit nahtloser iCloud-Synchronisierung",
+    "downloadButton": "Auf GitHub herunterladen",
+    "getStartedButton": "Erste Schritte"
+  },
+  "features": {
+    "heading": "Alles, was Sie schreiben müssen",
+    "livePreview": {
+      "title": "Live-Vorschau",
+      "description": "Echtzeit-Rendering mit GitHub Flavored Markdown und Syntax-Hervorhebung für 185 Sprachen"
+    },
+    "icloudSync": {
+      "title": "iCloud-Synchronisierung",
+      "description": "Nahtlose Synchronisierung auf all Ihren Apple-Geräten. Auf dem Mac starten, auf dem iPad beenden"
+    },
+    "universalApp": {
+      "title": "Universelle App",
+      "description": "Native Erfahrung auf macOS, iPad und iPhone mit adaptiven Layouts"
+    },
+    "smartOrganization": {
+      "title": "Intelligente Organisation",
+      "description": "Projekte, Tags, Favoriten und Archive halten Ihre Dokumente organisiert"
+    },
+    "exportAnywhere": {
+      "title": "Überall exportieren",
+      "description": "Exportieren Sie in PDF, HTML oder Markdown mit schönem Styling erhalten"
+    },
+    "languages": {
+      "title": "38 Sprachen",
+      "description": "Vollständige Lokalisierungsunterstützung mit automatisierter Übersetzungsverwaltung"
+    }
+  },
+  "platforms": {
+    "heading": "Funktioniert überall, wo du es tust",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Open Source & Kostenlos",
+    "description1": "Mac MD ist mit modernem Swift und SwiftUI gebaut und ist vollständig Open Source unter der MIT-Lizenz.",
+    "description2": "Inspiriert vom beliebten MacDown und entwickelt für das moderne Apple-Ökosystem.",
+    "viewButton": "Ansicht auf GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Lizenziert unter MIT.",
+    "createdBy": "Erstellt von"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "ماك MD",
+    "tagline": "محرر Markdown حديث لجميع أجهزة Apple الخاصة بك",
+    "subtitle": "اكتب بشكل جميل على Mac وiPad وiPhone مع مزامنة iCloud السلسة",
+    "downloadButton": "قم بالتنزيل على GitHub",
+    "getStartedButton": "ابدأ"
+  },
+  "features": {
+    "heading": "كل ما تحتاج إلى كتابته",
+    "livePreview": {
+      "title": "معاينة مباشرة",
+      "description": "عرض في الوقت الفعلي باستخدام GitHub Flavored Markdown وتسليط الضوء على بناء الجملة ل 185 لغة"
+    },
+    "icloudSync": {
+      "title": "مزامنة iCloud",
+      "description": "مزامنة سلسة عبر جميع أجهزة Apple الخاصة بك. ابدأ على Mac، وانتهي على iPad"
+    },
+    "universalApp": {
+      "title": "تطبيق عالمي",
+      "description": "تجربة أصلية على macOS وiPad وiPhone مع تخطيطات متكيفة"
+    },
+    "smartOrganization": {
+      "title": "منظمة ذكية",
+      "description": "تحافظ المشاريع والعلامات والمفضلة والمحفوظات على تنظيم مستنداتك"
+    },
+    "exportAnywhere": {
+      "title": "تصدير إلى أي مكان",
+      "description": "قم بالتصدير إلى PDF أو HTML أو Markdown مع الحفاظ على التصميم الجميل"
+    },
+    "languages": {
+      "title": "38 لغة",
+      "description": "دعم التوطين الكامل مع إدارة الترجمة الآلية"
+    }
+  },
+  "platforms": {
+    "heading": "يعمل في كل مكان تقوم به",
+    "macos": "نظام التشغيل macOS 15+",
+    "ios": "نظام التشغيل iOS 18+",
+    "ipados": "نظام التشغيل iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "مفتوح المصدر ومجاني",
+    "description1": "تم بناء Mac MD باستخدام Swift وSwiftUI الحديثين، وهو مفتوح المصدر تماما بموجب ترخيص معهد ماساتشوستس للتكنولوجيا.",
+    "description2": "مستوحاة من MacDown المحبوب ومصممة لنظام Apple البيئي الحديث.",
+    "viewButton": "عرض على GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. مرخص بموجب معهد ماساتشوستس للتكنولوجيا.",
+    "createdBy": "تم إنشاؤه بواسطة"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "Un editor Markdown moderno para todos tus dispositivos Apple",
+    "subtitle": "Escribe maravillosamente en Mac, iPad y iPhone con una sincronización perfecta de iCloud",
+    "downloadButton": "Descargar en GitHub",
+    "getStartedButton": "Empezar"
+  },
+  "features": {
+    "heading": "Todo lo que necesitas escribir",
+    "livePreview": {
+      "title": "Vista previa en vivo",
+      "description": "Representación en tiempo real con GitHub Flavored Markdown y resaltado de sintaxis para 185 idiomas"
+    },
+    "icloudSync": {
+      "title": "Sincronización de iCloud",
+      "description": "Sincronización perfecta en todos tus dispositivos Apple. Empieza en Mac, termina en iPad"
+    },
+    "universalApp": {
+      "title": "Aplicación Universal",
+      "description": "Experiencia nativa en macOS, iPad y iPhone con diseños adaptables"
+    },
+    "smartOrganization": {
+      "title": "Organización inteligente",
+      "description": "Proyectos, etiquetas, favoritos y archivos mantienen sus documentos organizados"
+    },
+    "exportAnywhere": {
+      "title": "Exportar a cualquier lugar",
+      "description": "Exportar a PDF, HTML o Markdown con un hermoso estilo conservado"
+    },
+    "languages": {
+      "title": "38 idiomas",
+      "description": "Soporte de localización completo con gestión de traducción automatizada"
+    }
+  },
+  "platforms": {
+    "heading": "Funciona en cualquier lugar que lo hagas",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Código abierto y gratuito",
+    "description1": "Mac MD está construido con Swift y SwiftUI modernos, y es completamente de código abierto bajo la licencia MIT.",
+    "description2": "Inspirado en el querido MacDown y construido para el ecosistema moderno de Apple.",
+    "viewButton": "Ver en GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Licenciado bajo el MIT.",
+    "createdBy": "Creado por"
+  }
+}

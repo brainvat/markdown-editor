@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "Un moderno editor Markdown per tutti i tuoi dispositivi Apple",
+    "subtitle": "Scrivi magnificamente su Mac, iPad e iPhone con la sincronizzazione iCloud senza interruzioni",
+    "downloadButton": "Scarica su GitHub",
+    "getStartedButton": "Inizia"
+  },
+  "features": {
+    "heading": "Tutto ciò di cui hai bisogno per scrivere",
+    "livePreview": {
+      "title": "Anteprima dal vivo",
+      "description": "Rendering in tempo reale con GitHub Flavored Markdown ed evidenziazione della sintassi per 185 lingue"
+    },
+    "icloudSync": {
+      "title": "Sincronizzazione iCloud",
+      "description": "Sincronizzazione senza soluzione di continuità su tutti i tuoi dispositivi Apple. Inizia su Mac, finisci su iPad"
+    },
+    "universalApp": {
+      "title": "App universale",
+      "description": "Esperienza nativa su macOS, iPad e iPhone con layout adattivi"
+    },
+    "smartOrganization": {
+      "title": "Organizzazione intelligente",
+      "description": "Progetti, tag, preferiti e archivi mantengono i tuoi documenti organizzati"
+    },
+    "exportAnywhere": {
+      "title": "Esporta Ovunque",
+      "description": "Esporta in PDF, HTML o Markdown con bellissimo stile conservato"
+    },
+    "languages": {
+      "title": "38 Lingue",
+      "description": "Supporto completo per la localizzazione con gestione automatica della traduzione"
+    }
+  },
+  "platforms": {
+    "heading": "Funziona ovunque tu lo faccia",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Open Source e gratuito",
+    "description1": "Mac MD è costruito con Swift e SwiftUI moderni ed è completamente open source sotto la licenza MIT.",
+    "description2": "Ispirato all'amato MacDown e costruito per il moderno ecosistema Apple.",
+    "viewButton": "Visualizza su GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Autorizzato sotto MIT.",
+    "createdBy": "Creato da"
+  }
+}

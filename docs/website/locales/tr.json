@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "Tüm Apple cihazlarınız için modern bir Markdown editörü",
+    "subtitle": "Sorunsuz iCloud senkronizasyonu ile Mac, iPad ve iPhone'da güzel bir şekilde yazın",
+    "downloadButton": "GitHub'dan indirin",
+    "getStartedButton": "Başlayın"
+  },
+  "features": {
+    "heading": "Yazman gereken her şey",
+    "livePreview": {
+      "title": "Canlı Önizleme",
+      "description": "GitHub Flavored Markdown ile gerçek zamanlı oluşturma ve 185 dil için sözdizimi vurgulama"
+    },
+    "icloudSync": {
+      "title": "iCloud Senkronizasyonu",
+      "description": "Tüm Apple cihazlarınızda sorunsuz senkronizasyon. Mac'te başlayın, iPad'de bitirin"
+    },
+    "universalApp": {
+      "title": "Evrensel Uygulama",
+      "description": "Uyarlanabilir düzenlerle macOS, iPad ve iPhone'da yerel deneyim"
+    },
+    "smartOrganization": {
+      "title": "Akıllı Organizasyon",
+      "description": "Projeler, etiketler, favoriler ve arşivler belgelerinizi düzenli tutar"
+    },
+    "exportAnywhere": {
+      "title": "Herhangi Bir Yere İhracat",
+      "description": "Güzel stil korunmuş olarak PDF, HTML veya Markdown'a aktarın"
+    },
+    "languages": {
+      "title": "38 Dil",
+      "description": "Otomatik çeviri yönetimi ile tam yerelleştirme desteği"
+    }
+  },
+  "platforms": {
+    "heading": "Yaptığın her yerde çalışır",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Açık Kaynak ve Ücretsiz",
+    "description1": "Mac MD, modern Swift ve SwiftUI ile oluşturulmuştur ve MIT Lisansı altında tamamen açık kaynaklıdır.",
+    "description2": "Sevilen MacDown'dan ilham aldı ve modern Apple ekosistemi için tasarlandı.",
+    "viewButton": "GitHub'da görüntüle"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. MIT kapsamında lisanslanmıştır.",
+    "createdBy": "Oluşturan"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "맥 MD",
+    "tagline": "모든 Apple 기기를 위한 최신 마크다운 편집기",
+    "subtitle": "Mac, iPad 및 iPhone에서 원활한 iCloud 동기화로 아름답게 글을 작성하십시오.",
+    "downloadButton": "GitHub에서 다운로드",
+    "getStartedButton": "시작하기"
+  },
+  "features": {
+    "heading": "작성하는 데 필요한 모든 것",
+    "livePreview": {
+      "title": "실시간 미리보기",
+      "description": "GitHub Flavored Markdown와 185개 언어에 대한 구문 강조를 활용한 실시간 렌더링"
+    },
+    "icloudSync": {
+      "title": "iCloud 동기화",
+      "description": "모든 Apple 기기에서 원활하게 동기화됩니다. Mac에서 시작하고 iPad에서 마무리하십시오."
+    },
+    "universalApp": {
+      "title": "범용 앱",
+      "description": "macOS, iPad 및 iPhone에서 적응형 레이아웃을 활용한 네이티브 경험"
+    },
+    "smartOrganization": {
+      "title": "스마트 조직",
+      "description": "프로젝트, 태그, 즐겨찾기 및 아카이브가 문서를 체계적으로 정리합니다."
+    },
+    "exportAnywhere": {
+      "title": "어디든 내보내기",
+      "description": "아름다운 스타일을 유지하면서 PDF, HTML 또는 Markdown으로 내보내기"
+    },
+    "languages": {
+      "title": "38개 언어",
+      "description": "자동 번역 관리를 포함한 완전한 현지화 지원"
+    }
+  },
+  "platforms": {
+    "heading": "당신이 하는 모든 곳에서 작동합니다",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "오픈 소스 및 무료",
+    "description1": "Mac MD는 최신 Swift와 SwiftUI로 구축되었으며, MIT 라이선스에 따라 완전히 오픈 소스입니다.",
+    "description2": "사랑받는 MacDown에서 영감을 받아 현대 Apple 생태계를 위해 설계되었습니다.",
+    "viewButton": "GitHub에서 보기"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. MIT에 라이선스가 부여되었습니다.",
+    "createdBy": "작성자"
+  }
+}

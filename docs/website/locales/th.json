@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "แม็ค เอ็มดี",
+    "tagline": "ตัวแก้ไข Markdown ที่ทันสมัยสําหรับอุปกรณ์ Apple ทั้งหมดของคุณ",
+    "subtitle": "เขียนได้อย่างสวยงามบน Mac, iPad และ iPhone ด้วยการซิงค์ iCloud อย่างราบรื่น",
+    "downloadButton": "ดาวน์โหลดบน GitHub",
+    "getStartedButton": "เริ่มต้น"
+  },
+  "features": {
+    "heading": "ทุกสิ่งที่คุณต้องการเขียน",
+    "livePreview": {
+      "title": "ตัวอย่างสด",
+      "description": "การเรนเดอร์แบบเรียลไทม์ด้วย GitHub Flavored Markdown และการเน้นไวยากรณ์สําหรับ 185 ภาษา"
+    },
+    "icloudSync": {
+      "title": "ซิงค์ iCloud",
+      "description": "การซิงโครไนซ์อย่างราบรื่นระหว่างอุปกรณ์ Apple ทั้งหมดของคุณ เริ่มบน Mac จบบน iPad"
+    },
+    "universalApp": {
+      "title": "แอปสากล",
+      "description": "ประสบการณ์แบบเนทีฟบน macOS, iPad และ iPhone ด้วยเลย์เอาต์ที่ปรับเปลี่ยนได้"
+    },
+    "smartOrganization": {
+      "title": "องค์กรอัจฉริยะ",
+      "description": "โปรเจ็กต์ แท็ก รายการโปรด และคลังข้อมูลทําให้เอกสารของคุณเป็นระเบียบ"
+    },
+    "exportAnywhere": {
+      "title": "ส่งออกได้ทุกที่",
+      "description": "ส่งออกเป็น PDF, HTML หรือ Markdown พร้อมสไตล์ที่สวยงามที่เก็บรักษาไว้"
+    },
+    "languages": {
+      "title": "38 ภาษา",
+      "description": "การสนับสนุนการแปลแบบเต็มพร้อมการจัดการการแปลอัตโนมัติ"
+    }
+  },
+  "platforms": {
+    "heading": "ใช้งานได้ทุกที่ที่คุณทํา",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "ไอแพดOS 18+"
+  },
+  "openSource": {
+    "heading": "โอเพ่นซอร์สและฟรี",
+    "description1": "Mac MD สร้างขึ้นด้วย Swift และ SwiftUI ที่ทันสมัย และเป็นโอเพ่นซอร์สอย่างสมบูรณ์ภายใต้ใบอนุญาต MIT",
+    "description2": "ได้รับแรงบันดาลใจจาก MacDown อันเป็นที่รักและสร้างขึ้นเพื่อระบบนิเวศของ Apple ที่ทันสมัย",
+    "viewButton": "ดูบน GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 แม็ค เอ็มดี ได้รับใบอนุญาตภายใต้ MIT",
+    "createdBy": "สร้างโดย"
+  }
+}

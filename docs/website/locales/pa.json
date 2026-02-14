@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Mac MD",
+    "tagline": "A modern Markdown editor for all your Apple devices",
+    "subtitle": "Write beautifully on Mac, iPad, and iPhone with seamless iCloud sync",
+    "downloadButton": "Download on GitHub",
+    "getStartedButton": "Get Started"
+  },
+  "features": {
+    "heading": "Everything you need to write",
+    "livePreview": {
+      "title": "Live Preview",
+      "description": "Real-time rendering with GitHub Flavored Markdown and syntax highlighting for 185 languages"
+    },
+    "icloudSync": {
+      "title": "iCloud Sync",
+      "description": "Seamless synchronization across all your Apple devices. Start on Mac, finish on iPad"
+    },
+    "universalApp": {
+      "title": "Universal App",
+      "description": "Native experience on macOS, iPad, and iPhone with adaptive layouts"
+    },
+    "smartOrganization": {
+      "title": "Smart Organization",
+      "description": "Projects, tags, favorites, and archives keep your documents organized"
+    },
+    "exportAnywhere": {
+      "title": "Export Anywhere",
+      "description": "Export to PDF, HTML, or Markdown with beautiful styling preserved"
+    },
+    "languages": {
+      "title": "38 Languages",
+      "description": "Full localization support with automated translation management"
+    }
+  },
+  "platforms": {
+    "heading": "Works everywhere you do",
+    "macos": "macOS 15+",
+    "ios": "iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Open Source & Free",
+    "description1": "Mac MD is built with modern Swift and SwiftUI, and it's completely open source under the MIT License.",
+    "description2": "Inspired by the beloved MacDown and built for the modern Apple ecosystem.",
+    "viewButton": "View on GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Licensed under MIT.",
+    "createdBy": "Created by"
+  }
+}

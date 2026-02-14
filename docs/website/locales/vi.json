@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title": "Máy Mac MD",
+    "tagline": "Trình chỉnh sửa Markdown hiện đại cho tất cả các thiết bị Apple của bạn",
+    "subtitle": "Viết đẹp trên Mac, iPad và iPhone với đồng bộ hóa iCloud liền mạch",
+    "downloadButton": "Tải xuống trên GitHub",
+    "getStartedButton": "Bắt đầu"
+  },
+  "features": {
+    "heading": "Mọi thứ bạn cần viết",
+    "livePreview": {
+      "title": "Xem trước trực tiếp",
+      "description": "Kết xuất thời gian thực với GitHub Flavored Markdown và tô sáng cú pháp cho 185 ngôn ngữ"
+    },
+    "icloudSync": {
+      "title": "Đồng bộ hóa iCloud",
+      "description": "Đồng bộ hóa liền mạch trên tất cả các thiết bị Apple của bạn. Bắt đầu trên Mac, kết thúc trên iPad"
+    },
+    "universalApp": {
+      "title": "Ứng dụng phổ quát",
+      "description": "Trải nghiệm gốc trên macOS, iPad và iPhone với bố cục thích ứng"
+    },
+    "smartOrganization": {
+      "title": "Tổ chức thông minh",
+      "description": "Các dự án, thẻ, mục yêu thích và tài liệu lưu trữ giúp các tài liệu của bạn được sắp xếp gọn gàng"
+    },
+    "exportAnywhere": {
+      "title": "Xuất khẩu ở mọi nơi",
+      "description": "Xuất sang PDF, HTML hoặc Markdown với kiểu dáng đẹp được giữ nguyên"
+    },
+    "languages": {
+      "title": "38 ngôn ngữ",
+      "description": "Hỗ trợ bản địa hóa đầy đủ với quản lý dịch thuật tự động"
+    }
+  },
+  "platforms": {
+    "heading": "Hoạt động ở mọi nơi bạn làm",
+    "macos": "Hệ điều hành macOS 15+",
+    "ios": "Hệ điều hành iOS 18+",
+    "ipados": "iPadOS 18+"
+  },
+  "openSource": {
+    "heading": "Mã nguồn mở & Miễn phí",
+    "description1": "Mac MD được xây dựng với Swift và SwiftUI hiện đại, và nó hoàn toàn là mã nguồn mở theo Giấy phép MIT.",
+    "description2": "Lấy cảm hứng từ MacDown được yêu thích và được xây dựng cho hệ sinh thái Apple hiện đại.",
+    "viewButton": "Xem trên GitHub"
+  },
+  "footer": {
+    "copyright": "© 2026 Mac MD. Được cấp phép theo MIT.",
+    "createdBy": "Được tạo ra bởi"
+  }
+}
