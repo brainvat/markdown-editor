@@ -26,11 +26,11 @@ A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with Swi
 - 📦 **Archived** - Hide completed documents without deleting
 
 ### Markdown Support
-- ✅ **CommonMark** - Full standard Markdown support
-- 🔧 **GitHub Flavored Markdown** - Tables, task lists, and more
-- 🧮 **LaTeX/Math** - Mathematical expressions via MathJax
-- 💻 **Syntax Highlighting** - Beautiful code blocks (coming soon)
-- 📋 **Smart Lists** - Auto-continuation and task list toggling
+- ✅ **CommonMark** - Full standard Markdown support via swift-markdown
+- ✅ **GitHub Flavored Markdown** - Tables, task lists, strikethrough, and more
+- ✅ **Syntax Highlighting** - 185 languages via Highlight.js
+- 🔜 **LaTeX/Math** - Mathematical expressions (planned for v2.0)
+- � **Smart Lists** - Auto-continuation and task list toggling (planned for v2.0)
 
 ### Export & Sharing
 - 📄 **PDF Export** - Native PDF generation with styling preservation (Mac: ✅ iOS: ✅)
