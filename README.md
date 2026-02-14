@@ -38,6 +38,12 @@ A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with Swi
 - 📝 **Markdown Export** - Export as .md files (Mac: ✅ iOS: ❌ SwiftUI bug)
 - 📊 **Document Stats** - Word count, character count, last modified
 
+### Internationalization
+- 🌍 **38 Languages** - Full localization support across all platforms
+- 🤖 **Automated Translation** - Python tool using macOS Translation framework
+- 🔄 **Smart Management** - Automatic detection of missing translations and new keys
+- 📊 **Progress Tracking** - Real-time translation progress with ETA and throughput
+
 **Note:** iOS HTML and Markdown exports are blocked by a [confirmed SwiftUI framework bug](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md) where `.fileExporter()` silently fails for certain `FileDocument` types despite valid documents being created.
 
 ## 🚀 Getting Started
@@ -94,6 +100,12 @@ Mac MD follows modern Swift and SwiftUI best practices:
 - **Export Services** - PDF and HTML generation
 - Async/await throughout (Swift 6 strict concurrency)
 
+### Localization
+- **38 Languages** - Full internationalization support
+- **Automated Translation** - Python tool using macOS Translation framework
+- **Smart Management** - Tracks new keys, detects missing translations
+- See [tools/README.md](tools/README.md) for localization automation details
+
 ### Project Structure
 ```
 Markdown Editor/
@@ -108,7 +120,12 @@ Markdown Editor/
 │   └── Components/     # Reusable sheets and dialogs
 ├── Services/           # Business logic
 ├── Utilities/          # Extensions and helpers
-└── App/                # Entry point
+├── App/                # Entry point
+└── Localizable.xcstrings  # 38-language localization
+tools/
+├── localization.py     # Automated translation tool
+├── bridge.swift        # Swift translation bridge
+└── data/               # Language and key definitions
 ```
 
 ## 🎓 Inspiration & Credits
