@@ -155,16 +155,18 @@ class FileLoader:
 class TranslationDetector:
     """Detects missing translations for localization keys."""
     
-    def __init__(self, localizable_data: dict, supported_languages: list):
+    def __init__(self, localizable_data: dict, supported_languages: list, keys_data: dict = None):
         """
         Initialize the TranslationDetector.
         
         Args:
             localizable_data: Parsed Localizable.xcstrings data
             supported_languages: List of supported language codes
+            keys_data: Optional parsed keys.json data for skip_localization flags
         """
         self.localizable_data = localizable_data
         self.supported_languages = supported_languages
+        self.keys_data = keys_data
         self.logger = logging.getLogger(__name__)
     
     def find_missing_translations(self) -> dict:
@@ -174,6 +176,10 @@ class TranslationDetector:
         Iterates through all keys in the localizable data and identifies
         which languages are missing translations for each key.
         
+        Special cases:
+        - Empty string keys ("") are skipped - they don't need translations
+        - Keys with skip_localization=true in keys.json are skipped
+        
         Returns:
             Dictionary mapping localization keys to lists of missing language codes
             Format: {localization_key: [missing_language_codes]}
@@ -182,6 +188,18 @@ class TranslationDetector:
         strings = self.localizable_data.get("strings", {})
         
         for key in strings:
+            # Skip empty string keys - they don't need translations
+            if key == "":
+                self.logger.debug(f"Skipping empty string key (no translations needed)")
+                continue
+            
+            # Check if this key should skip localization (from keys.json)
+            if self.keys_data:
+                key_info = self.keys_data.get("strings", {}).get(key, {})
+                if key_info.get("skip_localization", False):
+                    self.logger.debug(f"Skipping key '{key}' (skip_localization=true)")
+                    continue
+            
             # Get the localizations dictionary for this key
             localizations = strings[key].get("localizations", {})
             
@@ -281,7 +299,7 @@ def main():
         # Detect missing translations
         logger.info("Detecting missing translations...")
         supported_languages = list(languages_data.keys())
-        detector = TranslationDetector(localizable_data, supported_languages)
+        detector = TranslationDetector(localizable_data, supported_languages, keys_data)
         missing_translations = detector.find_missing_translations()
         
         # Display summary of missing translations

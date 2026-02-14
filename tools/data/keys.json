@@ -1,6 +1,10 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "": {
+      "last_update": "2026-02-13",
+      "skip_localization": true
+    },
     "%@ theme%@": {
       "last_update": "2026-02-13"
     },
@@ -21,6 +25,10 @@
     },
     "+%lld": {
       "last_update": "2026-02-13"
+    },
+    "•": {
+      "last_update": "2026-02-13",
+      "skip_localization": true
     },
     "Aa": {
       "last_update": "2026-02-13"
@@ -382,8 +390,16 @@
     "Your documents automatically sync across Mac, iPad, and iPhone": {
       "last_update": "2026-02-13"
     },
+    "ahammock": {
+      "last_update": "2026-02-13",
+      "skip_localization": true
+    },
     "iCloud Sync": {
       "last_update": "2026-02-13"
+    },
+    "TEST-KEY": {
+      "last_update": "2026-02-13",
+      "skip_localization": true
     }
   }
 }
