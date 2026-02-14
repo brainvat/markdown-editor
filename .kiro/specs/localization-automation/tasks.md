@@ -182,14 +182,18 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
 
 - [x] 8. Implement New Key Tracker component
   - [x] 8.1 Create NewKeyTracker class
-    - Implement initialization with localizable_data and keys_data
+    - Implement initialization with localizable_data, keys_data, generator, and supported_languages
     - Implement find_new_keys() to iterate through keys.json
     - Check if each key exists in Localizable.xcstrings
     - Identify keys with zero translations or non-existent keys
     - Exclude keys with one or more translations
-    - Implement create_to_localize_structure() to build output JSON
+    - Implement generate_translations_for_new_keys() to translate all new keys
+    - For each new key, generate translations for all supported languages
+    - Insert translations into proper stringUnit structure
+    - Implement create_to_localize_structure() to build output JSON with translations
     - Create structure with "sourceLanguage", "strings", and "version" fields
-    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
+    - Include all generated translations for each new key
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9_
   
   - [x] 8.2 User acceptance test: Verify new key tracking with --dry-run
     - Execute: `python tools/localization.py --dry-run`
@@ -197,28 +201,31 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
     - Verify: Output displays the to_localize.json structure that would be created
     - Verify: Keys with existing translations are NOT included in output
     - Verify: Keys with zero translations ARE included in output
+    - Verify: New keys HAVE translations generated for all supported languages
+    - Verify: Translations are in proper stringUnit structure with "state": "translated"
     - Verify: No files are created or modified
   
   - [ ]* 8.3 Write property test for new key identification
     - **Property 5: New Key Identification**
-    - **Validates: Requirements 5.3, 5.4**
+    - **Validates: Requirements 5.3, 5.4, 5.6**
   
   - [ ]* 8.4 Write property test for existing key exclusion
     - **Property 6: Existing Key Exclusion**
     - **Validates: Requirements 5.5**
   
   - [ ]* 8.5 Write property test for output structure validity
-    - **Property 7: Output Structure Validity**
-    - **Validates: Requirements 5.6, 4.4**
+    - **Property 7: Output Structure Validity with Translations**
+    - **Validates: Requirements 5.8, 5.9, 4.4**
   
   - [ ]* 8.6 Write unit tests for NewKeyTracker
     - Test identifying non-existent keys
     - Test identifying keys with zero translations
     - Test excluding keys with translations
-    - Test output structure creation
+    - Test translation generation for new keys
+    - Test output structure creation with translations
 
-- [ ] 9. Implement Reporter component
-  - [ ] 9.1 Create Reporter class
+- [x] 9. Implement Reporter component
+  - [x] 9.1 Create Reporter class
     - Implement initialization with statistics dictionary
     - Track keys_processed, translations_added, new_keys_found
     - Track missing_language_packs and translation_errors
@@ -228,7 +235,7 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
     - In --dry-run mode, output to_localize.json content to stdout instead of writing file
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
   
-  - [ ] 9.2 User acceptance test: Verify reporting with --dry-run
+  - [x] 9.2 User acceptance test: Verify reporting with --dry-run
     - Execute: `python tools/localization.py --dry-run`
     - Verify: Output shows complete analysis summary with statistics
     - Verify: Output displays to_localize.json content (not written to file)

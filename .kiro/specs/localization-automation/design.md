@@ -160,27 +160,40 @@ class TranslationInserter:
 
 ### 5. New Key Tracker Component
 
-**Responsibility**: Identify keys from keys.json that need to be added to Localizable.xcstrings
+**Responsibility**: Identify keys from keys.json that need to be added to Localizable.xcstrings, generate translations for them, and create a fully translated structure
 
 **Interface**:
 ```python
 class NewKeyTracker:
-    def __init__(localizable_data: dict, keys_data: dict)
-    def find_new_keys() -> dict
+    def __init__(localizable_data: dict, keys_data: dict, generator: TranslationGenerator, supported_languages: list)
+    def find_new_keys() -> list[str]
+    def generate_translations_for_new_keys() -> dict
     def create_to_localize_structure() -> dict
 ```
 
 **Behavior**:
 - Iterate through keys in keys_data["strings"]
 - Check if each key exists in localizable_data["strings"]
-- If key doesn't exist OR has zero translations, add to output
-- Create output structure matching Localizable.xcstrings format:
+- If key doesn't exist OR has zero translations, identify as a new key
+- For each new key, generate translations for all supported languages using TranslationGenerator
+- Insert generated translations into the new key's structure
+- Create output structure matching Localizable.xcstrings format with translations:
   ```json
   {
     "sourceLanguage": "en",
     "strings": {
-      "key1": {},
-      "key2": {}
+      "key1": {
+        "localizations": {
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "translated text"
+            }
+          },
+          "fr": { ... }
+        }
+      },
+      "key2": { ... }
     },
     "version": "1.0"
   }
@@ -466,21 +479,21 @@ Same as Localizable.xcstrings but only contains keys with zero translations:
 
 ### Property 5: New Key Identification
 
-*For any* key in the keys.json file, if that key either does not exist in Localizable.xcstrings or exists with zero translations, then it should appear in the to_localize.json output file.
+*For any* key in the keys.json file, if that key either does not exist in Localizable.xcstrings or exists with zero translations, then it should be identified as a new key and translations should be generated for it.
 
-**Validates: Requirements 5.3, 5.4**
+**Validates: Requirements 5.3, 5.4, 5.6**
 
 ### Property 6: Existing Key Exclusion
 
-*For any* key in the keys.json file that exists in Localizable.xcstrings with one or more translations, that key should not appear in the to_localize.json output file.
+*For any* key in the keys.json file that exists in Localizable.xcstrings with one or more translations, that key should not be identified as a new key and should not appear in the to_localize.json output file.
 
 **Validates: Requirements 5.5**
 
-### Property 7: Output Structure Validity
+### Property 7: Output Structure Validity with Translations
 
-*For any* generated output file (to_localize.json or merged Localizable.xcstrings), the JSON structure should contain exactly the required fields: "sourceLanguage" set to "en", "strings" as a dictionary, and "version" set to "1.0".
+*For any* generated output file (to_localize.json or merged Localizable.xcstrings), the JSON structure should contain exactly the required fields: "sourceLanguage" set to "en", "strings" as a dictionary, and "version" set to "1.0". Additionally, for to_localize.json, each new key should contain translations for all supported languages in the proper stringUnit structure.
 
-**Validates: Requirements 5.6, 4.4**
+**Validates: Requirements 5.8, 5.9, 4.4**
 
 ### Property 8: Processing Completeness
 

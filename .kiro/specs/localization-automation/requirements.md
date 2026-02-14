@@ -72,18 +72,21 @@ This document specifies the requirements for a Python-based localization automat
 4. WHEN all missing translations for a Localization_Key are processed, THE Localization_Tool SHALL maintain the exact JSON structure of the Localizable_File
 5. WHEN inserting translations, THE Localization_Tool SHALL preserve all existing fields and metadata in the Localizable_File
 
-### Requirement 5: New Key Tracking
+### Requirement 5: New Key Tracking and Translation
 
-**User Story:** As a developer, I want the tool to identify which keys from the Keys_File need to be added to the Localizable file, so that I can track new localization requirements.
+**User Story:** As a developer, I want the tool to identify which keys from the Keys_File need to be added to the Localizable file and generate translations for them, so that new keys are fully localized when added.
 
 #### Acceptance Criteria
 
 1. WHEN processing Keys_File, THE Localization_Tool SHALL iterate through all keys in Keys_File
 2. FOR each key in Keys_File, WHEN checking existence, THE Localization_Tool SHALL determine if the key exists in the Localizable_File "strings" dictionary
-3. WHEN a key from Keys_File exists in Localizable_File with zero translations, THE Localization_Tool SHALL add it to Output_File
-4. WHEN a key from Keys_File does not exist in Localizable_File, THE Localization_Tool SHALL add it to Output_File
-5. WHEN a key from Keys_File exists in Localizable_File with one or more translations, THE Localization_Tool SHALL not add it to Output_File
-6. WHEN creating Output_File, THE Localization_Tool SHALL use the same JSON structure as Localizable_File with "sourceLanguage", "strings", and "version" fields
+3. WHEN a key from Keys_File exists in Localizable_File with zero translations, THE Localization_Tool SHALL identify it as a new key
+4. WHEN a key from Keys_File does not exist in Localizable_File, THE Localization_Tool SHALL identify it as a new key
+5. WHEN a key from Keys_File exists in Localizable_File with one or more translations, THE Localization_Tool SHALL not identify it as a new key
+6. FOR each new key identified, THE Localization_Tool SHALL generate translations for all supported languages using Translation_Framework
+7. FOR each new key identified, THE Localization_Tool SHALL insert the generated translations into the key's structure
+8. WHEN creating Output_File, THE Localization_Tool SHALL use the same JSON structure as Localizable_File with "sourceLanguage", "strings", and "version" fields
+9. WHEN creating Output_File, THE Localization_Tool SHALL include all generated translations for each new key
 
 ### Requirement 6: Analysis Reporting
 

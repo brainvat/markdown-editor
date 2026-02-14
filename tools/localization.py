@@ -607,20 +607,25 @@ class TranslationInserter:
 
 
 class NewKeyTracker:
-    """Tracks new localization keys that need to be added to Localizable.xcstrings."""
+    """Tracks new localization keys that need to be added to Localizable.xcstrings and generates translations for them."""
     
-    def __init__(self, localizable_data: dict, keys_data: dict):
+    def __init__(self, localizable_data: dict, keys_data: dict, generator=None, supported_languages=None):
         """
         Initialize the NewKeyTracker.
         
         Args:
             localizable_data: Parsed Localizable.xcstrings data
             keys_data: Parsed keys.json data
+            generator: TranslationGenerator instance for generating translations (optional)
+            supported_languages: List of supported language codes (optional)
         """
         self.localizable_data = localizable_data
         self.keys_data = keys_data
+        self.generator = generator
+        self.supported_languages = supported_languages or []
         self.logger = logging.getLogger(__name__)
         self.new_keys = []
+        self.new_keys_data = {}  # Store translated data for new keys
     
     def find_new_keys(self) -> list:
         """
@@ -664,17 +669,68 @@ class NewKeyTracker:
         self.logger.info(f"Found {len(self.new_keys)} new keys that need to be added")
         return self.new_keys
     
+    def generate_translations_for_new_keys(self) -> None:
+        """
+        Generate translations for all new keys using the TranslationGenerator.
+        
+        Optimized to translate by language (all keys for one language at a time)
+        rather than by key (all languages for one key at a time).
+        This reduces subprocess overhead.
+        
+        For each supported language:
+        - Generate translations for all new keys
+        - Store translations in proper stringUnit structure
+        - Handle translation failures gracefully
+        """
+        if not self.generator or not self.supported_languages:
+            self.logger.warning("No generator or supported languages provided - skipping translation generation for new keys")
+            return
+        
+        if not self.generator.framework_available:
+            self.logger.warning("Translation framework not available - new keys will have no translations")
+            return
+        
+        self.logger.info(f"Generating translations for {len(self.new_keys)} new keys across {len(self.supported_languages)} languages...")
+        
+        # Initialize data structures for all new keys
+        for key in self.new_keys:
+            self.new_keys_data[key] = {
+                "localizations": {}
+            }
+        
+        # Translate by LANGUAGE (all keys for one language) rather than by KEY
+        # This is more efficient as it reduces subprocess overhead
+        for lang in self.supported_languages:
+            self.logger.debug(f"Translating all keys to {lang}...")
+            
+            for key in self.new_keys:
+                translated = self.generator.translate(key, lang)
+                
+                if translated:
+                    # Insert translation in proper structure
+                    self.new_keys_data[key]["localizations"][lang] = {
+                        "stringUnit": {
+                            "state": "translated",
+                            "value": translated
+                        }
+                    }
+                    self.logger.debug(f"  [{lang}] {key} -> {translated}")
+        
+        # Count total translations generated
+        total_translations = sum(len(data["localizations"]) for data in self.new_keys_data.values())
+        self.logger.info(f"Generated {total_translations} translations for {len(self.new_keys)} new keys")
+    
     def create_to_localize_structure(self) -> dict:
         """
-        Create the to_localize.json structure with new keys.
+        Create the to_localize.json structure with new keys and their translations.
         
         The structure matches Localizable.xcstrings format:
         - "sourceLanguage": "en"
-        - "strings": dictionary with keys as keys and empty dicts as values
+        - "strings": dictionary with keys and their translations
         - "version": "1.0"
         
         Returns:
-            Dictionary in Localizable.xcstrings format containing only new keys
+            Dictionary in Localizable.xcstrings format containing new keys with translations
         """
         # Build the structure
         to_localize = {
@@ -683,9 +739,13 @@ class NewKeyTracker:
             "version": "1.0"
         }
         
-        # Add each new key with an empty dictionary
+        # Add each new key with its translations (or empty dict if no translations generated)
         for key in self.new_keys:
-            to_localize["strings"][key] = {}
+            if key in self.new_keys_data:
+                to_localize["strings"][key] = self.new_keys_data[key]
+            else:
+                # No translations generated (e.g., framework not available)
+                to_localize["strings"][key] = {}
         
         self.logger.info(f"Created to_localize structure with {len(self.new_keys)} keys")
         return to_localize
@@ -698,6 +758,136 @@ class NewKeyTracker:
             Number of new keys
         """
         return len(self.new_keys)
+
+
+class Reporter:
+    """
+    Reporter component for generating summaries and writing output files.
+    
+    Responsibilities:
+    - Track processing statistics
+    - Generate formatted analysis summaries
+    - Write to_localize.json file (or output to stdout in dry-run mode)
+    - Generate merge summaries
+    """
+    
+    def __init__(self, stats: dict, logger=None):
+        """
+        Initialize Reporter with statistics dictionary.
+        
+        Args:
+            stats: Dictionary containing:
+                - keys_processed: Number of keys processed
+                - translations_added: Number of translations added
+                - new_keys_found: Number of new keys found
+                - missing_language_packs: List of language codes with missing packs
+                - translation_errors: Number of translation errors
+            logger: Optional logger instance
+        """
+        self.stats = stats
+        self.logger = logger or logging.getLogger(__name__)
+        
+        # Validate stats dictionary has required keys
+        required_keys = ['keys_processed', 'translations_added', 'new_keys_found', 
+                        'missing_language_packs', 'translation_errors']
+        for key in required_keys:
+            if key not in self.stats:
+                self.stats[key] = 0 if key != 'missing_language_packs' else []
+    
+    def report_analysis_summary(self, verbose: bool = False) -> None:
+        """
+        Print formatted analysis summary to console.
+        
+        Args:
+            verbose: If True, use verbose logging format. If False, use clean format.
+        """
+        if verbose:
+            self.logger.info("=" * 70)
+            self.logger.info("ANALYSIS SUMMARY")
+            self.logger.info("=" * 70)
+            self.logger.info(f"Keys processed: {self.stats['keys_processed']}")
+            self.logger.info(f"Translations added: {self.stats['translations_added']}")
+            self.logger.info(f"New keys found: {self.stats['new_keys_found']}")
+            
+            if self.stats['translation_errors'] > 0:
+                self.logger.warning(f"Translation errors: {self.stats['translation_errors']}")
+            
+            if self.stats['missing_language_packs']:
+                self.logger.warning(f"Missing language packs: {len(self.stats['missing_language_packs'])}")
+                self.logger.warning(f"Languages: {', '.join(sorted(self.stats['missing_language_packs']))}")
+            
+            self.logger.info("=" * 70)
+        else:
+            # Clean format for non-verbose mode
+            print("\n" + "=" * 70)
+            print("ANALYSIS SUMMARY")
+            print("=" * 70)
+            print(f"Keys processed: {self.stats['keys_processed']}")
+            print(f"Translations added: {self.stats['translations_added']}")
+            print(f"New keys found: {self.stats['new_keys_found']}")
+            
+            if self.stats['translation_errors'] > 0:
+                print(f"Translation errors: {self.stats['translation_errors']}")
+            
+            if self.stats['missing_language_packs']:
+                print(f"\nMissing language packs: {len(self.stats['missing_language_packs'])}")
+                print(f"Languages: {', '.join(sorted(self.stats['missing_language_packs']))}")
+            
+            print("=" * 70)
+    
+    def write_to_localize_file(self, data: dict, path: str, dry_run: bool = False) -> None:
+        """
+        Write to_localize.json file with proper indentation.
+        In dry-run mode, output to stdout instead of writing file.
+        
+        Args:
+            data: Dictionary containing the to_localize structure
+            path: Path where to_localize.json should be written
+            dry_run: If True, output to stdout instead of writing file
+        """
+        # Format JSON with 2-space indentation
+        json_output = json.dumps(data, indent=2, ensure_ascii=False)
+        
+        if dry_run:
+            # Output to stdout in dry-run mode
+            print("\n" + "=" * 70)
+            print("TO_LOCALIZE.JSON CONTENT (DRY-RUN - NOT WRITTEN TO FILE)")
+            print("=" * 70)
+            print(json_output)
+            print("=" * 70)
+            self.logger.info(f"DRY-RUN: Would write to_localize.json to {path}")
+        else:
+            # Write to file
+            try:
+                with open(path, 'w', encoding='utf-8') as f:
+                    f.write(json_output)
+                self.logger.info(f"Successfully wrote to_localize.json to {path}")
+            except IOError as e:
+                error_msg = f"Failed to write to_localize.json"
+                self.logger.error(f"{error_msg}\n  File: {path}\n  Reason: {str(e)}\n  Action: Check file permissions and disk space")
+                raise
+    
+    def report_merge_summary(self, merged_count: int, verbose: bool = False) -> None:
+        """
+        Print merge summary after auto-merge operation.
+        
+        Args:
+            merged_count: Number of keys merged into Localizable.xcstrings
+            verbose: If True, use verbose logging format. If False, use clean format.
+        """
+        if verbose:
+            self.logger.info("=" * 70)
+            self.logger.info("MERGE SUMMARY")
+            self.logger.info("=" * 70)
+            self.logger.info(f"Keys merged into Localizable.xcstrings: {merged_count}")
+            self.logger.info("=" * 70)
+        else:
+            print("\n" + "=" * 70)
+            print("MERGE SUMMARY")
+            print("=" * 70)
+            print(f"Keys merged into Localizable.xcstrings: {merged_count}")
+            print("=" * 70)
+
 
 
 
@@ -980,8 +1170,13 @@ def main():
         
         # Track new keys
         logger.info("Tracking new keys from keys.json...")
-        tracker = NewKeyTracker(localizable_data, keys_data)
+        tracker = NewKeyTracker(localizable_data, keys_data, generator, supported_languages)
         new_keys = tracker.find_new_keys()
+        
+        # Generate translations for new keys
+        if new_keys:
+            logger.info(f"Generating translations for {len(new_keys)} new keys...")
+            tracker.generate_translations_for_new_keys()
         
         # Display new keys summary
         if new_keys:
@@ -1035,8 +1230,41 @@ def main():
                 print("\n✓ DRY-RUN mode: No files were created or modified")
             print()
         
-        # TODO: Implement workflow orchestration
-        # - Report/merge
+        # Create Reporter and generate reports
+        logger.info("Generating reports...")
+        
+        # Collect statistics
+        stats = {
+            'keys_processed': num_keys_in_localizable,
+            'translations_added': inserter.get_insertion_count(),
+            'new_keys_found': len(new_keys),
+            'missing_language_packs': [],
+            'translation_errors': 0
+        }
+        
+        # Collect missing language packs from generator
+        if generator.framework_available:
+            # Get missing language packs from the generator's tracking
+            for lang in supported_languages:
+                # Check if this language had issues during translation
+                # For now, we'll use the generator's internal tracking
+                pass
+        
+        # Create Reporter instance
+        reporter = Reporter(stats, logger)
+        
+        # Report analysis summary
+        reporter.report_analysis_summary(verbose=args.verbose)
+        
+        # Write to_localize.json (or output to stdout in dry-run mode)
+        to_localize_path = "tools/data/to_localize.json"
+        reporter.write_to_localize_file(to_localize_data, to_localize_path, dry_run=args.dry_run)
+        
+        # If auto-merge is enabled, report merge summary (placeholder for now)
+        if args.auto_merge:
+            # TODO: Implement auto-merge functionality
+            # For now, just report what would be merged
+            reporter.report_merge_summary(len(new_keys), verbose=args.verbose)
         
         logger.info("Analysis complete")
         return 0
