@@ -120,7 +120,10 @@ struct EditorView: View {
                     } label: {
                         Label("Export as Markdown", systemImage: "doc.text")
                     }
-                    
+                    #if !os(macOS)
+                    .disabled(true)
+                    #endif
+
                     Button {
                         Task {
                             await exportToPDF()
@@ -128,7 +131,7 @@ struct EditorView: View {
                     } label: {
                         Label("Export as PDF", systemImage: "doc.richtext")
                     }
-                    
+
                     Button {
                         Task {
                             await exportToHTML()
@@ -136,6 +139,9 @@ struct EditorView: View {
                     } label: {
                         Label("Export as HTML", systemImage: "globe")
                     }
+                    #if !os(macOS)
+                    .disabled(true)
+                    #endif
                 } label: {
                     Label("Export", systemImage: "square.and.arrow.up")
                 }
