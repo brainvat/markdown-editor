@@ -92,8 +92,8 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
 - [x] 4. Checkpoint - Ensure file loading and detection work correctly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement Translation Generator component
-  - [ ] 5.1 Create TranslationGenerator class with PyObjC integration
+- [x] 5. Implement Translation Generator component
+  - [x] 5.1 Create TranslationGenerator class with PyObjC integration
     - Implement check_framework_available() to verify Translation framework
     - Report error if framework not available (macOS Sequoia+ required)
     - Implement translate() method using Translation framework APIs
@@ -103,13 +103,13 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
     - Implement batch_translate() for efficiency
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
   
-  - [ ] 5.2 Implement format specifier preservation
+  - [x] 5.2 Implement format specifier preservation
     - Detect format specifiers in source text (%lld, %@, %1$@, %2$@)
     - Ensure translated text contains same format specifiers
     - Reject translations that corrupt format specifiers
     - _Requirements: 3.7, 9.6_
   
-  - [ ] 5.3 User acceptance test: Verify translation generation with --dry-run
+  - [x] 5.3 User acceptance test: Verify translation generation with --dry-run
     - Execute: `python tools/localization.py --dry-run`
     - Verify: Output shows sample translations being generated
     - Verify: Output displays source text and translated text for each language
@@ -140,8 +140,8 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
     - Test Unicode preservation
     - Test translation failure handling
 
-- [ ] 6. Implement Translation Inserter component
-  - [ ] 6.1 Create TranslationInserter class
+- [x] 6. Implement Translation Inserter component
+  - [x] 6.1 Create TranslationInserter class
     - Implement initialization with localizable_data
     - Implement insert_translation() to add translations to data structure
     - Create "localizations" dictionary if it doesn't exist
@@ -151,7 +151,7 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
     - Implement get_updated_data() to return modified data
     - _Requirements: 3.8, 4.1, 4.2, 4.3, 4.4, 4.5_
   
-  - [ ] 6.2 User acceptance test: Verify translation insertion with --dry-run
+  - [x] 6.2 User acceptance test: Verify translation insertion with --dry-run
     - Execute: `python tools/localization.py --dry-run`
     - Verify: Output shows updated JSON structure with new translations inserted
     - Verify: Existing translations are preserved (not overwritten)

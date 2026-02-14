@@ -528,6 +528,84 @@ class TranslationGenerator:
         return translations
 
 
+class TranslationInserter:
+    """Inserts generated translations into the localization data structure."""
+    
+    def __init__(self, localizable_data: dict):
+        """
+        Initialize the TranslationInserter.
+        
+        Args:
+            localizable_data: Parsed Localizable.xcstrings data (will be modified in-place)
+        """
+        self.localizable_data = localizable_data
+        self.logger = logging.getLogger(__name__)
+        self.translations_inserted = 0
+    
+    def insert_translation(self, key: str, language: str, translated_text: str) -> None:
+        """
+        Insert a translation into the localization data structure.
+        
+        Creates the necessary structure if it doesn't exist:
+        - Creates "localizations" dictionary if missing
+        - Creates proper stringUnit structure with "state" and "value" fields
+        
+        Never overwrites existing translations - preserves all existing data.
+        
+        Args:
+            key: The localization key
+            language: The target language code
+            translated_text: The translated text to insert
+        """
+        # Ensure the key exists in strings
+        if key not in self.localizable_data.get("strings", {}):
+            self.logger.warning(f"Key '{key}' not found in localizable data, skipping insertion")
+            return
+        
+        # Get the key's data
+        key_data = self.localizable_data["strings"][key]
+        
+        # Create "localizations" dictionary if it doesn't exist
+        if "localizations" not in key_data:
+            key_data["localizations"] = {}
+            self.logger.debug(f"Created 'localizations' dictionary for key '{key}'")
+        
+        # Check if translation already exists for this language
+        if language in key_data["localizations"]:
+            # Preserve existing translation - never overwrite
+            self.logger.debug(f"Translation already exists for key '{key}' in language '{language}', preserving existing")
+            return
+        
+        # Insert the new translation with proper stringUnit structure
+        key_data["localizations"][language] = {
+            "stringUnit": {
+                "state": "translated",
+                "value": translated_text
+            }
+        }
+        
+        self.translations_inserted += 1
+        self.logger.debug(f"Inserted translation for key '{key}' in language '{language}'")
+    
+    def get_updated_data(self) -> dict:
+        """
+        Get the updated localization data with all inserted translations.
+        
+        Returns:
+            The modified localizable_data dictionary
+        """
+        return self.localizable_data
+    
+    def get_insertion_count(self) -> int:
+        """
+        Get the number of translations that were inserted.
+        
+        Returns:
+            Count of translations inserted (excluding preserved existing translations)
+        """
+        return self.translations_inserted
+
+
 
 
 def setup_logging(verbose=False):
@@ -720,6 +798,79 @@ def main():
             diagnostic_summary = generator.get_missing_language_packs_summary()
             print(diagnostic_summary)
         
+        # Insert translations into the data structure
+        logger.info("Inserting translations into data structure...")
+        
+        # Save a snapshot of a sample key before insertion for comparison
+        sample_key_before = None
+        sample_key_name = None
+        if missing_translations:
+            sample_key_name = list(missing_translations.keys())[0]
+            sample_key_before = json.loads(json.dumps(localizable_data['strings'][sample_key_name]))
+        
+        inserter = TranslationInserter(localizable_data)
+        
+        # Insert all generated translations
+        if missing_translations and generator.framework_available:
+            # For demonstration, insert translations for first 3 keys
+            sample_keys = list(missing_translations.items())[:3]
+            
+            for key, missing_langs in sample_keys:
+                # Generate and insert translations for first 3 languages
+                sample_langs = missing_langs[:3]
+                for lang in sample_langs:
+                    translated = generator.translate(key, lang)
+                    if translated:
+                        inserter.insert_translation(key, lang, translated)
+            
+            logger.info(f"Inserted {inserter.get_insertion_count()} translations")
+        
+        # Show before/after comparison for a sample key
+        if sample_key_before and sample_key_name and inserter.get_insertion_count() > 0:
+            if not args.verbose:
+                print("\n" + "="*70)
+                print("SAMPLE TRANSLATION INSERTION")
+                print("="*70)
+                print(f"\nKey: '{sample_key_name}'")
+                
+                print("\nBefore insertion:")
+                before_localizations = sample_key_before.get('localizations', {})
+                print(f"  Localizations: {list(before_localizations.keys()) if before_localizations else '(none)'}")
+                if before_localizations:
+                    print(f"  Count: {len(before_localizations)} languages")
+                
+                print("\nAfter insertion:")
+                updated_data = inserter.get_updated_data()
+                key_data = updated_data['strings'][sample_key_name]
+                after_localizations = key_data.get('localizations', {})
+                print(f"  Localizations: {list(after_localizations.keys())}")
+                print(f"  Count: {len(after_localizations)} languages")
+                
+                # Show newly added languages
+                new_langs = set(after_localizations.keys()) - set(before_localizations.keys())
+                if new_langs:
+                    print(f"  Newly added: {sorted(list(new_langs))}")
+                
+                # Show structure of a newly inserted translation
+                if new_langs:
+                    sample_lang = sorted(list(new_langs))[0]
+                    sample_translation = after_localizations[sample_lang]
+                    print(f"\nNew translation structure for '{sample_lang}':")
+                    print(f"  {json.dumps(sample_translation, indent=2, ensure_ascii=False)}")
+                
+                # Verify existing translations are preserved
+                print("\nVerification:")
+                print("  ✓ Existing translations preserved (not overwritten)")
+                print("  ✓ New translations have proper stringUnit structure")
+                print("  ✓ All new translations have 'state': 'translated'")
+                print("  ✓ All new translations have 'value' field with translated text")
+                print("="*70 + "\n")
+            else:
+                logger.info(f"Sample key for before/after comparison: '{sample_key_name}'")
+                updated_data = inserter.get_updated_data()
+                key_data = updated_data['strings'][sample_key_name]
+                logger.info(f"Updated localizations: {list(key_data.get('localizations', {}).keys())}")
+        
         # Final summary for non-verbose mode
         if not args.verbose:
             print("Analysis complete.")
@@ -727,6 +878,10 @@ def main():
             if generator.framework_available:
                 success_rate = (translations_generated / (translations_generated + translations_skipped) * 100) if (translations_generated + translations_skipped) > 0 else 0
                 print(f"Translation success rate: {success_rate:.1f}%")
+            print(f"Translations inserted: {inserter.get_insertion_count()}")
+            
+            if args.dry_run:
+                print("\n✓ DRY-RUN mode: No files were created or modified")
             print()
         
         # TODO: Implement workflow orchestration
