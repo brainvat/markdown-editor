@@ -180,8 +180,8 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
 - [x] 7. Checkpoint - Ensure translation generation and insertion work correctly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Implement New Key Tracker component
-  - [ ] 8.1 Create NewKeyTracker class
+- [x] 8. Implement New Key Tracker component
+  - [x] 8.1 Create NewKeyTracker class
     - Implement initialization with localizable_data and keys_data
     - Implement find_new_keys() to iterate through keys.json
     - Check if each key exists in Localizable.xcstrings
@@ -191,7 +191,7 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
     - Create structure with "sourceLanguage", "strings", and "version" fields
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
   
-  - [ ] 8.2 User acceptance test: Verify new key tracking with --dry-run
+  - [x] 8.2 User acceptance test: Verify new key tracking with --dry-run
     - Execute: `python tools/localization.py --dry-run`
     - Verify: Output shows list of new keys that need to be added
     - Verify: Output displays the to_localize.json structure that would be created

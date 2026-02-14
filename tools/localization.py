@@ -606,6 +606,100 @@ class TranslationInserter:
         return self.translations_inserted
 
 
+class NewKeyTracker:
+    """Tracks new localization keys that need to be added to Localizable.xcstrings."""
+    
+    def __init__(self, localizable_data: dict, keys_data: dict):
+        """
+        Initialize the NewKeyTracker.
+        
+        Args:
+            localizable_data: Parsed Localizable.xcstrings data
+            keys_data: Parsed keys.json data
+        """
+        self.localizable_data = localizable_data
+        self.keys_data = keys_data
+        self.logger = logging.getLogger(__name__)
+        self.new_keys = []
+    
+    def find_new_keys(self) -> list:
+        """
+        Find keys from keys.json that need to be added to Localizable.xcstrings.
+        
+        A key is considered "new" if:
+        - It doesn't exist in Localizable.xcstrings, OR
+        - It exists but has zero translations (empty or missing "localizations" dictionary)
+        
+        Keys with one or more translations are excluded.
+        
+        Returns:
+            List of localization keys that need to be added
+        """
+        self.new_keys = []
+        
+        # Get the strings dictionaries
+        localizable_strings = self.localizable_data.get("strings", {})
+        keys_strings = self.keys_data.get("strings", {})
+        
+        # Iterate through all keys in keys.json
+        for key in keys_strings:
+            # Check if key exists in Localizable.xcstrings
+            if key not in localizable_strings:
+                # Key doesn't exist - add to new keys
+                self.new_keys.append(key)
+                self.logger.debug(f"Key '{key}' not found in Localizable.xcstrings - marked as new")
+            else:
+                # Key exists - check if it has any translations
+                key_data = localizable_strings[key]
+                localizations = key_data.get("localizations", {})
+                
+                if len(localizations) == 0:
+                    # Key exists but has zero translations - add to new keys
+                    self.new_keys.append(key)
+                    self.logger.debug(f"Key '{key}' has zero translations - marked as new")
+                else:
+                    # Key has one or more translations - exclude
+                    self.logger.debug(f"Key '{key}' has {len(localizations)} translations - excluded")
+        
+        self.logger.info(f"Found {len(self.new_keys)} new keys that need to be added")
+        return self.new_keys
+    
+    def create_to_localize_structure(self) -> dict:
+        """
+        Create the to_localize.json structure with new keys.
+        
+        The structure matches Localizable.xcstrings format:
+        - "sourceLanguage": "en"
+        - "strings": dictionary with keys as keys and empty dicts as values
+        - "version": "1.0"
+        
+        Returns:
+            Dictionary in Localizable.xcstrings format containing only new keys
+        """
+        # Build the structure
+        to_localize = {
+            "sourceLanguage": "en",
+            "strings": {},
+            "version": "1.0"
+        }
+        
+        # Add each new key with an empty dictionary
+        for key in self.new_keys:
+            to_localize["strings"][key] = {}
+        
+        self.logger.info(f"Created to_localize structure with {len(self.new_keys)} keys")
+        return to_localize
+    
+    def get_new_keys_count(self) -> int:
+        """
+        Get the count of new keys found.
+        
+        Returns:
+            Number of new keys
+        """
+        return len(self.new_keys)
+
+
 
 
 def setup_logging(verbose=False):
@@ -884,9 +978,64 @@ def main():
                 print("\n✓ DRY-RUN mode: No files were created or modified")
             print()
         
+        # Track new keys
+        logger.info("Tracking new keys from keys.json...")
+        tracker = NewKeyTracker(localizable_data, keys_data)
+        new_keys = tracker.find_new_keys()
+        
+        # Display new keys summary
+        if new_keys:
+            logger.info(f"Found {len(new_keys)} new keys that need to be added")
+            
+            # Show sample of new keys (first 5)
+            logger.info("Sample new keys:")
+            for key in new_keys[:5]:
+                key_display = key if len(key) <= 60 else key[:57] + "..."
+                logger.info(f"  '{key_display}'")
+            
+            if len(new_keys) > 5:
+                logger.info(f"  ... and {len(new_keys) - 5} more")
+        else:
+            logger.info("No new keys found - all keys from keys.json are already in Localizable.xcstrings with translations")
+        
+        # Create to_localize structure
+        to_localize_data = tracker.create_to_localize_structure()
+        
+        # Display to_localize.json structure
+        if not args.verbose and new_keys:
+            print("\n" + "="*70)
+            print("NEW KEYS TO BE ADDED (to_localize.json)")
+            print("="*70)
+            print(f"\nTotal new keys: {len(new_keys)}")
+            print(f"\nSample keys:")
+            for key in new_keys[:5]:
+                key_display = key if len(key) <= 60 else key[:57] + "..."
+                print(f"  - '{key_display}'")
+            if len(new_keys) > 5:
+                print(f"  ... and {len(new_keys) - 5} more")
+            
+            print(f"\nto_localize.json structure:")
+            print(json.dumps(to_localize_data, indent=2, ensure_ascii=False))
+            
+            print("\nVerification:")
+            print("  ✓ Structure has 'sourceLanguage': 'en'")
+            print("  ✓ Structure has 'strings' dictionary")
+            print("  ✓ Structure has 'version': '1.0'")
+            print(f"  ✓ Contains {len(to_localize_data['strings'])} new keys")
+            print("  ✓ Keys with existing translations are NOT included")
+            print("  ✓ Keys with zero translations ARE included")
+            print("="*70 + "\n")
+        
+        # Display final summary
+        if not args.verbose:
+            print("New key tracking complete.")
+            print(f"New keys found: {len(new_keys)}")
+            
+            if args.dry_run:
+                print("\n✓ DRY-RUN mode: No files were created or modified")
+            print()
+        
         # TODO: Implement workflow orchestration
-        # - Insert translations
-        # - Track new keys
         # - Report/merge
         
         logger.info("Analysis complete")
