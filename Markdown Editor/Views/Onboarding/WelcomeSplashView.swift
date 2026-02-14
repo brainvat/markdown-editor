@@ -121,17 +121,17 @@ struct WelcomeSplashView: View {
         .frame(maxWidth: .infinity)
     }
     
-    private func featureRow(icon: String, title: String, description: String) -> some View {
+    private func featureRow(icon: String, title: LocalizedStringKey, description: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 16) {
             Image(systemName: icon)
                 .font(.title2)
                 .foregroundStyle(.blue)
                 .frame(width: 32)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.headline)
-                
+
                 Text(description)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
