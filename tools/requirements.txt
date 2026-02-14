@@ -1,0 +1,8 @@
+# Python dependencies for localization automation tool
+
+# PyObjC for macOS Translation framework integration
+pyobjc-framework-Cocoa>=10.0
+pyobjc-core>=10.0
+
+# Note: The Translation framework requires macOS Sequoia (15.0) or later
+# Install with: pip install -r tools/requirements.txt

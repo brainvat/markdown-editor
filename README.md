@@ -26,17 +26,23 @@ A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with Swi
 - 📦 **Archived** - Hide completed documents without deleting
 
 ### Markdown Support
-- ✅ **CommonMark** - Full standard Markdown support
-- 🔧 **GitHub Flavored Markdown** - Tables, task lists, and more
-- 🧮 **LaTeX/Math** - Mathematical expressions via MathJax
-- 💻 **Syntax Highlighting** - Beautiful code blocks (coming soon)
-- 📋 **Smart Lists** - Auto-continuation and task list toggling
+- ✅ **CommonMark** - Full standard Markdown support via swift-markdown
+- ✅ **GitHub Flavored Markdown** - Tables, task lists, strikethrough, and more
+- ✅ **Syntax Highlighting** - 185 languages via Highlight.js
+- 🔜 **LaTeX/Math** - Mathematical expressions (planned for v2.0)
+- � **Smart Lists** - Auto-continuation and task list toggling (planned for v2.0)
 
 ### Export & Sharing
 - 📄 **PDF Export** - Native PDF generation with styling preservation (Mac: ✅ iOS: ✅)
 - 🌐 **HTML Export** - Standalone HTML files with embedded CSS (Mac: ✅ iOS: ❌ SwiftUI bug)
 - 📝 **Markdown Export** - Export as .md files (Mac: ✅ iOS: ❌ SwiftUI bug)
 - 📊 **Document Stats** - Word count, character count, last modified
+
+### Internationalization
+- 🌍 **38 Languages** - Full localization support across all platforms
+- 🤖 **Automated Translation** - Python tool using macOS Translation framework
+- 🔄 **Smart Management** - Automatic detection of missing translations and new keys
+- 📊 **Progress Tracking** - Real-time translation progress with ETA and throughput
 
 **Note:** iOS HTML and Markdown exports are blocked by a [confirmed SwiftUI framework bug](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md) where `.fileExporter()` silently fails for certain `FileDocument` types despite valid documents being created.
 
@@ -94,6 +100,12 @@ Mac MD follows modern Swift and SwiftUI best practices:
 - **Export Services** - PDF and HTML generation
 - Async/await throughout (Swift 6 strict concurrency)
 
+### Localization
+- **38 Languages** - Full internationalization support
+- **Automated Translation** - Python tool using macOS Translation framework
+- **Smart Management** - Tracks new keys, detects missing translations
+- See [tools/README.md](tools/README.md) for localization automation details
+
 ### Project Structure
 ```
 Markdown Editor/
@@ -108,7 +120,12 @@ Markdown Editor/
 │   └── Components/     # Reusable sheets and dialogs
 ├── Services/           # Business logic
 ├── Utilities/          # Extensions and helpers
-└── App/                # Entry point
+├── App/                # Entry point
+└── Localizable.xcstrings  # 38-language localization
+tools/
+├── localization.py     # Automated translation tool
+├── bridge.swift        # Swift translation bridge
+└── data/               # Language and key definitions
 ```
 
 ## 🎓 Inspiration & Credits

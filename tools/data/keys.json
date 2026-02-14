@@ -1,0 +1,465 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "": {
+      "last_update": "2026-02-13",
+      "skip_localization": true
+    },
+    "%@ theme%@": {
+      "last_update": "2026-02-13"
+    },
+    "%lld characters": {
+      "last_update": "2026-02-13"
+    },
+    "%lld document(s) tagged": {
+      "last_update": "2026-02-13"
+    },
+    "%lld pt": {
+      "last_update": "2026-02-13"
+    },
+    "%lld words": {
+      "last_update": "2026-02-13"
+    },
+    "%lldw": {
+      "last_update": "2026-02-13"
+    },
+    "+%lld": {
+      "last_update": "2026-02-13"
+    },
+    "•": {
+      "last_update": "2026-02-13",
+      "skip_localization": true
+    },
+    "Aa": {
+      "last_update": "2026-02-13"
+    },
+    "About": {
+      "last_update": "2026-02-13"
+    },
+    "Actions (%lld)": {
+      "last_update": "2026-02-13"
+    },
+    "Add": {
+      "last_update": "2026-02-13"
+    },
+    "Add to Favorites": {
+      "last_update": "2026-02-13"
+    },
+    "All Documents": {
+      "last_update": "2026-02-13"
+    },
+    "Apply Tag": {
+      "last_update": "2026-02-13"
+    },
+    "Apply Tags": {
+      "last_update": "2026-02-13"
+    },
+    "Archive": {
+      "last_update": "2026-02-13"
+    },
+    "Archived": {
+      "last_update": "2026-02-13"
+    },
+    "Build": {
+      "last_update": "2026-02-13"
+    },
+    "Cancel": {
+      "last_update": "2026-02-13"
+    },
+    "Color": {
+      "last_update": "2026-02-13"
+    },
+    "Color Theme": {
+      "last_update": "2026-02-13"
+    },
+    "Create": {
+      "last_update": "2026-02-13"
+    },
+    "Date Created": {
+      "last_update": "2026-02-13"
+    },
+    "Date Modified": {
+      "last_update": "2026-02-13"
+    },
+    "Delete": {
+      "last_update": "2026-02-13"
+    },
+    "Delete \"%@\"?": {
+      "last_update": "2026-02-13"
+    },
+    "Delete %lld Documents": {
+      "last_update": "2026-02-13"
+    },
+    "Delete %lld Documents?": {
+      "last_update": "2026-02-13"
+    },
+    "Delete '%@'? Documents in this project will not be deleted.": {
+      "last_update": "2026-02-13"
+    },
+    "Delete '%@'? This tag will be removed from all documents.": {
+      "last_update": "2026-02-13"
+    },
+    "Delete Project": {
+      "last_update": "2026-02-13"
+    },
+    "Delete Project Only": {
+      "last_update": "2026-02-13"
+    },
+    "Delete Tag": {
+      "last_update": "2026-02-13"
+    },
+    "Description (Optional)": {
+      "last_update": "2026-02-13"
+    },
+    "Developer": {
+      "last_update": "2026-02-13"
+    },
+    "Document Title": {
+      "last_update": "2026-02-13"
+    },
+    "Documents": {
+      "last_update": "2026-02-13"
+    },
+    "Don't show this again": {
+      "last_update": "2026-02-13"
+    },
+    "Done": {
+      "last_update": "2026-02-13"
+    },
+    "Duplicate": {
+      "last_update": "2026-02-13"
+    },
+    "Edit": {
+      "last_update": "2026-02-13"
+    },
+    "Edit Project": {
+      "last_update": "2026-02-13"
+    },
+    "Edit Tag": {
+      "last_update": "2026-02-13"
+    },
+    "Editor": {
+      "last_update": "2026-02-13"
+    },
+    "Export": {
+      "last_update": "2026-02-13"
+    },
+    "Export as HTML": {
+      "last_update": "2026-02-13"
+    },
+    "Export as HTML...": {
+      "last_update": "2026-02-13"
+    },
+    "Export as Markdown": {
+      "last_update": "2026-02-13"
+    },
+    "Export as Markdown...": {
+      "last_update": "2026-02-13"
+    },
+    "Export as PDF": {
+      "last_update": "2026-02-13"
+    },
+    "Export as PDF...": {
+      "last_update": "2026-02-13"
+    },
+    "Favorite": {
+      "last_update": "2026-02-13"
+    },
+    "Favorites": {
+      "last_update": "2026-02-13"
+    },
+    "Find in Documents...": {
+      "last_update": "2026-02-13"
+    },
+    "Font Family": {
+      "last_update": "2026-02-13"
+    },
+    "Font Size": {
+      "last_update": "2026-02-13"
+    },
+    "Get Started": {
+      "last_update": "2026-02-13"
+    },
+    "Grid View": {
+      "last_update": "2026-02-13"
+    },
+    "Hide Preview": {
+      "last_update": "2026-02-13"
+    },
+    "Icon": {
+      "last_update": "2026-02-13"
+    },
+    "Information": {
+      "last_update": "2026-02-13"
+    },
+    "Keep your documents in sync across all your Apple devices automatically.": {
+      "last_update": "2026-02-13"
+    },
+    "List View": {
+      "last_update": "2026-02-13"
+    },
+    "Live Preview": {
+      "last_update": "2026-02-13"
+    },
+    "MD": {
+      "last_update": "2026-02-13"
+    },
+    "Mac MD": {
+      "last_update": "2026-02-13"
+    },
+    "Mac MD Premium": {
+      "last_update": "2026-02-13"
+    },
+    "Modern Markdown Editing": {
+      "last_update": "2026-02-13"
+    },
+    "Monospaced": {
+      "last_update": "2026-02-13"
+    },
+    "Move to Project": {
+      "last_update": "2026-02-13"
+    },
+    "Name": {
+      "last_update": "2026-02-13"
+    },
+    "Navigate": {
+      "last_update": "2026-02-13"
+    },
+    "New Document": {
+      "last_update": "2026-02-13"
+    },
+    "New Project": {
+      "last_update": "2026-02-13"
+    },
+    "New Project...": {
+      "last_update": "2026-02-13"
+    },
+    "New Tag": {
+      "last_update": "2026-02-13"
+    },
+    "No Document Selected": {
+      "last_update": "2026-02-13"
+    },
+    "No content": {
+      "last_update": "2026-02-13"
+    },
+    "None": {
+      "last_update": "2026-02-13"
+    },
+    "Organize documents with projects and apply multiple tags": {
+      "last_update": "2026-02-13"
+    },
+    "Premium": {
+      "last_update": "2026-02-13"
+    },
+    "Preview": {
+      "last_update": "2026-02-13"
+    },
+    "Preview Below": {
+      "last_update": "2026-02-13"
+    },
+    "Preview Position": {
+      "last_update": "2026-02-13"
+    },
+    "Preview on Left": {
+      "last_update": "2026-02-13"
+    },
+    "Preview on Right": {
+      "last_update": "2026-02-13"
+    },
+    "Project Color": {
+      "last_update": "2026-02-13"
+    },
+    "Project Information": {
+      "last_update": "2026-02-13"
+    },
+    "Projects": {
+      "last_update": "2026-02-13"
+    },
+    "Projects & Tags": {
+      "last_update": "2026-02-13"
+    },
+    "Projects, Documents, and Editor side-by-side for efficient workflow": {
+      "last_update": "2026-02-13"
+    },
+    "Purchase could not be verified.": {
+      "last_update": "2026-02-13"
+    },
+    "Recent": {
+      "last_update": "2026-02-13"
+    },
+    "Remove from Favorites": {
+      "last_update": "2026-02-13"
+    },
+    "Restart Mac MD to apply sync changes.": {
+      "last_update": "2026-02-13"
+    },
+    "Rounded": {
+      "last_update": "2026-02-13"
+    },
+    "Save": {
+      "last_update": "2026-02-13"
+    },
+    "Search documents": {
+      "last_update": "2026-02-13"
+    },
+    "See your Markdown rendered in real-time as you type": {
+      "last_update": "2026-02-13"
+    },
+    "Select": {
+      "last_update": "2026-02-13"
+    },
+    "Select a document from the list or create a new one to get started.": {
+      "last_update": "2026-02-13"
+    },
+    "Select color": {
+      "last_update": "2026-02-13"
+    },
+    "Serif": {
+      "last_update": "2026-02-13"
+    },
+    "Settings": {
+      "last_update": "2026-02-13"
+    },
+    "Show Preview": {
+      "last_update": "2026-02-13"
+    },
+    "Sort": {
+      "last_update": "2026-02-13"
+    },
+    "Sort By": {
+      "last_update": "2026-02-13"
+    },
+    "Subscribe to Mac MD Premium to sync your documents across all your Apple devices.": {
+      "last_update": "2026-02-13"
+    },
+    "Sync": {
+      "last_update": "2026-02-13"
+    },
+    "System (Sans-serif)": {
+      "last_update": "2026-02-13"
+    },
+    "Tag Color": {
+      "last_update": "2026-02-13"
+    },
+    "Tag Name": {
+      "last_update": "2026-02-13"
+    },
+    "Tag name": {
+      "last_update": "2026-02-13"
+    },
+    "Tags": {
+      "last_update": "2026-02-13"
+    },
+    "The quick brown fox jumps over the lazy dog.": {
+      "last_update": "2026-02-13"
+    },
+    "Themes": {
+      "last_update": "2026-02-13"
+    },
+    "This action cannot be undone.": {
+      "last_update": "2026-02-13"
+    },
+    "Three-Column Layout": {
+      "last_update": "2026-02-13"
+    },
+    "Title": {
+      "last_update": "2026-02-13"
+    },
+    "Toggle Favorite": {
+      "last_update": "2026-02-13"
+    },
+    "Toggle Preview": {
+      "last_update": "2026-02-13"
+    },
+    "Unarchive": {
+      "last_update": "2026-02-13"
+    },
+    "Unlock powerful features that keep your writing in sync across all your Apple devices.": {
+      "last_update": "2026-02-13"
+    },
+    "Version": {
+      "last_update": "2026-02-13"
+    },
+    "Welcome to Mac MD": {
+      "last_update": "2026-02-13"
+    },
+    "Word Count": {
+      "last_update": "2026-02-13"
+    },
+    "Your documents automatically sync across Mac, iPad, and iPhone": {
+      "last_update": "2026-02-13"
+    },
+    "ahammock": {
+      "last_update": "2026-02-13",
+      "skip_localization": true
+    },
+    "iCloud Sync": {
+      "last_update": "2026-02-13"
+    },
+    "TEST-KEY": {
+      "last_update": "2026-02-13",
+      "skip_localization": true
+    },
+    "The innovative technology platform seamlessly integrates advanced features to enhance user productivity.": {
+      "last_update": "2026-02-14"
+    },
+    "Collaborative workspace environments foster creativity and enable teams to achieve remarkable results together.": {
+      "last_update": "2026-02-14"
+    },
+    "Comprehensive data analytics provide actionable insights that drive strategic business decision-making processes.": {
+      "last_update": "2026-02-14"
+    },
+    "Automated workflow optimization reduces manual effort while maintaining high quality standards across operations.": {
+      "last_update": "2026-02-14"
+    },
+    "Real-time synchronization ensures consistent data availability across all connected devices and platforms.": {
+      "last_update": "2026-02-14"
+    },
+    "Intelligent search algorithms deliver precise results by understanding context and user intent effectively.": {
+      "last_update": "2026-02-14"
+    },
+    "Secure authentication mechanisms protect sensitive information while providing convenient access for authorized users.": {
+      "last_update": "2026-02-14"
+    },
+    "Customizable interface options allow users to personalize their experience according to individual preferences.": {
+      "last_update": "2026-02-14"
+    },
+    "Performance monitoring tools track system metrics and identify potential bottlenecks before they impact users.": {
+      "last_update": "2026-02-14"
+    },
+    "Cloud-based infrastructure provides scalable resources that adapt to changing demands and usage patterns.": {
+      "last_update": "2026-02-14"
+    },
+    "Interactive visualization components transform complex datasets into intuitive graphical representations.": {
+      "last_update": "2026-02-14"
+    },
+    "Seamless integration capabilities connect disparate systems and enable efficient data exchange between platforms.": {
+      "last_update": "2026-02-14"
+    },
+    "Advanced encryption protocols safeguard confidential communications and ensure privacy throughout transmission.": {
+      "last_update": "2026-02-14"
+    },
+    "Responsive design principles guarantee optimal viewing experiences across various screen sizes and devices.": {
+      "last_update": "2026-02-14"
+    },
+    "Automated backup systems preserve critical data and enable quick recovery in case of unexpected failures.": {
+      "last_update": "2026-02-14"
+    },
+    "Intuitive navigation structures help users discover features and accomplish tasks with minimal learning curve.": {
+      "last_update": "2026-02-14"
+    },
+    "Collaborative editing features allow multiple users to work simultaneously on shared documents and projects.": {
+      "last_update": "2026-02-14"
+    },
+    "Comprehensive documentation resources provide detailed guidance for both novice and experienced users alike.": {
+      "last_update": "2026-02-14"
+    },
+    "Flexible configuration options enable administrators to tailor system behavior to organizational requirements.": {
+      "last_update": "2026-02-14"
+    },
+    "Continuous improvement processes incorporate user feedback to refine features and enhance overall satisfaction.": {
+      "last_update": "2026-02-14"
+    }
+  }
+}
