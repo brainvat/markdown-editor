@@ -789,10 +789,18 @@ class NewKeyTracker:
         
         # Translate by LANGUAGE (all keys for one language) rather than by KEY
         # This is more efficient as it reduces subprocess overhead
-        for lang in languages_to_process:
+        import time
+        start_time = time.time()
+        total_operations = len(languages_to_process) * len(self.new_keys)
+        completed_operations = 0
+        
+        for lang_idx, lang in enumerate(languages_to_process):
             self.logger.debug(f"Translating all keys to {lang}...")
             
-            for key in self.new_keys:
+            # Progress report for each language
+            print(f"Progress: Translating to {lang} ({lang_idx + 1}/{len(languages_to_process)})...")
+            
+            for key_idx, key in enumerate(self.new_keys):
                 translated = self.generator.translate(key, lang)
                 
                 if translated:
@@ -804,10 +812,25 @@ class NewKeyTracker:
                         }
                     }
                     self.logger.debug(f"  [{lang}] {key} -> {translated}")
+                
+                completed_operations += 1
+                
+                # Report progress every 10 keys
+                if (key_idx + 1) % 10 == 0:
+                    elapsed = time.time() - start_time
+                    percent = (completed_operations / total_operations) * 100
+                    rate = completed_operations / elapsed if elapsed > 0 else 0
+                    eta = (total_operations - completed_operations) / rate if rate > 0 else 0
+                    print(f"  Progress: {completed_operations}/{total_operations} ({percent:.1f}%) - "
+                          f"{rate:.1f} translations/sec - ETA: {eta:.0f}s")
         
         # Count total translations generated
         total_translations = sum(len(data["localizations"]) for data in self.new_keys_data.values())
+        elapsed_time = time.time() - start_time
+        rate = total_translations / elapsed_time if elapsed_time > 0 else 0
+        
         self.logger.info(f"Generated {total_translations} translations for {len(self.new_keys)} new keys")
+        print(f"\nTranslation complete: {total_translations} translations in {elapsed_time:.1f}s ({rate:.1f} translations/sec)\n")
     
     def create_to_localize_structure(self) -> dict:
         """
