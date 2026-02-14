@@ -14,6 +14,67 @@ import sys
 from pathlib import Path
 
 
+def is_non_translatable(key: str, logger=None) -> bool:
+    """
+    Determine if a key should not be translated.
+    
+    Keys are considered non-translatable if they:
+    - Are empty strings
+    - Contain only format specifiers, whitespace, and punctuation
+    - Have very few actual words (e.g., "%lld pt", "+%lld", "%lldw")
+    - Are very short with format specifiers taking up most of the content
+    
+    Args:
+        key: The localization key to check
+        logger: Optional logger for debug messages
+        
+    Returns:
+        True if the key should not be translated, False otherwise
+    """
+    import re
+    
+    # Empty strings don't need translation
+    if not key or key.strip() == "":
+        return True
+    
+    # Count format specifiers
+    format_spec_pattern = r'%(?:\d+\$)?[@diouxXeEfFgGaAcspn]|%l{1,2}[diouxX]'
+    format_specs = re.findall(format_spec_pattern, key)
+    
+    # Remove format specifiers
+    text_without_specs = re.sub(format_spec_pattern, '', key)
+    
+    # Remove whitespace and common punctuation
+    text_without_specs_clean = re.sub(r'[\s\+\-\*\/\(\)\[\]\{\}\.,;:!?\'"•]+', '', text_without_specs)
+    
+    # If there's very little text left (less than 2 characters), it's likely non-translatable
+    if len(text_without_specs_clean) < 2:
+        if logger:
+            logger.debug(f"Key '{key}' marked as non-translatable (minimal content after removing format specifiers)")
+        return True
+    
+    # If the key is very short (< 10 chars) and has format specifiers, check the ratio
+    if len(key) < 10 and format_specs:
+        # Calculate how much of the string is format specifiers
+        format_spec_length = sum(len(spec) for spec in format_specs)
+        ratio = format_spec_length / len(key)
+        
+        # If format specifiers take up more than 50% of the string, it's likely non-translatable
+        if ratio > 0.5:
+            if logger:
+                logger.debug(f"Key '{key}' marked as non-translatable (format specifiers dominate: {ratio:.1%})")
+            return True
+    
+    # Check for single-letter or two-letter "words" that are likely abbreviations or units
+    # Examples: "pt" (points), "w" (width), etc.
+    if len(text_without_specs_clean) <= 2 and format_specs:
+        if logger:
+            logger.debug(f"Key '{key}' marked as non-translatable (abbreviation/unit with format specifier)")
+        return True
+    
+    return False
+
+
 class FileLoader:
     """Loads and validates input JSON files for the localization tool."""
     
@@ -179,6 +240,7 @@ class TranslationDetector:
         Special cases:
         - Empty string keys ("") are skipped - they don't need translations
         - Keys with skip_localization=true in keys.json are skipped
+        - Keys that are non-translatable (only format specifiers, minimal content) are skipped
         
         Returns:
             Dictionary mapping localization keys to lists of missing language codes
@@ -191,6 +253,10 @@ class TranslationDetector:
             # Skip empty string keys - they don't need translations
             if key == "":
                 self.logger.debug(f"Skipping empty string key (no translations needed)")
+                continue
+            
+            # Skip non-translatable keys (only format specifiers, minimal content)
+            if is_non_translatable(key, self.logger):
                 continue
             
             # Check if this key should skip localization (from keys.json)
@@ -370,6 +436,12 @@ class TranslationGenerator:
     def translate(self, source_text: str, target_language: str) -> str | None:
         """
         Translate text from English to the target language using Swift shim.
+        
+        Translation logic:
+        - Always attempts translation (caller should check skip_localization flag)
+        - Protects format specifiers during translation
+        - Validates format specifiers are preserved after translation
+        - Returns None if translation fails or format specifiers are corrupted
 
         Args:
             source_text: The text to translate (localization key text)
@@ -418,14 +490,17 @@ class TranslationGenerator:
                 for placeholder, spec in placeholder_map.items():
                     translated_text = translated_text.replace(placeholder, spec)
                 
-                # Validate format specifiers
-                if not self._validate_format_specifiers(source_text, translated_text):
+                # Validate format specifiers are preserved
+                if format_specs and not self._validate_format_specifiers(source_text, translated_text):
                     self.logger.error(
                         f"Translation rejected for '{source_text}' to {target_language}: "
                         "Format specifiers were corrupted"
                     )
                     return None
                 
+                # If the translation is identical to source and there's no real text to translate,
+                # it might be a symbol or abbreviation that doesn't translate well
+                # But we still return it - the caller decides whether to use it
                 return translated_text
             else:
                 # Translation failed - likely missing language pack
@@ -636,6 +711,7 @@ class NewKeyTracker:
         - It exists but has zero translations (empty or missing "localizations" dictionary)
         
         Keys with one or more translations are excluded.
+        Non-translatable keys (only format specifiers, minimal content) are excluded.
         
         Returns:
             List of localization keys that need to be added
@@ -648,6 +724,10 @@ class NewKeyTracker:
         
         # Iterate through all keys in keys.json
         for key in keys_strings:
+            # Skip non-translatable keys
+            if is_non_translatable(key, self.logger):
+                continue
+            
             # Check if key exists in Localizable.xcstrings
             if key not in localizable_strings:
                 # Key doesn't exist - add to new keys
@@ -669,13 +749,16 @@ class NewKeyTracker:
         self.logger.info(f"Found {len(self.new_keys)} new keys that need to be added")
         return self.new_keys
     
-    def generate_translations_for_new_keys(self) -> None:
+    def generate_translations_for_new_keys(self, limit_languages: int = None) -> None:
         """
         Generate translations for all new keys using the TranslationGenerator.
         
         Optimized to translate by language (all keys for one language at a time)
         rather than by key (all languages for one key at a time).
         This reduces subprocess overhead.
+        
+        Args:
+            limit_languages: If set, only translate for the first N languages (useful for testing/dry-run)
         
         For each supported language:
         - Generate translations for all new keys
@@ -690,7 +773,13 @@ class NewKeyTracker:
             self.logger.warning("Translation framework not available - new keys will have no translations")
             return
         
-        self.logger.info(f"Generating translations for {len(self.new_keys)} new keys across {len(self.supported_languages)} languages...")
+        # Limit languages if requested (for testing/dry-run)
+        languages_to_process = self.supported_languages
+        if limit_languages is not None and limit_languages > 0:
+            languages_to_process = self.supported_languages[:limit_languages]
+            self.logger.info(f"Limiting translation to first {limit_languages} languages for testing: {languages_to_process}")
+        
+        self.logger.info(f"Generating translations for {len(self.new_keys)} new keys across {len(languages_to_process)} languages...")
         
         # Initialize data structures for all new keys
         for key in self.new_keys:
@@ -700,7 +789,7 @@ class NewKeyTracker:
         
         # Translate by LANGUAGE (all keys for one language) rather than by KEY
         # This is more efficient as it reduces subprocess overhead
-        for lang in self.supported_languages:
+        for lang in languages_to_process:
             self.logger.debug(f"Translating all keys to {lang}...")
             
             for key in self.new_keys:
@@ -887,6 +976,248 @@ class Reporter:
             print("=" * 70)
             print(f"Keys merged into Localizable.xcstrings: {merged_count}")
             print("=" * 70)
+
+
+class AutoMerger:
+    """
+    Auto-Merger component for backing up and merging new keys into Localizable.xcstrings.
+    
+    Responsibilities:
+    - Create backup of Localizable.xcstrings before merging
+    - Delete existing backup if present
+    - Merge keys from to_localize.json into Localizable.xcstrings
+    - Preserve all existing keys and translations
+    - Write merged file with atomic write strategy
+    - Restore backup on error
+    - In dry-run mode, output merged result to stdout instead of writing files
+    """
+    
+    def __init__(self, localizable_path: str, logger=None):
+        """
+        Initialize AutoMerger with path to Localizable.xcstrings.
+        
+        Args:
+            localizable_path: Path to Localizable.xcstrings file
+            logger: Optional logger instance
+        """
+        self.localizable_path = Path(localizable_path)
+        self.backup_path = Path(str(localizable_path) + ".old")
+        self.logger = logger or logging.getLogger(__name__)
+        self.merged_data = None
+        self.merged_count = 0
+    
+    def backup_file(self, dry_run: bool = False) -> None:
+        """
+        Create backup of Localizable.xcstrings file.
+        Deletes existing backup if present before creating new one.
+        In dry-run mode, only shows what would be backed up.
+        
+        Args:
+            dry_run: If True, only show what would be backed up without creating backup
+            
+        Raises:
+            IOError: If backup creation fails
+        """
+        if dry_run:
+            # Show what would be backed up
+            if self.backup_path.exists():
+                print(f"\nDRY-RUN: Would delete existing backup: {self.backup_path}")
+            print(f"DRY-RUN: Would create backup: {self.localizable_path} -> {self.backup_path}")
+            self.logger.info(f"DRY-RUN: Would backup {self.localizable_path} to {self.backup_path}")
+            return
+        
+        try:
+            # Delete existing backup if present
+            if self.backup_path.exists():
+                self.logger.info(f"Deleting existing backup: {self.backup_path}")
+                self.backup_path.unlink()
+            
+            # Create new backup by copying the file
+            import shutil
+            shutil.copy2(self.localizable_path, self.backup_path)
+            self.logger.info(f"Created backup: {self.localizable_path} -> {self.backup_path}")
+            
+        except IOError as e:
+            error_msg = (
+                f"ERROR: Auto-Merger - Failed to create backup\n"
+                f"  File: {self.localizable_path}\n"
+                f"  Backup: {self.backup_path}\n"
+                f"  Reason: {str(e)}\n"
+                f"  Action: Check file permissions and disk space"
+            )
+            self.logger.error(error_msg)
+            raise IOError(error_msg)
+        except Exception as e:
+            error_msg = (
+                f"ERROR: Auto-Merger - Unexpected error during backup\n"
+                f"  File: {self.localizable_path}\n"
+                f"  Reason: {str(e)}\n"
+                f"  Action: Check file system and try again"
+            )
+            self.logger.error(error_msg)
+            raise
+    
+    def merge_keys(self, to_localize_data: dict, localizable_data: dict) -> int:
+        """
+        Merge keys from to_localize.json into Localizable.xcstrings data.
+        Preserves all existing keys and translations during merge.
+        
+        Args:
+            to_localize_data: Dictionary containing new keys to merge
+            localizable_data: Dictionary containing current Localizable.xcstrings data
+            
+        Returns:
+            Number of keys merged
+        """
+        self.merged_count = 0
+        
+        # Get the strings dictionaries
+        to_localize_strings = to_localize_data.get("strings", {})
+        localizable_strings = localizable_data.get("strings", {})
+        
+        # Merge each key from to_localize into localizable
+        for key, key_data in to_localize_strings.items():
+            if key not in localizable_strings:
+                # Key doesn't exist - add it
+                localizable_strings[key] = key_data
+                self.merged_count += 1
+                self.logger.debug(f"Merged new key: '{key}'")
+            else:
+                # Key exists - preserve existing data, only add missing localizations
+                existing_localizations = localizable_strings[key].get("localizations", {})
+                new_localizations = key_data.get("localizations", {})
+                
+                # Add any missing localizations
+                for lang, translation in new_localizations.items():
+                    if lang not in existing_localizations:
+                        if "localizations" not in localizable_strings[key]:
+                            localizable_strings[key]["localizations"] = {}
+                        localizable_strings[key]["localizations"][lang] = translation
+                        self.logger.debug(f"Added localization for existing key '{key}': {lang}")
+        
+        # Store merged data
+        self.merged_data = localizable_data
+        
+        self.logger.info(f"Merged {self.merged_count} new keys into Localizable.xcstrings")
+        return self.merged_count
+    
+    def write_merged_file(self, dry_run: bool = False) -> None:
+        """
+        Write merged data to Localizable.xcstrings using atomic write strategy.
+        In dry-run mode, output merged result to stdout instead of writing file.
+        
+        Atomic write strategy:
+        1. Write to temporary file
+        2. Rename temporary file to target file (atomic operation)
+        
+        Args:
+            dry_run: If True, output to stdout instead of writing file
+            
+        Raises:
+            IOError: If write operation fails
+        """
+        if self.merged_data is None:
+            self.logger.warning("No merged data to write - call merge_keys() first")
+            return
+        
+        # Format JSON with 2-space indentation
+        json_output = json.dumps(self.merged_data, indent=2, ensure_ascii=False)
+        
+        if dry_run:
+            # Output to stdout in dry-run mode
+            print("\n" + "=" * 70)
+            print("MERGED LOCALIZABLE.XCSTRINGS (DRY-RUN - NOT WRITTEN TO FILE)")
+            print("=" * 70)
+            print(json_output)
+            print("=" * 70)
+            self.logger.info(f"DRY-RUN: Would write merged data to {self.localizable_path}")
+            return
+        
+        # Atomic write strategy: write to temp file, then rename
+        temp_path = Path(str(self.localizable_path) + ".tmp")
+        
+        try:
+            # Write to temporary file
+            with open(temp_path, 'w', encoding='utf-8') as f:
+                f.write(json_output)
+            
+            # Rename temporary file to target file (atomic operation)
+            temp_path.replace(self.localizable_path)
+            
+            self.logger.info(f"Successfully wrote merged data to {self.localizable_path}")
+            
+        except IOError as e:
+            # Clean up temporary file if it exists
+            if temp_path.exists():
+                temp_path.unlink()
+            
+            error_msg = (
+                f"ERROR: Auto-Merger - Failed to write merged file\n"
+                f"  File: {self.localizable_path}\n"
+                f"  Reason: {str(e)}\n"
+                f"  Action: Check file permissions and disk space"
+            )
+            self.logger.error(error_msg)
+            raise IOError(error_msg)
+        except Exception as e:
+            # Clean up temporary file if it exists
+            if temp_path.exists():
+                temp_path.unlink()
+            
+            error_msg = (
+                f"ERROR: Auto-Merger - Unexpected error during write\n"
+                f"  File: {self.localizable_path}\n"
+                f"  Reason: {str(e)}\n"
+                f"  Action: Check file system and try again"
+            )
+            self.logger.error(error_msg)
+            raise
+    
+    def restore_backup(self) -> None:
+        """
+        Restore Localizable.xcstrings from backup file.
+        Used for error recovery when merge operation fails.
+        
+        Raises:
+            IOError: If restore operation fails
+        """
+        if not self.backup_path.exists():
+            self.logger.warning(f"No backup file found at {self.backup_path} - cannot restore")
+            return
+        
+        try:
+            import shutil
+            shutil.copy2(self.backup_path, self.localizable_path)
+            self.logger.info(f"Restored backup: {self.backup_path} -> {self.localizable_path}")
+            
+        except IOError as e:
+            error_msg = (
+                f"ERROR: Auto-Merger - Failed to restore backup\n"
+                f"  Backup: {self.backup_path}\n"
+                f"  Target: {self.localizable_path}\n"
+                f"  Reason: {str(e)}\n"
+                f"  Action: Manually restore the backup file"
+            )
+            self.logger.error(error_msg)
+            raise IOError(error_msg)
+        except Exception as e:
+            error_msg = (
+                f"ERROR: Auto-Merger - Unexpected error during restore\n"
+                f"  Backup: {self.backup_path}\n"
+                f"  Reason: {str(e)}\n"
+                f"  Action: Manually restore the backup file"
+            )
+            self.logger.error(error_msg)
+            raise
+    
+    def get_merged_count(self) -> int:
+        """
+        Get the number of keys that were merged.
+        
+        Returns:
+            Number of keys merged
+        """
+        return self.merged_count
 
 
 
@@ -1175,8 +1506,14 @@ def main():
         
         # Generate translations for new keys
         if new_keys:
-            logger.info(f"Generating translations for {len(new_keys)} new keys...")
-            tracker.generate_translations_for_new_keys()
+            if args.dry_run:
+                # In dry-run mode, only translate for 2 languages to speed up testing
+                logger.info(f"DRY-RUN: Generating sample translations for {len(new_keys)} new keys (limited to 2 languages)...")
+                tracker.generate_translations_for_new_keys(limit_languages=2)
+            else:
+                # In normal mode, translate for all languages
+                logger.info(f"Generating translations for {len(new_keys)} new keys...")
+                tracker.generate_translations_for_new_keys()
         
         # Display new keys summary
         if new_keys:
@@ -1260,11 +1597,45 @@ def main():
         to_localize_path = "tools/data/to_localize.json"
         reporter.write_to_localize_file(to_localize_data, to_localize_path, dry_run=args.dry_run)
         
-        # If auto-merge is enabled, report merge summary (placeholder for now)
+        # If auto-merge is enabled, perform merge operation
         if args.auto_merge:
-            # TODO: Implement auto-merge functionality
-            # For now, just report what would be merged
-            reporter.report_merge_summary(len(new_keys), verbose=args.verbose)
+            logger.info("Starting auto-merge operation...")
+            
+            try:
+                # Create AutoMerger instance
+                merger = AutoMerger(localizable_path, logger)
+                
+                # Create backup (or show what would be backed up in dry-run mode)
+                merger.backup_file(dry_run=args.dry_run)
+                
+                # Merge keys from to_localize into localizable_data
+                merged_count = merger.merge_keys(to_localize_data, localizable_data)
+                
+                # Write merged file (or show what would be written in dry-run mode)
+                merger.write_merged_file(dry_run=args.dry_run)
+                
+                # Report merge summary
+                reporter.report_merge_summary(merged_count, verbose=args.verbose)
+                
+                if not args.dry_run:
+                    logger.info("Auto-merge completed successfully")
+                else:
+                    logger.info("DRY-RUN: Auto-merge preview completed")
+                
+            except Exception as e:
+                logger.error(f"Auto-merge failed: {str(e)}")
+                
+                # Attempt to restore backup if not in dry-run mode
+                if not args.dry_run:
+                    logger.info("Attempting to restore backup...")
+                    try:
+                        merger.restore_backup()
+                        logger.info("Backup restored successfully")
+                    except Exception as restore_error:
+                        logger.error(f"Failed to restore backup: {str(restore_error)}")
+                        logger.error("Manual intervention required - check backup file")
+                
+                return 1
         
         logger.info("Analysis complete")
         return 0

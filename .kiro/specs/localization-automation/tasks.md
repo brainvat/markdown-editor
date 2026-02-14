@@ -260,8 +260,8 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
     - Test JSON file writing with indentation
     - Test merge summary reporting
 
-- [ ] 10. Implement Auto-Merger component
-  - [ ] 10.1 Create AutoMerger class
+- [x] 10. Implement Auto-Merger component
+  - [x] 10.1 Create AutoMerger class
     - Implement initialization with localizable_path
     - Implement backup_file() to create .old backup (skip in --dry-run mode)
     - Delete existing backup if present before creating new one
@@ -272,7 +272,7 @@ The implementation follows a pipeline architecture: Load Files → Detect Missin
     - In --dry-run mode, output merged result to stdout instead of writing files
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8_
   
-  - [ ] 10.2 User acceptance test: Verify auto-merge with --dry-run
+  - [x] 10.2 User acceptance test: Verify auto-merge with --dry-run
     - Execute: `python tools/localization.py --auto-merge --dry-run`
     - Verify: Output shows what would be backed up (but doesn't create backup)
     - Verify: Output displays merged Localizable.xcstrings structure
