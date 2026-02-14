@@ -46,4 +46,3 @@ tools/mac-translate
 # Localization tool generated files
 tools/data/to_localize.json
 Markdown Editor/Localizable.xcstrings.old
-Markdown Editor/Localizable.xcstrings.diff
