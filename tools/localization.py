@@ -1219,6 +1219,126 @@ class AutoMerger:
         """
         return self.merged_count
 
+    def create_json_diff(self, dry_run: bool = False) -> None:
+        """
+        Create a JSON diff file showing structural differences between backup and merged file.
+        This is NOT a line-by-line diff, but a structural comparison showing:
+        - New keys added
+        - New translations added to existing keys
+        - Modified translations (if any)
+
+        The diff file contains only the delta in the same JSON structure format.
+
+        Args:
+            dry_run: If True, output diff to stdout instead of writing file
+        """
+        if not self.backup_path.exists():
+            self.logger.warning(f"No backup file found at {self.backup_path} - cannot create diff")
+            return
+
+        try:
+            # Load the backup (old) file
+            with open(self.backup_path, 'r', encoding='utf-8') as f:
+                old_data = json.load(f)
+
+            # Load the merged (new) file
+            with open(self.localizable_path, 'r', encoding='utf-8') as f:
+                new_data = json.load(f)
+
+            # Create diff structure
+            diff = {
+                "sourceLanguage": new_data.get("sourceLanguage", "en"),
+                "strings": {},
+                "version": new_data.get("version", "1.0"),
+                "_metadata": {
+                    "description": "JSON structural diff showing changes made during merge",
+                    "old_file": str(self.backup_path),
+                    "new_file": str(self.localizable_path),
+                    "keys_added": 0,
+                    "translations_added": 0,
+                    "translations_modified": 0
+                }
+            }
+
+            old_strings = old_data.get("strings", {})
+            new_strings = new_data.get("strings", {})
+
+            # Find differences
+            for key, key_data in new_strings.items():
+                if key not in old_strings:
+                    # Entire key is new
+                    diff["strings"][key] = key_data
+                    diff["_metadata"]["keys_added"] += 1
+
+                    # Count translations in this new key
+                    localizations = key_data.get("localizations", {})
+                    diff["_metadata"]["translations_added"] += len(localizations)
+                else:
+                    # Key exists - check for new or modified translations
+                    old_localizations = old_strings[key].get("localizations", {})
+                    new_localizations = key_data.get("localizations", {})
+
+                    key_diff = {}
+                    has_changes = False
+
+                    for lang, translation in new_localizations.items():
+                        if lang not in old_localizations:
+                            # New translation added
+                            if not has_changes:
+                                key_diff = {"localizations": {}}
+                                has_changes = True
+                            key_diff["localizations"][lang] = translation
+                            diff["_metadata"]["translations_added"] += 1
+                        elif old_localizations[lang] != translation:
+                            # Translation was modified (shouldn't happen, but track it)
+                            if not has_changes:
+                                key_diff = {"localizations": {}}
+                                has_changes = True
+                            key_diff["localizations"][lang] = {
+                                "_modified": True,
+                                "old": old_localizations[lang],
+                                "new": translation
+                            }
+                            diff["_metadata"]["translations_modified"] += 1
+
+                    if has_changes:
+                        diff["strings"][key] = key_diff
+
+            # Format JSON with 2-space indentation
+            json_output = json.dumps(diff, indent=2, ensure_ascii=False)
+
+            if dry_run:
+                # Output to stdout in dry-run mode
+                print("\n" + "=" * 70)
+                print("JSON DIFF (DRY-RUN - NOT WRITTEN TO FILE)")
+                print("=" * 70)
+                print(json_output)
+                print("=" * 70)
+                self.logger.info("DRY-RUN: Would write JSON diff")
+                return
+
+            # Write diff file
+            diff_path = Path(str(self.localizable_path) + ".diff")
+            with open(diff_path, 'w', encoding='utf-8') as f:
+                f.write(json_output)
+
+            self.logger.info(f"Created JSON diff: {diff_path}")
+            self.logger.info(
+                f"Diff summary: {diff['_metadata']['keys_added']} keys added, "
+                f"{diff['_metadata']['translations_added']} translations added, "
+                f"{diff['_metadata']['translations_modified']} translations modified"
+            )
+
+        except Exception as e:
+            error_msg = (
+                f"ERROR: Auto-Merger - Failed to create JSON diff\n"
+                f"  Reason: {str(e)}\n"
+                f"  Action: Check that backup and merged files are valid JSON"
+            )
+            self.logger.error(error_msg)
+            # Don't raise - diff creation failure shouldn't stop the merge
+
+
 
 
 
@@ -1613,6 +1733,9 @@ def main():
                 
                 # Write merged file (or show what would be written in dry-run mode)
                 merger.write_merged_file(dry_run=args.dry_run)
+                
+                # Create JSON diff showing structural changes
+                merger.create_json_diff(dry_run=args.dry_run)
                 
                 # Report merge summary
                 reporter.report_merge_summary(merged_count, verbose=args.verbose)
