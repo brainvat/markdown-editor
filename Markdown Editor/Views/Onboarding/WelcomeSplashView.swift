@@ -10,6 +10,7 @@ import SwiftUI
 /// Welcome splash screen shown on first launch to introduce new users to Mac MD
 struct WelcomeSplashView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(SubscriptionManager.self) private var subscriptionManager
     @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore = false
     @State private var dontShowAgain = false
     
@@ -105,12 +106,14 @@ struct WelcomeSplashView: View {
                 description: "See your Markdown rendered in real-time as you type"
             )
             
-            featureRow(
-                icon: "icloud",
-                title: "iCloud Sync",
-                description: "Your documents automatically sync across Mac, iPad, and iPhone"
-            )
-            
+            if subscriptionManager.isPremium {
+                featureRow(
+                    icon: "icloud",
+                    title: "iCloud Sync",
+                    description: "Your documents automatically sync across Mac, iPad, and iPhone"
+                )
+            }
+
             featureRow(
                 icon: "tag",
                 title: "Projects & Tags",
@@ -213,15 +216,18 @@ struct WelcomeSplashView: View {
 #Preview("Welcome Splash - Light") {
     WelcomeSplashView()
         .preferredColorScheme(.light)
+        .environment(SubscriptionManager())
 }
 
 #Preview("Welcome Splash - Dark") {
     WelcomeSplashView()
         .preferredColorScheme(.dark)
+        .environment(SubscriptionManager())
 }
 
 #if os(iOS)
 #Preview("Welcome Splash - iOS") {
     WelcomeSplashView()
+        .environment(SubscriptionManager())
 }
 #endif
