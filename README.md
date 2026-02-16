@@ -73,7 +73,7 @@ Mac MD follows modern Swift and SwiftUI best practices:
 ### Data Layer
 - **SwiftData** for local persistence with `@Model` macro
 - **CloudKit** integration for iCloud syncing (Mac MD Premium only)
-- Four core entities: `Document`, `Tag`, `Project`, `Snippet`
+- Three core entities: `Document`, `Tag`, and `Project`
 - Bidirectional relationships with proper cascade rules
 
 ### UI Layer
@@ -90,11 +90,10 @@ Mac MD follows modern Swift and SwiftUI best practices:
 ### Project Structure
 ```
 Markdown Editor/
-├── Models/              # SwiftData entities
+├── Models/              # SwiftData eßntities
 │   ├── Document.swift
 │   ├── Tag.swift
-│   ├── Project.swift
-│   └── Snippet.swift
+│   └── Project.swift
 ├── Views/
 │   ├── Main/           # Three-column layout
 │   ├── Preview/        # WebKit-based renderer
@@ -139,7 +138,7 @@ Markdown Editor/
 ## 🗺️ Roadmap
 
 ### v1.0.0 - App Store Launch ✅
-- [x] SwiftData schema (Document, Tag, Project, Snippet)
+- [x] SwiftData schema (Document, Tag, Project)
 - [x] Three-column NavigationSplitView layout
 - [x] Live Markdown preview (CommonMark + GFM via swift-markdown)
 - [x] Document CRUD with archive, favorites, sorting
@@ -154,7 +153,7 @@ Markdown Editor/
 - [x] Marketing website (GitHub Pages)
 
 ### Future Ideas
-- Snippet system with variables and tab stops
+- Beta system with variables and tab stops
 - Editor intelligence (auto-pairing, smart list continuation)
 - LaTeX/Math rendering (MathJax or KaTeX)
 - macOS system extension for capturing text from any app
