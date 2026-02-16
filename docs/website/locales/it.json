@@ -10,7 +10,7 @@
     "heading": "Tutto ciò di cui hai bisogno per scrivere",
     "livePreview": {
       "title": "Anteprima dal vivo",
-      "description": "Rendering in tempo reale con GitHub Flavored Markdown ed evidenziazione della sintassi per 185 lingue"
+      "description": "Rendering in tempo reale con il supporto CommonMark e GitHub Flavored Markdown"
     },
     "icloudSync": {
       "title": "Sincronizzazione iCloud",

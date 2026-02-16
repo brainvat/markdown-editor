@@ -10,7 +10,7 @@
     "heading": "작성하는 데 필요한 모든 것",
     "livePreview": {
       "title": "실시간 미리보기",
-      "description": "GitHub Flavored Markdown와 185개 언어에 대한 구문 강조를 활용한 실시간 렌더링"
+      "description": "CommonMark 및 GitHub Flavored Markdown 지원을 이용한 실시간 렌더링"
     },
     "icloudSync": {
       "title": "iCloud 동기화",

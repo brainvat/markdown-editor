@@ -10,7 +10,7 @@
     "heading": "Semua yang kamu butuhkan untuk menulis",
     "livePreview": {
       "title": "Pratinjau Langsung",
-      "description": "Rendering waktu nyata dengan GitHub Flavored Markdown dan penyorotan sintaks untuk 185 bahasa"
+      "description": "Rendering waktu nyata dengan dukungan CommonMark dan GitHub Flavored Markdown"
     },
     "icloudSync": {
       "title": "Sinkronisasi iCloud",

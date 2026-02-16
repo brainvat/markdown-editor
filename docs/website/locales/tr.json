@@ -10,7 +10,7 @@
     "heading": "Yazman gereken her şey",
     "livePreview": {
       "title": "Canlı Önizleme",
-      "description": "GitHub Flavored Markdown ile gerçek zamanlı oluşturma ve 185 dil için sözdizimi vurgulama"
+      "description": "CommonMark ve GitHub Flavored Markdown desteği ile gerçek zamanlı oluşturma"
     },
     "icloudSync": {
       "title": "iCloud Senkronizasyonu",

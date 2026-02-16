@@ -10,7 +10,7 @@
     "heading": "Mọi thứ bạn cần viết",
     "livePreview": {
       "title": "Xem trước trực tiếp",
-      "description": "Kết xuất thời gian thực với GitHub Flavored Markdown và tô sáng cú pháp cho 185 ngôn ngữ"
+      "description": "Kết xuất thời gian thực với hỗ trợ CommonMark và GitHub Flavored Markdown"
     },
     "icloudSync": {
       "title": "Đồng bộ hóa iCloud",

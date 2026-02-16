@@ -10,7 +10,7 @@
     "heading": "كل ما تحتاج إلى كتابته",
     "livePreview": {
       "title": "معاينة مباشرة",
-      "description": "عرض في الوقت الفعلي باستخدام GitHub Flavored Markdown وتسليط الضوء على بناء الجملة ل 185 لغة"
+      "description": "عرض في الوقت الفعلي مع دعم CommonMark وGitHub Flavored Markdown"
     },
     "icloudSync": {
       "title": "مزامنة iCloud",

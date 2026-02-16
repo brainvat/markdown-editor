@@ -10,7 +10,7 @@
     "heading": "Alles wat je nodig hebt om te schrijven",
     "livePreview": {
       "title": "Live voorbeeld",
-      "description": "Realtime weergave met GitHub Flavored Markdown en syntaxismarkering voor 185 talen"
+      "description": "Realtime weergave met CommonMark en GitHub Flavored Markdown-ondersteuning"
     },
     "icloudSync": {
       "title": "iCloud-synchronisatie",

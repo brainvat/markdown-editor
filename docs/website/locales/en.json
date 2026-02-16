@@ -10,7 +10,7 @@
     "heading": "Everything you need to write",
     "livePreview": {
       "title": "Live Preview",
-      "description": "Real-time rendering with GitHub Flavored Markdown and syntax highlighting for 185 languages"
+      "description": "Real-time rendering with CommonMark and GitHub Flavored Markdown support"
     },
     "icloudSync": {
       "title": "iCloud Sync",

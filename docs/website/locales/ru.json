@@ -10,7 +10,7 @@
     "heading": "Все, что вам нужно написать",
     "livePreview": {
       "title": "Предварительный просмотр в реальном времени",
-      "description": "Рендеринг в режиме реального времени с GitHub Flavored Markdown и подсветкой синтаксиса для 185 языков"
+      "description": "Рендеринг в режиме реального времени с поддержкой CommonMark и GitHub Flavored Markdown"
     },
     "icloudSync": {
       "title": "Синхронизация iCloud",

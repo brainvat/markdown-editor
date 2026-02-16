@@ -10,7 +10,7 @@
     "heading": "ทุกสิ่งที่คุณต้องการเขียน",
     "livePreview": {
       "title": "ตัวอย่างสด",
-      "description": "การเรนเดอร์แบบเรียลไทม์ด้วย GitHub Flavored Markdown และการเน้นไวยากรณ์สําหรับ 185 ภาษา"
+      "description": "การเรนเดอร์แบบเรียลไทม์ด้วยการสนับสนุน CommonMark และ GitHub Flavored Markdown"
     },
     "icloudSync": {
       "title": "ซิงค์ iCloud",

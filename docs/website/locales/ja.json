@@ -10,7 +10,7 @@
     "heading": "書くために必要なすべて",
     "livePreview": {
       "title": "ライブプレビュー",
-      "description": "GitHub Flavored Markdown を使用したリアルタイムレンダリングと構文ハイライト（185 言語対応）"
+      "description": "CommonMark と GitHub Flavored Markdown のサポートによるリアルタイムレンダリング"
     },
     "icloudSync": {
       "title": "iCloud 同期",

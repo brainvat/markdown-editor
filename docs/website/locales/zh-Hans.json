@@ -10,7 +10,7 @@
     "heading": "你需要写的一切",
     "livePreview": {
       "title": "实时预览",
-      "description": "使用GitHub Flavored Markdown和185种语言的语法高亮显示进行实时渲染"
+      "description": "支持CommonMark和GitHub Flavored Markdown的实时渲染"
     },
     "icloudSync": {
       "title": "iCloud 同步",
