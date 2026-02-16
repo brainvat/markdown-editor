@@ -28,7 +28,6 @@ A modern Markdown editor for macOS, iOS, and iPadOS built with SwiftUI and Swift
 ### Markdown Support
 - ✅ **CommonMark** - Full standard Markdown support via swift-markdown
 - ✅ **GitHub Flavored Markdown** - Tables, task lists, strikethrough, and more
-- ✅ **Syntax Highlighting** - 185 languages via Highlight.js
 
 ### Export & Sharing
 - 📄 **PDF Export** - Native PDF generation (Mac ✅, iOS ✅)
@@ -143,7 +142,6 @@ Markdown Editor/
 - [x] SwiftData schema (Document, Tag, Project, Snippet)
 - [x] Three-column NavigationSplitView layout
 - [x] Live Markdown preview (CommonMark + GFM via swift-markdown)
-- [x] Syntax highlighting — 185 languages via Highlight.js
 - [x] Document CRUD with archive, favorites, sorting
 - [x] Project and Tag CRUD with color pickers
 - [x] Multi-select with bulk delete, move, and tag operations
