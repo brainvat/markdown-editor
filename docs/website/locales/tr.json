@@ -2,7 +2,7 @@
   "hero": {
     "title": "Mac MD",
     "tagline": "Tüm Apple cihazlarınız için modern bir Markdown editörü",
-    "subtitle": "Sorunsuz iCloud senkronizasyonu ile Mac, iPad ve iPhone'da güzel bir şekilde yazın",
+    "subtitle": "Mac, iPad ve iPhone'da güzel bir şekilde yazma",
     "downloadButton": "GitHub'dan indirin",
     "getStartedButton": "Başlayın"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "iCloud Senkronizasyonu",
-      "description": "Tüm Apple cihazlarınızda sorunsuz senkronizasyon. Mac'te başlayın, iPad'de bitirin"
+      "description": "Belgelerinizi tüm Apple aygıtlarınızda senkronize tutun. Mac MD Premium ile kullanılabilir"
     },
     "universalApp": {
       "title": "Evrensel Uygulama",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38 Dil",
-      "description": "Otomatik çeviri yönetimi ile tam yerelleştirme desteği"
+      "description": "Tüm platformlarda tam yerelleştirme desteği"
     }
   },
   "platforms": {

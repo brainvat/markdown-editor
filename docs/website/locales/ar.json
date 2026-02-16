@@ -2,7 +2,7 @@
   "hero": {
     "title": "ماك MD",
     "tagline": "محرر Markdown حديث لجميع أجهزة Apple الخاصة بك",
-    "subtitle": "اكتب بشكل جميل على Mac وiPad وiPhone مع مزامنة iCloud السلسة",
+    "subtitle": "اكتب بشكل جميل على أجهزة Mac وiPad وiPhone",
     "downloadButton": "قم بالتنزيل على GitHub",
     "getStartedButton": "ابدأ"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "مزامنة iCloud",
-      "description": "مزامنة سلسة عبر جميع أجهزة Apple الخاصة بك. ابدأ على Mac، وانتهي على iPad"
+      "description": "حافظ على مزامنة مستنداتك عبر جميع أجهزة Apple الخاصة بك. متوفر مع Mac MD Premium"
     },
     "universalApp": {
       "title": "تطبيق عالمي",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38 لغة",
-      "description": "دعم التوطين الكامل مع إدارة الترجمة الآلية"
+      "description": "دعم التوطين الكامل عبر جميع المنصات"
     }
   },
   "platforms": {

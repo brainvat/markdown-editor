@@ -2,7 +2,7 @@
   "hero": {
     "title": "맥 MD",
     "tagline": "모든 Apple 기기를 위한 최신 마크다운 편집기",
-    "subtitle": "Mac, iPad 및 iPhone에서 원활한 iCloud 동기화로 아름답게 글을 작성하십시오.",
+    "subtitle": "Mac, iPad 및 iPhone에서 아름답게 글을 쓰세요",
     "downloadButton": "GitHub에서 다운로드",
     "getStartedButton": "시작하기"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "iCloud 동기화",
-      "description": "모든 Apple 기기에서 원활하게 동기화됩니다. Mac에서 시작하고 iPad에서 마무리하십시오."
+      "description": "모든 Apple 기기에서 문서를 동기화하십시오. Mac MD Premium와 함께 제공됩니다"
     },
     "universalApp": {
       "title": "범용 앱",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38개 언어",
-      "description": "자동 번역 관리를 포함한 완전한 현지화 지원"
+      "description": "모든 플랫폼에서 완전한 현지화 지원"
     }
   },
   "platforms": {

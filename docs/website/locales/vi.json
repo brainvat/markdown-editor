@@ -2,7 +2,7 @@
   "hero": {
     "title": "Máy Mac MD",
     "tagline": "Trình chỉnh sửa Markdown hiện đại cho tất cả các thiết bị Apple của bạn",
-    "subtitle": "Viết đẹp trên Mac, iPad và iPhone với đồng bộ hóa iCloud liền mạch",
+    "subtitle": "Viết đẹp trên Mac, iPad và iPhone",
     "downloadButton": "Tải xuống trên GitHub",
     "getStartedButton": "Bắt đầu"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "Đồng bộ hóa iCloud",
-      "description": "Đồng bộ hóa liền mạch trên tất cả các thiết bị Apple của bạn. Bắt đầu trên Mac, kết thúc trên iPad"
+      "description": "Giữ tài liệu của bạn đồng bộ trên tất cả các thiết bị Apple của bạn. Có sẵn với Mac MD Premium"
     },
     "universalApp": {
       "title": "Ứng dụng phổ quát",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38 ngôn ngữ",
-      "description": "Hỗ trợ bản địa hóa đầy đủ với quản lý dịch thuật tự động"
+      "description": "Hỗ trợ bản địa hóa đầy đủ trên tất cả các nền tảng"
     }
   },
   "platforms": {

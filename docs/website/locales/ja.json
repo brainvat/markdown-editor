@@ -2,7 +2,7 @@
   "hero": {
     "title": "Mac MD",
     "tagline": "すべてのAppleデバイスに対応した最新のMarkdownエディタ",
-    "subtitle": "Mac、iPad、iPhoneでシームレスなiCloud同期により、美しく執筆できます",
+    "subtitle": "Mac、iPad、iPhoneで美しく書く",
     "downloadButton": "GitHubでダウンロード",
     "getStartedButton": "始める"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "iCloud 同期",
-      "description": "すべてのAppleデバイス間でシームレスに同期します。 Macで開始し、iPadで終了します"
+      "description": "すべての Apple デバイス間で文書を同期させましょう。 Mac MD Premiumでご利用いただけます"
     },
     "universalApp": {
       "title": "ユニバーサルアプリ",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38言語",
-      "description": "自動翻訳管理を伴うフルローカリゼーションサポート"
+      "description": "すべてのプラットフォームにわたる完全なローカリゼーションサポート"
     }
   },
   "platforms": {

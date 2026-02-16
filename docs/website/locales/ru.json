@@ -2,7 +2,7 @@
   "hero": {
     "title": "Mac MD",
     "tagline": "Современный редактор Markdown для всех ваших устройств Apple",
-    "subtitle": "Пишите красиво на Mac, iPad и iPhone с бесшовной синхронизацией iCloud",
+    "subtitle": "Пишите красиво на Mac, iPad и iPhone",
     "downloadButton": "Скачать на GitHub",
     "getStartedButton": "Начать"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "Синхронизация iCloud",
-      "description": "Бесшовная синхронизация на всех ваших устройствах Apple. Начать на Mac, закончить на iPad"
+      "description": "Синхронизируйте свои документы на всех ваших устройствах Apple. Доступно с Mac MD Premium"
     },
     "universalApp": {
       "title": "Универсальное приложение",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38 Языков",
-      "description": "Полная поддержка локализации с автоматизированным управлением переводом"
+      "description": "Полная поддержка локализации на всех платформах"
     }
   },
   "platforms": {

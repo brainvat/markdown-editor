@@ -2,7 +2,7 @@
   "hero": {
     "title": "麥克醫學博士",
     "tagline": "適用於所有蘋果裝置的現代Markdown編輯器",
-    "subtitle": "透過無縫的iCloud同步，在Mac、iPad和iPhone上書寫精美",
+    "subtitle": "在 Mac、iPad 和 iPhone 上書寫精美",
     "downloadButton": "在GitHub上下載",
     "getStartedButton": "開始"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "iCloud 同步",
-      "description": "在您的所有蘋果裝置上實現無縫同步。 在Mac上開始，在iPad上完成"
+      "description": "讓您的文件在所有蘋果裝置上保持同步。 適用於Mac MD Premium"
     },
     "universalApp": {
       "title": "通用應用程式",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38種語言",
-      "description": "具有自動翻譯管理的全面本地化支援"
+      "description": "所有平臺的全面本地化支援"
     }
   },
   "platforms": {

@@ -2,7 +2,7 @@
   "hero": {
     "title": "Mac MD",
     "tagline": "適用於所有Apple裝置的現代Markdown編輯器",
-    "subtitle": "通过无缝的iCloud同步，在Mac、iPad和iPhone上书写精美",
+    "subtitle": "在 Mac、iPad 和 iPhone 上书写精美",
     "downloadButton": "在GitHub上下载",
     "getStartedButton": "开始"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "iCloud 同步",
-      "description": "跨所有苹果设备无缝同步。 在Mac上开始，在iPad上完成"
+      "description": "让您的文档在所有苹果设备上保持同步。 适用于Mac MD Premium"
     },
     "universalApp": {
       "title": "通用应用程序",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38种语言",
-      "description": "具有自动翻译管理的全面本地化支持"
+      "description": "所有平台的全面本地化支持"
     }
   },
   "platforms": {

@@ -2,7 +2,7 @@
   "hero": {
     "title": "Mac MD",
     "tagline": "Een moderne Markdown-editor voor al uw Apple-apparaten",
-    "subtitle": "Schrijf prachtig op Mac, iPad en iPhone met naadloze iCloud-synchronisatie",
+    "subtitle": "Schrijf prachtig op Mac, iPad en iPhone",
     "downloadButton": "Downloaden op GitHub",
     "getStartedButton": "Aan de slag"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "iCloud-synchronisatie",
-      "description": "Naadloze synchronisatie op al uw Apple-apparaten. Start op Mac, eindig op iPad"
+      "description": "Houd uw documenten gesynchroniseerd op al uw Apple-apparaten. Beschikbaar met Mac MD Premium"
     },
     "universalApp": {
       "title": "Universele app",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38 Talen",
-      "description": "Volledige lokalisatieondersteuning met geautomatiseerd vertaalbeheer"
+      "description": "Volledige lokalisatieondersteuning op alle platforms"
     }
   },
   "platforms": {

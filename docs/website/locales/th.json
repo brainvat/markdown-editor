@@ -2,7 +2,7 @@
   "hero": {
     "title": "แม็ค เอ็มดี",
     "tagline": "ตัวแก้ไข Markdown ที่ทันสมัยสําหรับอุปกรณ์ Apple ทั้งหมดของคุณ",
-    "subtitle": "เขียนได้อย่างสวยงามบน Mac, iPad และ iPhone ด้วยการซิงค์ iCloud อย่างราบรื่น",
+    "subtitle": "เขียนได้อย่างสวยงามบน Mac, iPad และ iPhone",
     "downloadButton": "ดาวน์โหลดบน GitHub",
     "getStartedButton": "เริ่มต้น"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "ซิงค์ iCloud",
-      "description": "การซิงโครไนซ์อย่างราบรื่นระหว่างอุปกรณ์ Apple ทั้งหมดของคุณ เริ่มบน Mac จบบน iPad"
+      "description": "ทําให้เอกสารของคุณซิงค์ระหว่างอุปกรณ์ Apple ทุกเครื่องของคุณ ใช้ได้กับ Mac MD Premium"
     },
     "universalApp": {
       "title": "แอปสากล",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38 ภาษา",
-      "description": "การสนับสนุนการแปลแบบเต็มพร้อมการจัดการการแปลอัตโนมัติ"
+      "description": "รองรับการแปลแบบเต็มในทุกแพลตฟอร์ม"
     }
   },
   "platforms": {

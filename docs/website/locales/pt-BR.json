@@ -2,7 +2,7 @@
   "hero": {
     "title": "Mac MD",
     "tagline": "Um editor Markdown moderno para todos os seus dispositivos Apple",
-    "subtitle": "Escreva lindamente no Mac, iPad e iPhone com sincronização perfeita do iCloud",
+    "subtitle": "Escreva lindamente no Mac, iPad e iPhone",
     "downloadButton": "Baixar no GitHub",
     "getStartedButton": "Começar"
   },
@@ -14,7 +14,7 @@
     },
     "icloudSync": {
       "title": "Sincronização do iCloud",
-      "description": "Sincronização perfeita em todos os seus dispositivos Apple. Comece no Mac, termine no iPad"
+      "description": "Mantenha seus documentos sincronizados em todos os seus dispositivos Apple. Disponível com Mac MD Premium"
     },
     "universalApp": {
       "title": "Aplicativo Universal",
@@ -30,7 +30,7 @@
     },
     "languages": {
       "title": "38 Idiomas",
-      "description": "Suporte total de localização com gerenciamento automatizado de tradução"
+      "description": "Suporte total à localização em todas as plataformas"
     }
   },
   "platforms": {

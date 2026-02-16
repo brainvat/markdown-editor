@@ -2,7 +2,7 @@
 
 <img src="mac_md.png" alt="Mac MD Logo" width="200"/>
 
-A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with SwiftUI and SwiftData. Mac MD is a Universal App that provides seamless iCloud syncing across all your Apple devices.
+A modern Markdown editor for macOS, iOS, and iPadOS built with SwiftUI and SwiftData.
 
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20iOS%20%7C%20iPadOS-lightgrey)
 ![Swift](https://img.shields.io/badge/Swift-6.0-orange)
@@ -14,9 +14,9 @@ A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with Swi
 ### Core Functionality
 - 📝 **Live Markdown Preview** - Real-time rendering with GitHub Flavored Markdown support
 - 🎨 **Three-Column Layout** - Sidebar, document list, and editor with adjustable preview
-- ☁️ **iCloud Sync** - Seamless synchronization across all your devices via CloudKit
 - 📱 **Universal App** - Native experience on Mac, iPad, and iPhone
 - 🌓 **Dark Mode** - Beautiful styling that adapts to system appearance
+- ☁️ **iCloud Sync** - Available with **Mac MD Premium** subscription
 
 ### Document Organization
 - 📂 **Projects** - Group related documents together with icons and colors
@@ -29,22 +29,17 @@ A modern, feature-rich Markdown editor for macOS, iOS, and iPadOS built with Swi
 - ✅ **CommonMark** - Full standard Markdown support via swift-markdown
 - ✅ **GitHub Flavored Markdown** - Tables, task lists, strikethrough, and more
 - ✅ **Syntax Highlighting** - 185 languages via Highlight.js
-- 🔜 **LaTeX/Math** - Mathematical expressions (planned for v2.0)
-- � **Smart Lists** - Auto-continuation and task list toggling (planned for v2.0)
 
 ### Export & Sharing
-- 📄 **PDF Export** - Native PDF generation with styling preservation (Mac: ✅ iOS: ✅)
-- 🌐 **HTML Export** - Standalone HTML files with embedded CSS (Mac: ✅ iOS: ❌ SwiftUI bug)
-- 📝 **Markdown Export** - Export as .md files (Mac: ✅ iOS: ❌ SwiftUI bug)
+- 📄 **PDF Export** - Native PDF generation (Mac ✅, iOS ✅)
+- 🌐 **HTML Export** - Standalone HTML files with embedded CSS (Mac ✅, iOS ❌)
+- 📝 **Markdown Export** - Export as .md files (Mac ✅, iOS ❌)
 - 📊 **Document Stats** - Word count, character count, last modified
 
-### Internationalization
-- 🌍 **38 Languages** - Full localization support across all platforms
-- 🤖 **Automated Translation** - Python tool using macOS Translation framework
-- 🔄 **Smart Management** - Automatic detection of missing translations and new keys
-- 📊 **Progress Tracking** - Real-time translation progress with ETA and throughput
+> **Note:** iOS HTML and Markdown exports are blocked by a confirmed SwiftUI framework bug where `.fileExporter()` silently fails for certain `FileDocument` types.
 
-**Note:** iOS HTML and Markdown exports are blocked by a [confirmed SwiftUI framework bug](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md) where `.fileExporter()` silently fails for certain `FileDocument` types despite valid documents being created.
+### Internationalization
+- 🌍 **38 Languages** - Full localization across all platforms
 
 ## 🚀 Getting Started
 
@@ -72,20 +67,13 @@ open "Markdown Editor.xcodeproj"
 
 4. Build and run (⌘R)
 
-### First Run
-
-On first launch, Mac MD will:
-- Request iCloud permissions for syncing (optional)
-- Create a sample document to get you started
-- Display the three-column layout
-
 ## 🏗️ Architecture
 
 Mac MD follows modern Swift and SwiftUI best practices:
 
 ### Data Layer
 - **SwiftData** for local persistence with `@Model` macro
-- **CloudKit** integration for automatic iCloud syncing (disabled for development)
+- **CloudKit** integration for iCloud syncing (Mac MD Premium only)
 - Four core entities: `Document`, `Tag`, `Project`, `Snippet`
 - Bidirectional relationships with proper cascade rules
 
@@ -97,14 +85,8 @@ Mac MD follows modern Swift and SwiftUI best practices:
 
 ### Service Layer
 - **MarkdownManager** - Centralized Markdown parsing and rendering (@MainActor)
-- **Export Services** - PDF and HTML generation
+- **SubscriptionManager** - StoreKit 2 subscription management
 - Async/await throughout (Swift 6 strict concurrency)
-
-### Localization
-- **38 Languages** - Full internationalization support
-- **Automated Translation** - Python tool using macOS Translation framework
-- **Smart Management** - Tracks new keys, detects missing translations
-- See [tools/README.md](tools/README.md) for localization automation details
 
 ### Project Structure
 ```
@@ -117,46 +99,32 @@ Markdown Editor/
 ├── Views/
 │   ├── Main/           # Three-column layout
 │   ├── Preview/        # WebKit-based renderer
+│   ├── Onboarding/     # Welcome splash screen
 │   └── Components/     # Reusable sheets and dialogs
 ├── Services/           # Business logic
 ├── Utilities/          # Extensions and helpers
-├── App/                # Entry point
 └── Localizable.xcstrings  # 38-language localization
-tools/
-├── localization.py     # Automated translation tool
-├── bridge.swift        # Swift translation bridge
-└── data/               # Language and key definitions
 ```
 
 ## 🎓 Inspiration & Credits
-
-This project stands on the shoulders of giants and wouldn't exist without these amazing resources:
 
 ### Primary Inspirations
 
 **[MacDown](https://macdown.app)** by [Tzu-ping Chung](https://github.com/uranusjr)
 - The original MacDown is a beloved open-source Markdown editor for macOS
 - Mac MD was inspired by MacDown's elegant approach to Markdown editing
-- Mac MD brings a similar experience to iOS/iPadOS with modern SwiftUI and iCloud sync
+- Mac MD brings a similar experience to iOS/iPadOS with modern SwiftUI
 - If you're on macOS only, definitely check out the original MacDown!
 
 **[Xcode 26.3 Intelligence Tutorial](https://www.youtube.com/watch?v=QdpaI_j0FRU)** by [Stewart Lynch](https://www.youtube.com/@StewartLynch)
 - Incredible tutorial on using Xcode Intelligence (Claude integration) for SwiftUI development
-- Demonstrated modern SwiftData patterns and cross-platform development
-- Inspiration for leveraging AI assistance in iOS development
 - [Stewart's YouTube Channel](https://www.youtube.com/@StewartLynch) is an amazing resource
 
 ### AI Agent Development
 
 **[SwiftAgents](https://github.com/twostraws/SwiftAgents)** by [Paul Hudson](https://github.com/twostraws)
-- AGENTS.md file that defines how AI should work with Swift projects
-- Best practices for AI-assisted Swift development
-- Check out Paul's work at [Hacking with Swift](https://www.hackingwithswift.com)
 
 **[SwiftUI Agent Skill](https://github.com/AvdLee/SwiftUI-Agent-Skill)** by [Antoine van der Lee](https://github.com/AvdLee)
-- Comprehensive Claude skills for SwiftUI development
-- Detailed patterns for modern SwiftUI best practices
-- [Antoine's blog](https://www.avanderlee.com) is essential reading for iOS developers
 
 ### Development Tools
 
@@ -164,214 +132,40 @@ This project stands on the shoulders of giants and wouldn't exist without these 
 - **SwiftUI** & **SwiftData** by Apple - Modern app development framework
 - **Xcode** - The amazing IDE that makes iOS development possible
 
-## 🤝 Contributing
-
-Contributions are welcome! This project is a learning experience and showcase of modern Swift development.
-
-### Areas for Contribution
-- [ ] Integration of proper Markdown parser (Ink, swift-markdown, or MarkdownUI)
-- [ ] Syntax highlighting for code blocks
-- [ ] Editor intelligence (auto-completion, smart typing)
-- [ ] Keyboard shortcuts
-- [ ] Search functionality
-- [ ] Custom themes
-- [ ] Extensions/plugins system
-
-### Guidelines
-- Follow Swift API Design Guidelines
-- Use Swift 6 strict concurrency
-- Write SwiftUI-native code
-- Include Xcode Previews for all views
-- Update documentation (CLAUDE.md and Journal.md)
-
 ## 📖 Documentation
 
 - **[CLAUDE.md](CLAUDE.md)** - Project memory, architecture decisions, and conventions
 - **[Journal.md](Journal.md)** - Engineering journey with lessons learned and best practices
-- **[IDEA.md](IDEA.md)** - Original project specification
 
 ## 🗺️ Roadmap
 
-### v0.1.0-alpha ✅
-- [x] SwiftData schema with 5 models
-- [x] Three-column layout
-- [x] Basic Markdown rendering
-- [x] Live preview
-- [ ] CloudKit syncing (not working)
-- [x] PDF/HTML export
+### v1.0.0 - App Store Launch ✅
+- [x] SwiftData schema (Document, Tag, Project, Snippet)
+- [x] Three-column NavigationSplitView layout
+- [x] Live Markdown preview (CommonMark + GFM via swift-markdown)
+- [x] Syntax highlighting — 185 languages via Highlight.js
+- [x] Document CRUD with archive, favorites, sorting
+- [x] Project and Tag CRUD with color pickers
+- [x] Multi-select with bulk delete, move, and tag operations
+- [x] PDF export (Mac + iOS), HTML/Markdown export (Mac only)
+- [x] Settings: editor font, preview font, 10 color themes
+- [x] Welcome splash screen on first launch
+- [x] Mac MD Premium subscription (iCloud Sync via StoreKit 2)
+- [x] iCloud sync via CloudKit (Premium only)
+- [x] 38-language localization
+- [x] Marketing website (GitHub Pages)
 
-### v0.2.0 (Current) ✅
-- [x] Integrate swift-markdown parser (v0.7.3)
-- [x] Syntax highlighting via Highlight.js (185 languages)
-- [x] Keyboard shortcuts for all export types
-- [x] Editable document titles
-- [x] Smart timestamp display (updates every 60 seconds)
-- [x] Markdown export (.md files) - Mac only due to SwiftUI bug
-- [x] HTML export - Mac only due to SwiftUI bug
-- [x] PDF export - Both Mac and iOS working
-- [x] Mac native file pickers (NSSavePanel)
-- [x] Platform-specific export implementations using FileDocument pattern
-- [x] Comprehensive testing proving SwiftUI .fileExporter() bug on iOS ([see bug report](docs/bug-reports/APPLE_BUG_REPORT_SWIFTUI_FILEEXPORTER.md))
-
-### v0.3.0 - Complete CRUD Operations ✅
-**Goal:** Simplified data model with complete document management
-
-**Data Model Simplification** ✅
-- [x] Remove Group entity entirely (use Projects as folders)
-- [x] Document belongs to one Project (one-to-many)
-- [x] Tags remain many-to-many with Documents
-- [x] Update UI to reflect simplified model
-
-**Document CRUD** ✅
-- [x] Create: Quick-add with + button
-- [x] Read: Three-column layout with live preview
-- [x] Update: Editable titles, real-time content editing
-- [x] Delete: Confirmation dialog with swipe action
-- [x] Duplicate: Context menu creates copy with "(Copy)" suffix
-- [x] Archive: Hide without deleting, toggleable
-- [x] Favorites: Star/unstar with visual indicator
-- [x] Sorting: By date modified, date created, title, word count
-
-**Project CRUD** ✅
-- [x] Create: Quick-add or detailed edit sheet
-- [x] Edit: Full sheet with name, description, icon, color picker
-- [x] Delete: Confirmation dialog (documents stay intact)
-- [x] Drag-drop: Drag documents onto projects to move
-- [x] Context menu: Edit, Delete with confirmation
-- [x] Platform-specific: Custom layout on Mac, Form on iOS
-
-**Tag CRUD** ✅
-- [x] Create: Quick-add or detailed edit sheet
-- [x] Edit: Full sheet with name and color picker
-- [x] Delete: Confirmation dialog (removed from all documents)
-- [x] Apply: Context menu to toggle tags on documents
-- [x] Visual badges: Colored circles in document list (up to 3 + count)
-- [x] Platform-specific: Custom layout on Mac, Form on iOS
-
-**UI Polish** ✅
-- [x] Inline quick-add buttons (+ icon next to section headers)
-- [x] Section headers for Documents, Projects, Tags
-- [x] Colored circle icons for tags (not SF Symbols)
-- [x] Tag color picker with live preview
-- [x] Cross-platform consistency improvements
-
-### v0.4.0 - Polish & Organization ✅
-**Goal:** Production-ready organizational features and app polish for 1.0 launch
-
-**Organizational Features** ✅
-- [x] Multi-select documents (Cmd-Click on Mac, Select mode on iOS/iPadOS)
-- [x] Bulk operations: Delete, tag, move to project
-- [x] Bulk tag application from context menu
-
-**First Launch Experience** ✅
-- [x] Splash screen on first launch only
-- [x] Welcome message explaining three-column layout
-- [x] Sample document to demonstrate features
-- [x] User preference to skip in future
-
-**Settings/Preferences Screen** ✅
-- [x] Preview font size adjustment
-- [x] Editor font family and size selection
-- [x] 10 Terminal-inspired color themes for the editor
-- [x] About section with version info and credits
-- [x] macOS native Settings scene (⌘,), iOS gear button sheet
-
-**App Icon & Branding** ✅
-- [x] App icon (1024x1024 master — mac_md.png)
-- [x] iOS/iPadOS asset catalog entries (light, dark, tinted)
-- [x] macOS AppIcon.icns
-- [ ] Launch screen (deferred — auto-generated blank screen used)
-- [ ] App Store marketing assets (deferred to v1.0)
-
-**Bug Fixes** ✅
-- [x] PDF export now captures full document (not just first page)
-
-**Quality Assurance**
-- [ ] CloudKit sync verification across devices
-- [ ] Performance testing with large document collections
-- [ ] Memory leak detection and fixes
-
-### v1.0.0 - App Store Launch
-**Goal:** Public release on Mac App Store and iOS App Store
-
-**Visual Polish**
-- [ ] Final color scheme refinements for Dark and Light modes
-- [ ] Consistent iconography throughout
-- [ ] Polish animations and transitions
-- [ ] Accessibility audit (VoiceOver, Dynamic Type)
-
-**Marketing Materials**
-- [ ] Convert README.md to beautiful one-page website
-- [ ] Host marketing site on GitHub Pages
-- [ ] App Store screenshots (all required sizes and devices)
-- [ ] App Store preview video (30 seconds)
-- [ ] App Store description and keywords
-
-**Release Process**
-- [ ] TestFlight beta testing (2 weeks minimum)
-- [ ] Beta feedback incorporation
-- [ ] App Store submission (Mac + iOS)
-- [ ] App Store review process
-- [ ] Public launch announcement
-
-**Documentation**
-- [ ] User guide on marketing website
-- [ ] FAQ section
-- [ ] Privacy policy
-- [ ] Support contact information
-
-### v2.0.0 - Advanced Features
-**Goal:** MacDown feature parity with advanced editing capabilities
-
-**Snippet System**
-- [ ] Snippet CRUD operations (create, edit, delete)
-- [ ] Snippet insertion UI (palette or quick-insert)
-- [ ] Keyboard shortcuts for common snippets
-- [ ] Snippet variables/placeholders with tab stops
-- [ ] Pre-loaded snippet library (code blocks, tables, etc.)
-- [ ] Snippet organization (categories, tags)
-
-**Editor Intelligence**
-- [ ] Auto-pairing: `[` → `[]`, `(` → `()`, `"` → `""`
-- [ ] Smart list continuation (auto-adds bullets on return)
-- [ ] Auto-indentation for nested lists
-- [ ] Smart quotes (curly quotes option)
-- [ ] Markdown-aware undo/redo
-- [ ] Auto-completion for Markdown symbols
-
-**LaTeX/Math Rendering**
-- [ ] Integrate MathJax or KaTeX via CDN
-- [ ] Support inline math `$...$`
-- [ ] Support block math `$$...$$`
-- [ ] Live preview of math expressions
-- [ ] Math symbol auto-completion
-
-**macOS System Extension**
-- [ ] System-wide text capture extension
-- [ ] Capture selected text from any app
-- [ ] Automatically create document in Mac MD
-- [ ] Auto-tag captured content with "For Review"
-- [ ] Keyboard shortcut activation
-- [ ] Background processing (no app launch required)
-
-**Additional Enhancements**
-- [ ] Custom themes and color schemes
-- [ ] Export templates (custom CSS for HTML/PDF)
-- [ ] Document templates
-- [ ] Full-text search across all documents
-- [ ] File system integration (import/export folders)
-- [ ] Git integration (version control)
-- [ ] Collaborative editing (iCloud shared documents)
-
-### Future Considerations (v3.0+)
-- [ ] Extensions/plugins API
-- [ ] Multi-cursor editing
-- [ ] Advanced table editing
-- [ ] Diagram support (Mermaid, PlantUML)
-- [ ] Bibliography management (BibTeX)
-- [ ] Presentation mode (slides from Markdown)
-- [ ] Web publishing integration
-- [ ] AI writing assistance
+### Future Ideas
+- Snippet system with variables and tab stops
+- Editor intelligence (auto-pairing, smart list continuation)
+- LaTeX/Math rendering (MathJax or KaTeX)
+- macOS system extension for capturing text from any app
+- Full-text search across all documents
+- Custom export templates (CSS for HTML/PDF)
+- Document templates
+- Git integration
+- Collaborative editing via iCloud shared documents
+- Diagram support (Mermaid, PlantUML)
 
 ## 📝 License
 
@@ -392,7 +186,3 @@ Special thanks to:
 Allen Hammock - [@brainvat](https://github.com/brainvat)
 
 Project Link: [https://github.com/brainvat/markdown-editor](https://github.com/brainvat/markdown-editor)
-
----
-
-**Note**: This is v0.4.0 with multi-select/bulk operations, settings with color themes, welcome splash screen, and app icons across all platforms. The app is fully functional for daily use. v1.0.0 App Store launch is next. Feedback and contributions are welcome!
